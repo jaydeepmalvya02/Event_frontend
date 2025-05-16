@@ -6,6 +6,7 @@ import speaker2 from "/images/m2.jfif";
 import speaker3 from "/images/m3.jfif";
 import speaker4 from "/images/m4.jfif";
 import RegistrationForm from "./RegistrationForm";
+import Login from "./Login";
 
 const EventPage = () => {
   return (
@@ -177,11 +178,15 @@ const EventPage = () => {
           <div className="col-lg-4">
             <div className="sticky-top" style={{ top: "20px" }}>
               <div className="bg-white border rounded shadow p-4">
-                <h4 className="text-center fw-bold mb-3">Register Now</h4>
+                <h4 className="text-center fw-bold mb-3">Login Now</h4>
+                <Login />
+                <h4 className="text-center fw-bold mt-4 mb-3">Register Now</h4>
                 <p className="text-center text-muted small">
                   Limited seats available! Secure your spot today.
                 </p>
-                <RegistrationForm />
+                <div className="">
+                  <RegistrationForm />
+                </div>
               </div>
             </div>
           </div>
