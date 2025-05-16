@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -7,6 +6,24 @@ import { toast } from "react-toastify";
 const EventWebinarPage = () => {
   const [question, setQuestion] = useState("");
   const [status, setStatus] = useState(null);
+  const [videoId, setVideoId] = useState(""); // <-- add videoId state
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Fetch video ID from backend
+    const fetchVideoId = async () => {
+      try {
+        const res = await fetch("https://event-nine-xi.vercel.app/api/videoId");
+        const data = await res.json();
+        setVideoId(data.videoId);
+      } catch (error) {
+        console.error("Failed to fetch video ID", error);
+        toast.error("Unable to load video.");
+      }
+    };
+
+    fetchVideoId();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,7 +31,6 @@ const EventWebinarPage = () => {
 
     const user = JSON.parse(localStorage.getItem("user"));
     const email = user?.email;
-    console.log(user, email);
 
     if (!email || !question) {
       toast.error("User not logged in or question is empty.");
@@ -51,38 +67,29 @@ const EventWebinarPage = () => {
     }
   };
 
-  const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("user");
     navigate("/");
   };
-
-  // const handleDownload = () => {
-  //   // You can link to a dynamic URL or serve a file from backend
-  //   window.open("/certificate.pdf", "_blank");
-  // };
-
-  // Video ID from localStorage, with fallback
-  const videoId = localStorage.getItem("youtubeVideoId") || "YOcmSsBfafg";
 
   return (
     <div className="bg-grey text-light min-vh-100">
       <div className="container py-4">
         {/* YouTube Video */}
         <div className="ratio ratio-16x9 mb-4">
-          <iframe
-            src={`https://www.youtube.com/embed/${videoId}`}
-            title="Webinar Video"
-            allowFullScreen
-          ></iframe>
+          {videoId ? (
+            <iframe
+              src={`https://www.youtube.com/embed/${videoId}`}
+              title="Webinar Video"
+              allowFullScreen
+            ></iframe>
+          ) : (
+            <div className="text-center text-muted">Loading video...</div>
+          )}
         </div>
 
-        {/* Actions */}
+        {/* Question Form & Logout */}
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
-          {/* <button className="btn btn-secondary" onClick={handleDownload}>
-            Download Certificate
-          </button> */}
-
           <form
             className="p-3 bg-light rounded shadow-sm w-100"
             onSubmit={handleSubmit}
@@ -104,12 +111,13 @@ const EventWebinarPage = () => {
               </button>
             </div>
           </form>
-          <button className="btn-primary bg-blue btn-sm" onClick={handleLogout}>
+
+          <button className="btn btn-danger btn-sm mt-3" onClick={handleLogout}>
             Logout
           </button>
         </div>
 
-        {/* Feedback message */}
+        {/* Feedback */}
         <div className="mt-3">
           {status === "sending" && (
             <div className="text-info">Sending your question...</div>
