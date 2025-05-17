@@ -13,16 +13,66 @@ const ShowUser = () => {
         setUsers(res.data);
         setLoading(false);
       } catch (error) {
-        setError(error);
+        console.log(error);
+        setError("Failed to fetch users. Please try again later.");
         setLoading(false);
       }
     };
     fetchUsers();
   }, []);
 
+  const downloadCSV = () => {
+    if (users.length === 0) return;
+
+    const headers = [
+      "Name",
+      "Company Name",
+      "Division",
+      "Designation",
+      "State",
+      "City",
+      "Mobile",
+      "Email",
+    ];
+
+    const csvRows = [
+      headers.join(","), // Header row
+      ...users.map((user) =>
+        [
+          user.name,
+          user.companyName,
+          user.division,
+          user.designation,
+          user.state,
+          user.city,
+          user.mobile,
+          user.email,
+        ]
+          .map((field) => `"${field}"`)
+          .join(",")
+      ),
+    ];
+
+    const blob = new Blob([csvRows.join("\n")], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "users.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="container my-5">
       <h2 className="text-center mb-4">User Management</h2>
+
+      <div className="text-end mb-3">
+        <button className="btn btn-success" onClick={downloadCSV}>
+          📥 Download CSV
+        </button>
+      </div>
 
       {loading ? (
         <div className="text-center">
