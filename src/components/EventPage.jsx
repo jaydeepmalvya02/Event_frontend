@@ -33,6 +33,11 @@ const EventPage = () => {
           <div className="badge bg-light text-dark fs-6 fs-md-5 px-3 px-md-4 py-1 py-md-2">
             📅 17<sup>th</sup> MAY 2025 &nbsp; | &nbsp; ⏰ 11:00 AM Onwards
           </div>
+          <div className="mt-4">
+            <a href="/Event" className="btn btn-warning fw-bold px-4 py-2">
+              🚀 Join Now
+            </a>
+          </div>
         </div>
       </div>
 
