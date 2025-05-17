@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 
 const RegistrationForm = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     companyName: "",
@@ -48,6 +50,7 @@ const RegistrationForm = () => {
           mobile: "",
           email: "",
         });
+        navigate("/Event");
       } else {
         toast.error(result.message || "Registration failed");
       }
