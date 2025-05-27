@@ -1,16 +1,19 @@
 import React from "react";
 import ee from "/images/ee1.PNG";
 import instamdlogo from "/images/instamd_logo.PNG";
-import speaker1 from "/images/m1.jfif";
-import speaker2 from "/images/m2.jfif";
-import speaker3 from "/images/m3.jfif";
+import speaker1 from "/images/m1.jpeg";
+import speaker2 from "/images/m2.jpeg";
+import speaker3 from "/images/m3.jpeg";
 import speaker4 from "/images/m4.jfif";
 import RegistrationForm from "./RegistrationForm";
 import Login from "./Login";
-
+import RegisterModal from "./RegisterModal";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const EventPage = () => {
   return (
     <div className="container-fluid px-0 bg-light">
+      <ToastContainer />
       {/* Header */}
       <div className="py-5 bg-primary text-white text-center">
         <div className="container">
@@ -27,16 +30,18 @@ const EventPage = () => {
           </div>
 
           <h2 className="display-6 fw-bold">#pitchpoint On</h2>
-          <h1 className="fw-bold mb-3">
-            Digital Transformation in Pharma Industry
-          </h1>
+          <h1 className="fw-bold mb-3">Data To Decision</h1>
           <div className="badge bg-light text-dark fs-6 fs-md-5 px-3 px-md-4 py-1 py-md-2">
-            📅 17<sup>th</sup> MAY 2025 &nbsp; | &nbsp; ⏰ 11:00 AM Onwards
+            📅 07<sup>th</sup> JUNE 2025 &nbsp; | &nbsp; ⏰ 11:00 AM Onwards
           </div>
           <div className="mt-4">
-            <a href="/Event" className="btn btn-warning fw-bold px-4 py-2">
-              🚀 Join Now
-            </a>
+            <button
+              className="btn btn-warning fw-bold px-4 py-2"
+              data-bs-toggle="modal"
+              data-bs-target="#registerModal"
+            >
+              🚀 Register Now
+            </button>
           </div>
         </div>
       </div>
@@ -64,12 +69,12 @@ const EventPage = () => {
                       }}
                       alt="Convenor"
                     />
-                    <h5 className="text-primary fw-bold">Mr. Anil Fernandez</h5>
+                    <h5 className="text-primary fw-bold">
+                      Dr. Subhojit Mukherjee
+                    </h5>
                     <p className="text-muted small">
-                      Founder - SLIM (Strategy, Leadership, Innovation,
-                      Marketing) Solutions
-                      <br /> Visiting Faculty – NMIMS and Corporate Mentor -
-                      SIESCOMS
+                      Head Of India Formulations At Celsius Healthcare Pvt. Ltd.
+                      <br />
                     </p>
                   </div>
                 </div>
@@ -89,16 +94,10 @@ const EventPage = () => {
                       }}
                       alt="Keynote"
                     />
-                    <h5 className="text-primary fw-bold">
-                      Mr. Thamburaj Anthuvan
-                    </h5>
+                    <h5 className="text-primary fw-bold">Mr. Devesh Gangani</h5>
                     <p className="text-muted small">
-                      Senior Vice President -Sales, Marketing & Digital
-                      Transformation ,BU Head, SFE, L&D, USV PVT LTD | PhD
-                      Scholar in Pharma Marketing
+                      Associate General Manager at Alkem Laboratories Ltd
                       <br />
-                      AI & SFE Expert | Researcher & Peer Reviewer | Industry
-                      Mentor | Athlete & Artist
                     </p>
                   </div>
                 </div>
@@ -123,13 +122,11 @@ const EventPage = () => {
                         alt="Panel 1"
                       />
                       <h6 className="fw-bold text-primary">
-                        Mr. Devdutt Kaushal
+                        Dr. Pramod Kumar Rajput
                       </h6>
                       <p className="text-muted small">
-                        Associate Director Business Development Commercial
-                        manager LATAM Countries at Cipla
-                        <br /> P&L, Product Launches, Cardio-Uro Therapy
-                        Strategy
+                        Global Leadership Coach| Pharma Business Leader | Author
+                        | Sr. Vice President (F.), Cadila Pharma
                       </p>
                     </div>
                   </div>
@@ -185,13 +182,6 @@ const EventPage = () => {
               <div className="bg-white border rounded shadow p-4">
                 <h4 className="text-center fw-bold mb-3">Login Now</h4>
                 <Login />
-                <h4 className="text-center fw-bold mt-4 mb-3">Register Now</h4>
-                <p className="text-center text-muted small">
-                  Limited seats available! Secure your spot today.
-                </p>
-                <div className="">
-                  <RegistrationForm />
-                </div>
               </div>
             </div>
           </div>
@@ -207,6 +197,7 @@ const EventPage = () => {
           &copy; 2025 Pharma Digital Summit. All rights reserved.
         </p>
       </footer>
+      <RegisterModal />
     </div>
   );
 };
