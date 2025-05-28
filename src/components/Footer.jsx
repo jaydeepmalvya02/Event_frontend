@@ -46,7 +46,7 @@ const Footer = () => {
         toast.success("Subscribed to newsletter! 🎉", { autoClose: 2000 });
         setEmail(""); // Corrected this line
       } else {
-        toast.error("Subscription failed. Please try again.", {
+        toast.error("Already Subscribed!", {
           autoClose: 2000,
         });
       }
