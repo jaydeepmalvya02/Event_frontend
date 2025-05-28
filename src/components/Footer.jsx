@@ -29,16 +29,13 @@ const Footer = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        "https://event-nine-xi.vercel.app/api/sub",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email }),
-        }
-      );
+      const response = await fetch("https://event-nine-xi.vercel.app/api/sub", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
 
       await response.json();
 
@@ -49,6 +46,7 @@ const Footer = () => {
         toast.error("Already Subscribed!", {
           autoClose: 2000,
         });
+        setEmail("");
       }
     } catch (error) {
       console.error(error);
