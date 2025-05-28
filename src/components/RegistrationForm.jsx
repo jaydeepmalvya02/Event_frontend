@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const RegistrationForm = () => {
   const navigate = useNavigate();
@@ -30,11 +31,14 @@ const RegistrationForm = () => {
     setSubmitting(true);
 
     try {
-      const response = await fetch("https://event-nine-xi.vercel.app/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "https://event-nine-xi.vercel.app/api/register",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const result = await response.json();
 
@@ -50,7 +54,7 @@ const RegistrationForm = () => {
           mobile: "",
           email: "",
         });
-        navigate("/Event");
+        navigate("/liveEvents");
       } else {
         toast.error(result.message || "Registration failed");
       }
@@ -65,118 +69,143 @@ const RegistrationForm = () => {
   return (
     <>
       <ToastContainer />
-      <form>
-        <div className="mb-3">
-          <input
-            name="name"
-            className="form-control"
-            placeholder="Your Name*"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
+      <div className="container-fluid min-vh-100 d-flex flex-column flex-md-row p-0">
+        {/* Left image/illustration section */}
+        <div
+          className="w-100 w-md-50 d-flex flex-column justify-content-center align-items-center p-4 text-white"
+          style={{
+            background: "linear-gradient(to bottom right, #dce8ff, #a6c9ff)",
+            backgroundImage: 'url("/images/bg3.png")',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            minHeight: "300px",
+          }}
+        >
+          <div className="bg-white bg-opacity-75 rounded p-3 p-md-5 w-100 text-center">
+            <h2 className="fw-bold text-dark fs-5 fs-md-4">
+              Open Your World of Relaxation & Discovery
+            </h2>
+            <p className="text-muted mt-2 mt-md-3">
+              Join us for an enriching event experience.
+            </p>
+          </div>
         </div>
 
-        <div className="mb-3">
-          <input
-            name="companyName"
-            className="form-control"
-            placeholder="Company Name*"
-            value={formData.companyName}
-            onChange={handleChange}
-            required
-          />
-        </div>
+        {/* Right form section */}
+        <div className="w-100 w-md-50 d-flex align-items-center justify-content-center p-3 p-md-4">
+          <div className="w-100" style={{ maxWidth: "500px" }}>
+            <h4
+              className="mb-4 text-center"
+              style={{
+                fontSize: "1.5rem",
+                fontWeight: "bold",
+                color: "#ffffff",
+                backgroundColor: "#9C9C9C",
+                textShadow: "1px 1px 2px rgba(0, 0, 0, 0.1)",
+                padding: "0.75rem",
+                borderRadius: "0.5rem",
+                marginBottom: "1.5rem",
+              }}
+            >
+              Register for the Event
+            </h4>
 
-        <div className="mb-3">
-          <input
-            name="division"
-            className="form-control"
-            placeholder="Division*"
-            value={formData.division}
-            onChange={handleChange}
-            required
-          />
-        </div>
+            <form>
+              {[
+                { name: "name", label: "Your Name" },
+                { name: "companyName", label: "Company Name" },
+                { name: "division", label: "Division" },
+                { name: "designation", label: "Designation" },
+                { name: "city", label: "City" },
+                { name: "mobile", label: "Mobile Number" },
+                { name: "email", label: "Email Address", type: "email" },
+              ].map(({ name, label, type = "text" }) => (
+                <div className="mb-3" key={name}>
+                  <input
+                    name={name}
+                    className="form-control rounded-3 shadow-sm"
+                    placeholder={label}
+                    type={type}
+                    value={formData[name]}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              ))}
 
-        <div className="mb-3">
-          <input
-            name="designation"
-            className="form-control"
-            placeholder="Designation*"
-            value={formData.designation}
-            onChange={handleChange}
-            required
-          />
-        </div>
+              <div className="mb-3">
+                <select
+                  name="state"
+                  className="form-select rounded-3 shadow-sm"
+                  value={formData.state}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select State</option>
+                  {[
+                    "Andhra Pradesh",
+                    "Arunachal Pradesh",
+                    "Assam",
+                    "Bihar",
+                    "Chhattisgarh",
+                    "Goa",
+                    "Gujarat",
+                    "Haryana",
+                    "Himachal Pradesh",
+                    "Jharkhand",
+                    "Karnataka",
+                    "Kerala",
+                    "Madhya Pradesh",
+                    "Maharashtra",
+                    "Manipur",
+                    "Meghalaya",
+                    "Mizoram",
+                    "Nagaland",
+                    "Odisha",
+                    "Punjab",
+                    "Rajasthan",
+                    "Sikkim",
+                    "Tamil Nadu",
+                    "Telangana",
+                    "Tripura",
+                    "Uttar Pradesh",
+                    "Uttarakhand",
+                    "West Bengal",
+                    "Chandigarh",
+                    "Delhi",
+                    "Jammu and Kashmir",
+                    "Ladakh",
+                    "Lakshadweep",
+                    "Puducherry",
+                  ].map((state) => (
+                    <option key={state} value={state}>
+                      {state}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-        <div className="mb-3">
-          <select
-            name="state"
-            className="form-select"
-            value={formData.state}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Select State*</option>
-            {[
-              "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
-              "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
-              "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram",
-              "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
-              "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
-              "Chandigarh", "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
-            ].map((state) => (
-              <option key={state} value={state}>{state}</option>
-            ))}
-          </select>
+              <div className="d-grid mt-3">
+                <button
+                  type="button"
+                  className="btn btn-primary fw-bold rounded-3 shadow-sm"
+                  onClick={handleRegister}
+                  disabled={submitting}
+                >
+                  {submitting ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2"></span>
+                      Registering...
+                    </>
+                  ) : (
+                    "Register"
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-
-        <div className="mb-3">
-          <input
-            name="city"
-            className="form-control"
-            placeholder="City*"
-            value={formData.city}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <input
-            name="mobile"
-            className="form-control"
-            placeholder="Mobile Number*"
-            value={formData.mobile}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="mb-3">
-          <input
-            name="email"
-            className="form-control"
-            placeholder="Email Address*"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="d-grid">
-          <button
-            type="button"
-            className="btn btn-primary fw-bold"
-            onClick={handleRegister}
-            disabled={submitting}
-          >
-            {submitting ? "Registering..." : "Register"}
-          </button>
-        </div>
-      </form>
+      </div>
     </>
   );
 };

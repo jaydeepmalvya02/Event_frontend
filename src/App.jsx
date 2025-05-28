@@ -1,25 +1,40 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import EventPage from "./components/EventPage";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import ContactUs from "./components/ContactUs";
+import Home from "./components/Home";
+import Footer from "./components/Footer";
+import Navbar from "./components/PublicNavbar";
 import EventWebinarPage from "./components/EventWebinarPage";
+import EventDetails from "./components/EventDetails";
+import RegistrationForm from "./components/RegistrationForm";
+import  Speaker from './components/Speaker'
+import  AboutPage from './components/AboutPage'
 import ShowUser from "./components/ShowUser";
-import Login from "./components/Login";
+import QuestionList from "./components/QuestionList"
 import UpdateVideoIdPage from "./components/UpdateVideoIdPage";
-import QuestionList from "./components/QuestionList";
 
-function App() {
+const App = () => {
   return (
-    <Router>
+    <div>
+      <Navbar />
       <Routes>
-        <Route path="/" element={<EventPage />} />
-        <Route path={"/list"} element={<ShowUser />} />
-        <Route path={"/login"} element={<Login />} />
-        <Route path="/Event" element={<EventWebinarPage />} />
-        <Route path="/ytid" element={<UpdateVideoIdPage />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<RegistrationForm />} />
+        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/speakers" element={<Speaker />} /> {/* Placeholder for speakers page */}
+        <Route path="/events" element={<EventDetails />} />
+        <Route path="/liveEvents" element={<EventWebinarPage />} />
+
+        <Route path="/list" element={<ShowUser />} />
         <Route path="/que" element={<QuestionList />} />
+        <Route path="/ytid" element={<UpdateVideoIdPage />} />
+        <Route path="/about" element={<AboutPage />} />
+       
       </Routes>
-    </Router>
+      <Footer />
+    </div>
   );
-}
+};
 
 export default App;
