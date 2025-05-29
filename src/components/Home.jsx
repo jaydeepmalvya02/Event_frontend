@@ -64,7 +64,7 @@ const Home = () => {
                   fontSize: "clamp(1rem, 2vw, 1.25rem)",
                 }}
               >
-                PitchPoint is a signature online webinar series by ExpertOnTalk,
+                PitchPoint is a signature online webinar series by ExpertOnBoard,
                 designed to bring together the thoughts of leaders, innovators,
                 and professionals from the pharma space.
               </p>
@@ -255,7 +255,7 @@ const Home = () => {
         )}
       </div>
       <div>
-        <CurrentEvent/>
+        <CurrentEvent />
       </div>
       <div>
         <FeaturedSpeakers />

@@ -1,13 +1,25 @@
 import React, { useState } from "react";
-import { Navbar, Nav, Container, Offcanvas, Button } from "react-bootstrap";
+import {
+  Navbar,
+  Nav,
+  Container,
+  Offcanvas,
+  Button,
+  Modal,
+} from "react-bootstrap";
 import { NavLink } from "react-router-dom";
-import logo from "/images/expert.png";
+import logo from "/images/ExpertLogo.jpeg";
+import Login from "./Login"; // import your Login component
 
 const PublicNavbar = () => {
   const [showDrawer, setShowDrawer] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const toggleDrawer = () => setShowDrawer(!showDrawer);
   const closeDrawer = () => setShowDrawer(false);
+
+  const openLoginModal = () => setShowLoginModal(true);
+  const closeLoginModal = () => setShowLoginModal(false);
 
   const navLinks = [
     { to: "/", label: "Home" },
@@ -29,9 +41,9 @@ const PublicNavbar = () => {
             <img
               src={logo}
               alt="Logo"
-              width="70"
-              height="70"
-              className="bg-white border border-primary"
+              width="80"
+              height="80"
+              className=""
             />
           </Navbar.Brand>
 
@@ -47,7 +59,7 @@ const PublicNavbar = () => {
           {/* Desktop Nav */}
           <Navbar.Collapse
             id="navbar-nav"
-            className="justify-content-center d-none d-lg-flex"
+            className="justify-content-center d-none d-lg-flex align-items-center"
           >
             <Nav className="text-center gap-3">
               {navLinks.map(({ to, label }) => (
@@ -66,6 +78,14 @@ const PublicNavbar = () => {
                 </Nav.Link>
               ))}
             </Nav>
+            {/* Login button for desktop */}
+            <Button
+              variant="outline-primary"
+              onClick={openLoginModal}
+              className="ms-3"
+            >
+              Login
+            </Button>
           </Navbar.Collapse>
         </Container>
       </Navbar>
@@ -75,12 +95,14 @@ const PublicNavbar = () => {
         show={showDrawer}
         onHide={closeDrawer}
         placement="end"
-        className="w-50" // This sets the width to 50%
+        className="w-50"
       >
-        <Offcanvas.Header closeButton closeVariant="white" className="bg-primary text-white">
-          <Offcanvas.Title>
-            <span>ExpertOnBoard</span>
-          </Offcanvas.Title>
+        <Offcanvas.Header
+          closeButton
+          closeVariant="white"
+          className="bg-primary text-white"
+        >
+          <Offcanvas.Title>ExpertOnBoard</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body className="p-3">
           <Nav className="flex-column gap-2">
@@ -100,47 +122,143 @@ const PublicNavbar = () => {
               </Nav.Link>
             ))}
           </Nav>
+          {/* Login button for mobile */}
+          <div className="mt-3">
+            <Button
+              variant="primary"
+              onClick={() => {
+                openLoginModal();
+                closeDrawer();
+              }}
+              className="w-100"
+            >
+              Login
+            </Button>
+          </div>
         </Offcanvas.Body>
       </Offcanvas>
 
+      {/* Login Modal */}
+      <Modal
+        show={showLoginModal}
+        onHide={closeLoginModal}
+        centered
+        backdropClassName="modal-backdrop-custom"
+        dialogClassName="modal-dialog-centered modal-lg"
+      >
+        <div className="modal-content custom-bg">
+          <Modal.Header closeButton className="custom-bg">
+            <Modal.Title className="w-100 text-center">
+              To Join The Event, Login Below 👇
+            </Modal.Title>
+          </Modal.Header>
+
+          <Modal.Body className="custom-bg">
+            <Login onClose={closeLoginModal} />
+          </Modal.Body>
+        </div>
+      </Modal>
+
       {/* Scoped styles */}
       <style>{`
-        .nav-custom {
-          font-size: 1.05rem;
-          position: relative;
-          transition: all 0.2s ease-in-out;
-        }
+  .nav-custom {
+    font-size: 1.05rem;
+    position: relative;
+    transition: all 0.2s ease-in-out;
+  }
 
-        .nav-custom::after {
-          content: '';
-          position: absolute;
-          left: 0;
-          bottom: -4px;
-          width: 0%;
-          height: 2px;
-          background-color: #0d6efd;
-          transition: width 0.3s ease;
-        }
+  .nav-custom::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 0%;
+    height: 2px;
+    background-color: #0d6efd;
+    transition: width 0.3s ease;
+  }
 
-        .nav-custom:hover::after {
-          width: 100%;
-        }
+  .nav-custom:hover::after {
+    width: 100%;
+  }
 
-        .active-nav::after {
-          width: 100%;
-        }
+  .active-nav::after {
+    width: 100%;
+  }
 
-        .nav-custom:hover {
-          color: #0d6efd;
-        }
+  .nav-custom:hover {
+    color: #0d6efd;
+  }
 
-        /* Make drawer half width on mobile */
-        @media (max-width: 991.98px) {
-          .offcanvas {
-            width: 50% !important;
-          }
-        }
-      `}</style>
+  /* Make drawer half width on mobile */
+  @media (max-width: 991.98px) {
+    .offcanvas {
+      width: 50% !important;
+    }
+  }
+
+  /* Modal overlay with blur and dark bg */
+  .modal-backdrop-custom {
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+  }
+
+  /* Modal content with bg image */
+  .modal-content.custom-bg {
+    background-image: url('/images/bg3.png');
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    border-radius: 1rem;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  /* Modal header with semi-transparent bg */
+  .modal-header.custom-bg {
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: none;
+    color: #F1C40F;
+    font-weight: 700;
+    justify-content: center;
+  }
+
+  /* Modal body styling */
+  .modal-body.custom-bg {
+    border-radius: 0 0 1rem 1rem;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+  }
+
+  /* Login box inside modal with transparent bg to show image */
+  .modal-body.custom-bg .login-box {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 400px;
+    width: 100%;
+    color: #000;
+  }
+
+  /* Login button inside modal */
+  .modal-body.custom-bg .btn-primary {
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-radius: 0.75rem;
+    padding: 0.5rem 0;
+    width: 100%;
+  }
+    /* Make modal close button white */
+.modal-header.custom-bg .btn-close {
+  filter: invert(1) brightness(2);
+  opacity: 1;
+}
+
+`}</style>
     </>
   );
 };

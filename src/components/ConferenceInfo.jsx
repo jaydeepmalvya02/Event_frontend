@@ -24,7 +24,7 @@ const ConferenceInfo = () => {
             future of pharma sales and marketing.
           </p>
           <p>
-            Powered by InstaMD and presented by ExpertOnTalk, PitchPoint was
+            Powered by InstaMD and presented by ExpertOnBoard, PitchPoint was
             born from a simple yet powerful idea: to create a space where
             experience meets innovation, and real-world insights inspire action.
             Each session features leading voices from across the industry

@@ -31,7 +31,7 @@ const CountdownTimer = ({ targetDate }) => {
   }
 
   return (
-    <div className="text-primary fw-semibold mb-2">
+    <div className="text-gray-900 fw-semibold mb-2">
       ⏳ Starts in: {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m{" "}
       {timeLeft.seconds}s
     </div>

@@ -37,6 +37,7 @@ const RegisterModal = ({ onClose }) => {
             className="btn-close"
             onClick={onClose}
             aria-label="Close"
+            style={{ filter: "invert(1)" }} // this turns the black icon white
           />
         </div>
         <div className="modal-body p-0">
