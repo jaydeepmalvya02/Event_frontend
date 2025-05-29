@@ -7,6 +7,8 @@ import { motion } from "framer-motion";
 import "../App.css";
 import FeaturedSpeakers from "./FeaturedSpeakers";
 import ConferenceInfo from "./ConferenceInfo";
+import FeaturedFounders from "./FeaturedFounders";
+import CurrentEvent from "./CurrentEvent";
 
 const Home = () => {
   const [showRegistered, setShowRegistered] = React.useState(false);
@@ -253,10 +255,16 @@ const Home = () => {
         )}
       </div>
       <div>
+        <CurrentEvent/>
+      </div>
+      <div>
         <FeaturedSpeakers />
       </div>
       <div>
         <ConferenceInfo />
+      </div>
+      <div>
+        <FeaturedFounders />
       </div>
     </>
   );

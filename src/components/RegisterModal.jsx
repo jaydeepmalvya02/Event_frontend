@@ -1,31 +1,46 @@
 import React from "react";
 import RegistrationForm from "./RegistrationForm";
-
-const RegisterModal = () => {
+import "bootstrap/dist/css/bootstrap.min.css";
+const RegisterModal = ({ onClose }) => {
   return (
     <div
-      className="modal fade"
-      id="registerModal"
-      tabIndex="-1"
-      aria-labelledby="registerModalLabel"
-      aria-hidden="true"
+      className="modal-overlay"
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        zIndex: 1050,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        overflow: "auto",
+        padding: "1rem",
+      }}
     >
-      <div className="modal-dialog modal-dialog-centered modal-lg">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title" id="registerModalLabel">
-              Register for the Event
-            </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            />
-          </div>
-          <div className="modal-body">
-            <RegistrationForm />
-          </div>
+      <div
+        className="modal-box"
+        style={{
+          background: "linear-gradient(to bottom right, #dce8ff, #a6c9ff)",
+          backgroundImage: 'url("/images/bg2.jfif")',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          minHeight: "300px",
+        }}
+      >
+        <div className="modal-header p-3 border-bottom">
+          <h5 className="modal-title">Register for the Event</h5>
+          <button
+            type="button"
+            className="btn-close"
+            onClick={onClose}
+            aria-label="Close"
+          />
+        </div>
+        <div className="modal-body p-0">
+          <RegistrationForm />
         </div>
       </div>
     </div>

@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import RegisterModal from "./RegisterModal";
 
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ mobile: "", email: "" });
   const [submitting, setSubmitting] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false); // new state
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -20,11 +22,14 @@ const Login = () => {
     setSubmitting(true);
 
     try {
-      const response = await fetch("https://event-nine-xi.vercel.app/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "https://event-nine-xi.vercel.app/api/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const result = await response.json();
 
@@ -47,8 +52,10 @@ const Login = () => {
   return (
     <>
       <ToastContainer />
-      <div className="login-box p-4  rounded-4 mx-auto" style={{ maxWidth: 400 }}>
-        {/* <h3 className="text-center fw-bold mb-4 " style={{ fontSize: "2rem" , color: "#0d6efd"}}>Welcome Back</h3> */}
+      <div
+        className="login-box p-4 rounded-4 mx-auto"
+        style={{ maxWidth: 400 }}
+      >
         <form>
           <div className="form-floating mb-3">
             <input
@@ -88,16 +95,27 @@ const Login = () => {
               {submitting ? "Logging in..." : "Login"}
             </button>
           </div>
+
           <div className="d-flex justify-content-center mt-3">
             <p className="mb-0">
               Don't have an account?{" "}
-              <a href="/register" className=" fw-bold" style={{ color: "#F1C40F" }}>
+              <button
+                type="button"
+                className="fw-bold btn btn-link p-0"
+                style={{ color: "#F1C40F" }}
+                onClick={() => setShowRegisterModal(true)}
+              >
                 Register
-              </a>
+              </button>
             </p>
           </div>
         </form>
       </div>
+
+      {/* Conditionally render the RegisterModal */}
+      {showRegisterModal && (
+        <RegisterModal onClose={() => setShowRegisterModal(false)} />
+      )}
     </>
   );
 };

@@ -40,11 +40,11 @@ const Footer = () => {
       await response.json();
 
       if (response.ok) {
-        toast.success("Subscribed to newsletter! 🎉", { autoClose: 2000 });
+        toast.success("Subscribed to newsletter! 🎉", { autoClose: 3000 });
         setEmail(""); // Corrected this line
       } else {
         toast.error("Already Subscribed!", {
-          autoClose: 2000,
+          autoClose: 3000,
         });
         setEmail("");
       }

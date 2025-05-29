@@ -69,7 +69,7 @@ const RegistrationForm = () => {
   return (
     <>
       <ToastContainer />
-      <div className="container-fluid min-vh-100 d-flex flex-column flex-md-row p-0">
+      <div className="d-flex flex-column flex-md-row w-100">
         {/* Left image/illustration section */}
         <div
           className="w-100 w-md-50 d-flex flex-column justify-content-center align-items-center p-4 text-white"
