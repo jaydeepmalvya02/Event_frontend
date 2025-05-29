@@ -67,7 +67,7 @@ const Footer = () => {
           <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
             <h5 className="uppercase font-bold mb-4 flex items-center gap-3 text-indigo-700">
               <img
-                src="/images/ee1.PNG"
+                src="/images/ExpertLogo.jpeg"
                 alt="InstaMD Logo"
                 className="bg-white p-1"
               />
