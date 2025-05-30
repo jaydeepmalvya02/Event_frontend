@@ -7,16 +7,16 @@ import {
   Button,
   Modal,
 } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import logo from "/images/ExpertLogo.jpeg";
 import Login from "./Login"; // import your Login component
 
 const PublicNavbar = () => {
   // Simulated logged-in state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   const [showDrawer, setShowDrawer] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const navigate=useNavigate()
 
   const toggleDrawer = () => setShowDrawer(!showDrawer);
   const closeDrawer = () => setShowDrawer(false);
@@ -34,6 +34,7 @@ const PublicNavbar = () => {
   const handleLogout = () => {
     // Here you can clear auth tokens, call API to logout, clear localStorage, etc.
     setIsLoggedIn(false);
+    navigate('/')
     closeDrawer();
   };
 
