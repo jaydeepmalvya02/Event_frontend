@@ -16,8 +16,7 @@ const ConferenceInfo = () => {
         <h5 className="text-[22px] tracking-wider mt-2">
           Not just a pitch. It's a turning point.
         </h5>
-        <h6 className="text-[22px] mt-2">07 June 2025 | 11:00 am</h6>
-
+  
         <div className="mt-10 text-[16px] leading-[1.6] tracking-wide">
           <p className="mb-4">
             PitchPoint isn’t just another webinar it’s a front-row seat to the

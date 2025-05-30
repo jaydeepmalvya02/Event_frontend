@@ -77,15 +77,15 @@ const CurrentEvent = () => {
             <CountdownTimer targetDate={event.dateTime} />
 
             <div className="event-info mb-3">
-              <p className="text-dark">
+              <p className="text-black">
                 <FaCalendarAlt className="me-2 text-primary" />
                 <strong>Date:</strong> {event.date}
               </p>
-              <p className="text-dark">
+              <p className="text-black">
                 <FaClock className="me-2 text-primary" />
                 <strong>Time:</strong> {event.time} ({event.duration})
               </p>
-              <p className="text-dark">
+              <p className="text-black">
                 <FaGlobe className="me-2 text-primary" />
                 <strong>Mode:</strong> {event.mode}
               </p>
@@ -117,7 +117,7 @@ const CurrentEvent = () => {
               >
                 <div className="modal-dialog modal-dialog-centered modal-lg">
                   <div
-                    className="modal-content rounded-4 border-0 shadow"
+                    className=" modal-content rounded-4 border-0 shadow"
                     style={{
                       backgroundImage: 'url("/images/bg3.png")',
                       backgroundSize: "cover",
@@ -160,7 +160,7 @@ const CurrentEvent = () => {
                 {event.speakers.map((spk, i) => (
                   <li key={i} className="mb-1">
                     <strong className="">{spk.name}</strong>{" "}
-                    <small className="text-muted">— {spk.title}</small>
+                    <small className="text-black">— {spk.title}</small>
                   </li>
                 ))}
               </ul>
@@ -182,77 +182,91 @@ const CurrentEvent = () => {
       </div>
 
       <style>{`
-      
-        .event-wrapper {
-          background:#d3aaa0;
-          backdrop-filter: blur(4px);
-          color: #1a1a1a;
-        }
+  .event-wrapper {
+    background: #d3aaa0;
+    backdrop-filter: blur(4px);
+    color: #1a1a1a;
+  }
 
-        .event-flex-wrapper {
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
-          gap: 3rem;
-          flex-wrap: wrap;
-        }
+ .event-flex-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4rem;
+  flex-wrap: wrap;
+  margin-left: 0rem; /* add left margin */
+}
 
-        .event-text {
-          flex: 1;
-          min-width: 300px;
-          margin-bottom: 2rem;
-        }
 
-        .event-image-container {
-          flex: 1;
-          min-width: 300px;
-          text-align: center;
-        }
+  .event-text {
+    flex: 1 1 55%;
+    min-width: 280px;
+    margin-bottom: 2rem;
+  }
 
-        .event-image {
-          max-width: 90%;
-          border-radius: 1rem;
-          transition: transform 0.4s ease;
-          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-          margin: 0 auto;
-        }
+  .event-image-container {
+    flex: 1 1 40%; /* shrink image side */
+    min-width: 260px;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
 
-        .event-image:hover {
-          transform: scale(1.03);
-        }
+  .event-image {
+    max-width: 85%;
+    border-radius: 1rem;
+    transition: transform 0.4s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+  }
 
-        .event-info p {
-          margin: 0.4rem 0;
-          display: flex;
-          align-items: center;
-        }
+  .event-image:hover {
+    transform: scale(1.03);
+  }
 
-        .w-fit-content {
-          width: fit-content;
-          display: inline-block;
-        }
+  .event-info p {
+    margin: 0.4rem 0;
+    display: flex;
+    align-items: center;
+  }
 
-        @media (max-width: 768px) {
-          .event-flex-wrapper {
-            flex-direction: column;
-            text-align: left;
-          }
+  .w-fit-content {
+    width: fit-content;
+    display: inline-block;
+  }
 
-          .event-image-container {
-            order: 2;
-            margin-top: 1.5rem;
-          }
+  /* Responsive for smaller screens */
+  @media (max-width: 992px) {
+    .event-flex-wrapper {
+      flex-direction: column;
+      gap: 2rem;
+    }
 
-          .event-text {
-            order: 1;
-          }
+    .event-image {
+      width: 100%;
+      max-width: 100%;
+    }
 
-          .event-image {
-            width: 100%;
-          }
-        }
-          
-      `}</style>
+    .event-text,
+    .event-image-container {
+      order: unset;
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .event-flex-wrapper {
+      gap: 1.5rem;
+    }
+
+    .event-image-container {
+      margin-top: 1rem;
+    }
+
+    .event-image {
+      max-width: 95%;
+    }
+  }
+`}</style>
     </div>
   );
 };

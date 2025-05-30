@@ -40,8 +40,8 @@ const speakers = [
   },
   {
     name: "Dr. ICS Varma ",
-    title: "Co-Founder Of Regson Healthcare  ",
-    bio: "  Live Pharma Coalition| ExpertOnBoard ",
+    title: "Co-Founder",
+    bio: "  Regson Healthcare| Live Pharma Coalition| ExpertOnBoard ",
     image: "/images/m4.jfif",
   },
 ];
