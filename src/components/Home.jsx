@@ -9,6 +9,7 @@ import FeaturedSpeakers from "./FeaturedSpeakers";
 import ConferenceInfo from "./ConferenceInfo";
 import FeaturedFounders from "./FeaturedFounders";
 import CurrentEvent from "./CurrentEvent";
+import Founder from "./Founder";
 
 const Home = () => {
   const [showRegistered, setShowRegistered] = React.useState(false);
@@ -266,6 +267,7 @@ const Home = () => {
       <div>
         <FeaturedFounders />
       </div>
+      <div><Founder/></div>
     </>
   );
 };

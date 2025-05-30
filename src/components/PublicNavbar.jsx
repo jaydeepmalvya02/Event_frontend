@@ -12,6 +12,9 @@ import logo from "/images/ExpertLogo.jpeg";
 import Login from "./Login"; // import your Login component
 
 const PublicNavbar = () => {
+  // Simulated logged-in state
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const [showDrawer, setShowDrawer] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
@@ -20,6 +23,19 @@ const PublicNavbar = () => {
 
   const openLoginModal = () => setShowLoginModal(true);
   const closeLoginModal = () => setShowLoginModal(false);
+
+  // Mock login success handler: called from Login component on successful login
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
+    closeLoginModal();
+  };
+
+  // Logout logic
+  const handleLogout = () => {
+    // Here you can clear auth tokens, call API to logout, clear localStorage, etc.
+    setIsLoggedIn(false);
+    closeDrawer();
+  };
 
   const navLinks = [
     { to: "/", label: "Home" },
@@ -38,13 +54,7 @@ const PublicNavbar = () => {
             to="/"
             className="fw-bold d-flex align-items-center gap-2"
           >
-            <img
-              src={logo}
-              alt="Logo"
-              width="80"
-              height="80"
-              className=""
-            />
+            <img src={logo} alt="Logo" width="80" height="80" />
           </Navbar.Brand>
 
           {/* Toggle Drawer Button */}
@@ -78,14 +88,25 @@ const PublicNavbar = () => {
                 </Nav.Link>
               ))}
             </Nav>
-            {/* Login button for desktop */}
-            <Button
-              variant="outline-primary"
-              onClick={openLoginModal}
-              className="ms-3"
-            >
-              Login
-            </Button>
+
+            {/* Login/Logout button for desktop */}
+            {!isLoggedIn ? (
+              <Button
+                variant="outline-primary"
+                onClick={openLoginModal}
+                className="ms-3"
+              >
+                Login
+              </Button>
+            ) : (
+              <Button
+                variant="outline-danger"
+                onClick={handleLogout}
+                className="ms-3"
+              >
+                Logout
+              </Button>
+            )}
           </Navbar.Collapse>
         </Container>
       </Navbar>
@@ -122,18 +143,31 @@ const PublicNavbar = () => {
               </Nav.Link>
             ))}
           </Nav>
-          {/* Login button for mobile */}
+
+          {/* Login/Logout button for mobile */}
           <div className="mt-3">
-            <Button
-              variant="primary"
-              onClick={() => {
-                openLoginModal();
-                closeDrawer();
-              }}
-              className="w-100"
-            >
-              Login
-            </Button>
+            {!isLoggedIn ? (
+              <Button
+                variant="primary"
+                onClick={() => {
+                  openLoginModal();
+                  closeDrawer();
+                }}
+                className="w-100"
+              >
+                Login
+              </Button>
+            ) : (
+              <Button
+                variant="danger"
+                onClick={() => {
+                  handleLogout();
+                }}
+                className="w-100"
+              >
+                Logout
+              </Button>
+            )}
           </div>
         </Offcanvas.Body>
       </Offcanvas>
@@ -154,7 +188,11 @@ const PublicNavbar = () => {
           </Modal.Header>
 
           <Modal.Body className="custom-bg">
-            <Login onClose={closeLoginModal} />
+            {/* Pass the login success handler to Login */}
+            <Login
+              onClose={closeLoginModal}
+              onLoginSuccess={handleLoginSuccess}
+            />
           </Modal.Body>
         </div>
       </Modal>
@@ -252,12 +290,11 @@ const PublicNavbar = () => {
     padding: 0.5rem 0;
     width: 100%;
   }
-    /* Make modal close button white */
-.modal-header.custom-bg .btn-close {
-  filter: invert(1) brightness(2);
-  opacity: 1;
-}
-
+  /* Make modal close button white */
+  .modal-header.custom-bg .btn-close {
+    filter: invert(1) brightness(2);
+    opacity: 1;
+  }
 `}</style>
     </>
   );

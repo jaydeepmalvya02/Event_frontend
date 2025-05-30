@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import RegisterModal from "./RegisterModal";
 
-const Login = () => {
+const Login = ({ onClose, onLoginSuccess }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ mobile: "", email: "" });
   const [submitting, setSubmitting] = useState(false);
@@ -18,6 +18,8 @@ const Login = () => {
   };
 
   const handleLogin = async () => {
+    onLoginSuccess();
+    onClose();
     if (submitting) return;
     setSubmitting(true);
 
@@ -48,6 +50,12 @@ const Login = () => {
       setSubmitting(false);
     }
   };
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      navigate("/liveEvents");
+    }
+  }, []);
 
   return (
     <>

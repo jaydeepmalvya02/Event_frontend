@@ -1,10 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import CountdownTimer from "./CountdownTimer";
 import { useNavigate } from "react-router-dom";
 import { FaCalendarAlt, FaClock, FaGlobe } from "react-icons/fa";
+import Login from "./Login";
 
 const CurrentEvent = () => {
   const navigate = useNavigate();
+
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+
+  const isUserLoggedIn = () => {
+    return localStorage.getItem("userToken") !== null; // Replace with your actual login logic
+  };
+
+  const handleJoinClick = () => {
+    if (isUserLoggedIn()) {
+      navigate("/liveEvents");
+    } else {
+      setShowLoginPopup(true);
+    }
+  };
+
+  const closeLoginPopup = () => {
+    setShowLoginPopup(false);
+  };
 
   const event = {
     title: "Data To Decision",
@@ -72,12 +91,68 @@ const CurrentEvent = () => {
               </p>
             </div>
 
+            {/* Updated Join Button */}
             <button
-              onClick={() => navigate("/liveEvents")}
-              className="btn btn-outline-primary mb-3"
+              onClick={handleJoinClick}
+              className="btn btn-light btn-lg px-4 rounded-pill mt-3"
             >
               🔗 Join on ExpertOnBoard
             </button>
+
+            {/* Login Popup */}
+            {showLoginPopup && (
+              <div
+                className="modal show d-block"
+                tabIndex="-1"
+                style={{
+                  backgroundColor: "rgba(0, 0, 0, 0.6)",
+                  backdropFilter: "blur(3px)",
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  zIndex: 1050,
+                }}
+              >
+                <div className="modal-dialog modal-dialog-centered modal-lg">
+                  <div
+                    className="modal-content rounded-4 border-0 shadow"
+                    style={{
+                      backgroundImage: 'url("/images/bg3.png")',
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      color: "#fff",
+                    }}
+                  >
+                    <div
+                      className="modal-header border-0"
+                      style={{ background: "rgba(0, 0, 0, 0.4)" }}
+                    >
+                      <h5
+                        className="modal-title w-100 text-center fw-bold"
+                        style={{ color: "#F1C40F" }}
+                      >
+                        To Join The Event, Login Below 👇
+                      </h5>
+                      <button
+                        type="button"
+                        className="btn-close btn-close-white"
+                        onClick={closeLoginPopup}
+                      ></button>
+                    </div>
+                    <div
+                      className="modal-body px-4 py-3"
+                      style={{
+                        borderRadius: "0 0 1rem 1rem",
+                      }}
+                    >
+                      <Login />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div>
               <h5 className="fw-semibold text-dark">Speakers:</h5>
@@ -107,39 +182,39 @@ const CurrentEvent = () => {
       </div>
 
       <style>{`
+      
         .event-wrapper {
           background:#d3aaa0;
           backdrop-filter: blur(4px);
           color: #1a1a1a;
         }
 
-       .event-flex-wrapper {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 3rem; /* increased gap between text and image */
-  flex-wrap: wrap;
-}
+        .event-flex-wrapper {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 3rem;
+          flex-wrap: wrap;
+        }
 
-       
-.event-text {
-  flex: 1;
-  min-width: 300px;
-  margin-bottom: 2rem; /* more spacing below text in stacked view */
-}
+        .event-text {
+          flex: 1;
+          min-width: 300px;
+          margin-bottom: 2rem;
+        }
 
-       .event-image-container {
-  flex: 1;
-  min-width: 300px;
-  text-align: center;
-}
+        .event-image-container {
+          flex: 1;
+          min-width: 300px;
+          text-align: center;
+        }
 
         .event-image {
-          max-width: 90%;   /* slightly smaller image */
+          max-width: 90%;
           border-radius: 1rem;
           transition: transform 0.4s ease;
           box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-          margin: 0 auto;   /* centers the image */
+          margin: 0 auto;
         }
 
         .event-image:hover {
@@ -176,6 +251,7 @@ const CurrentEvent = () => {
             width: 100%;
           }
         }
+          
       `}</style>
     </div>
   );
