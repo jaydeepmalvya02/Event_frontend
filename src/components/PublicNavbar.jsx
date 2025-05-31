@@ -37,6 +37,7 @@ const PublicNavbar = () => {
 
   // Logout logic
   const handleLogout = () => {
+    localStorage.clear()
     // Here you can clear auth tokens, call API to logout, clear localStorage, etc.
     setIsLoggedIn(false);
     navigate('/')
