@@ -273,7 +273,15 @@ const Home = () => {
       <div>
         <Founder />
       </div>
-      <div className="">
+      <div
+        className=""
+        style={{
+          backgroundImage: "url('/images/bg6.avif')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
         <EventHighlights />
       </div>
     </>

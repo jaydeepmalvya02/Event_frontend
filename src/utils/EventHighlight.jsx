@@ -57,7 +57,26 @@ const EventHighlights = () => {
 
   return (
     <div className="container py-5">
-      <h4 className="fw-bold text-center text-white mb-4">📽️ Highlights</h4>
+      <h4 className="display-5 text-center fw-bold text-white mb-3">
+        <span
+          style={{
+            fontSize: "2.5rem",
+            fontStyle: "italic",
+            color: "#0F93CA",
+          }}
+        >
+          #PitchPoint
+        </span>{" "}
+        <span
+          style={{
+            fontSize: "2.5rem",
+            fontStyle: "italic",
+            color: "#ffff",
+          }}
+        >
+          Highlights
+        </span>
+      </h4>
       <div
         id="highlightsCarousel"
         className="carousel slide"

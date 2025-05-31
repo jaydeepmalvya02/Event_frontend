@@ -16,9 +16,7 @@ const Founder = () => {
         <h2 className="text-3xl font-extrabold tracking-tight text-[#0F93CA]">
           #Founder
         </h2>
-        <h5 className="text-gray-600 mt-2 italic">
-          Proud to bring inspirational speakers to our conference.
-        </h5>
+        
       </div>
 
       <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-lg p-6 flex flex-col md:flex-row gap-6">
