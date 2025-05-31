@@ -10,6 +10,8 @@ import ConferenceInfo from "./ConferenceInfo";
 import FeaturedFounders from "./FeaturedFounders";
 import CurrentEvent from "./CurrentEvent";
 import Founder from "./Founder";
+import EventDetails from "./EventDetails";
+import EventHighlights from "../utils/EventHighlight";
 
 const Home = () => {
   const [showRegistered, setShowRegistered] = React.useState(false);
@@ -261,6 +263,7 @@ const Home = () => {
       <div>
         <FeaturedSpeakers />
       </div>
+      <div className=""><EventHighlights/></div>
       <div>
         <ConferenceInfo />
       </div>

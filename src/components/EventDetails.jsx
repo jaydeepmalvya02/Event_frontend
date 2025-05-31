@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CountdownTimer from "./CountdownTimer";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min";
 
 const EventDetails = () => {
   const navigate = useNavigate();
@@ -36,10 +38,19 @@ const EventDetails = () => {
       eventLink: "https://www.youtube.com/watch?v=VlmDT_8YyH0&t=2s",
       coverImages: ["/images/meeting5.png", "/images/meeting6.png"],
     },
+    {
+      title: "Digital Transformation in Pharma Industry",
+      description: "Explore advancements in pharmaceutical sciences.",
+      date: "May 17, 2025",
+      time: "11:00 PM",
+      dateTime: "2025-05-17T11:00:00",
+      Mode: "Online Event",
+      eventLink: "https://www.youtube.com/watch?v=VlmDT_8YyH0&t=2s",
+      coverImages: ["/images/meeting5.png", "/images/meeting6.png"],
+    },
   ];
 
   const now = new Date();
-
   const passedEvents = [];
   const upcomingEvents = [];
 
@@ -52,16 +63,27 @@ const EventDetails = () => {
     }
   });
 
-  // Sort upcoming events by date
   upcomingEvents.sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime));
-
   const currentEvent = upcomingEvents.length > 0 ? upcomingEvents[0] : null;
+
+  // Auto initialize carousel
+  useEffect(() => {
+    const carousel = document.querySelector("#highlightsCarousel");
+    if (carousel && window.bootstrap) {
+      new window.bootstrap.Carousel(carousel, {
+        interval: 500,
+        ride: "carousel",
+        pause: false,
+        wrap: true,
+      });
+    }
+  }, []);
 
   return (
     <div className="container py-5">
       <h2 className="text-center fw-bold mb-4 text-white">Our Events</h2>
 
-      {/* Current & Upcoming Event */}
+      {/* Current Event */}
       {currentEvent && (
         <div className="mb-5">
           <h4 className="fw-bold text-info mb-3">
@@ -101,17 +123,15 @@ const EventDetails = () => {
         </div>
       )}
 
-      {/* Highlights Section */}
-
-      {/* Highlights Section */}
+      {/* Highlights Carousel */}
       {passedEvents.length > 0 && (
         <div className="mt-5">
-          <h4 className="fw-bold text-secondary mb-4">📽️ Highlights</h4>
+          <h4 className="fw-bold text-white mb-4">📽️ Highlights</h4>
           <div
             id="highlightsCarousel"
             className="carousel slide"
             data-bs-ride="carousel"
-            data-bs-interval="3000"
+            data-bs-interval="2000"
           >
             <div className="carousel-inner">
               {passedEvents.map((event, index) => (
@@ -156,7 +176,7 @@ const EventDetails = () => {
               ))}
             </div>
 
-            {/* Carousel controls */}
+            {/* Manual Controls */}
             <button
               className="carousel-control-prev"
               type="button"

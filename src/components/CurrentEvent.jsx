@@ -192,9 +192,9 @@ const CurrentEvent = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 4rem;
+  gap: 2rem;
   flex-wrap: wrap;
-  margin-left: 0rem; /* add left margin */
+   /* add left margin */
 }
 
 
