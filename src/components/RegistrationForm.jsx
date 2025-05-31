@@ -44,7 +44,7 @@ const RegistrationForm = () => {
 
       if (response.ok) {
         toast.success("Registration successful! 🎉", { autoClose: 5000 });
-        localStorage.setItem("userInfo", JSON.stringify(formData));
+        localStorage.setItem("user", JSON.stringify(formData));
         setFormData({
           name: "",
           companyName: "",
