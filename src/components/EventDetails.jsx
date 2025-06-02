@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CountdownTimer from "./CountdownTimer";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
+import Login from "./Login";
 
 const EventDetails = () => {
   const navigate = useNavigate();
@@ -49,7 +50,7 @@ const EventDetails = () => {
       coverImages: ["/images/meeting5.png", "/images/meeting6.png"],
     },
   ];
-
+  const [showLoginPopup,setShowLoginPopup]=useState(false)
   const now = new Date();
   const passedEvents = [];
   const upcomingEvents = [];
@@ -78,6 +79,19 @@ const EventDetails = () => {
       });
     }
   }, []);
+  const isUserLoggedIn = () => {
+    return localStorage.getItem("user") !== null; // Replace with your actual login logic
+  };
+  const handleJoinClick = () => {
+    if (isUserLoggedIn()) {
+      navigate("/liveEvents");
+    } else {
+      setShowLoginPopup(true);
+    }
+  };
+  const closeLoginPopup = () => {
+    setShowLoginPopup(false);
+  };
 
   return (
     <div className="container py-5">
@@ -103,11 +117,66 @@ const EventDetails = () => {
               <strong>Mode:</strong> {currentEvent.Mode}
             </p>
             <button
-              onClick={() => navigate("/liveEvents")}
+              onClick={handleJoinClick}
               className="btn btn-outline-primary mb-3"
             >
               🔗 Watch Event
             </button>
+
+            {/* Login Popup */}
+            {showLoginPopup && (
+              <div
+                className="modal show d-block"
+                tabIndex="-1"
+                style={{
+                  backgroundColor: "rgba(0, 0, 0, 0.6)",
+                  backdropFilter: "blur(3px)",
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  zIndex: 1050,
+                }}
+              >
+                <div className="modal-dialog modal-dialog-centered modal-lg">
+                  <div
+                    className=" modal-content rounded-4 border-0 shadow"
+                    style={{
+                      backgroundImage: 'url("/images/bg3.png")',
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      color: "#fff",
+                    }}
+                  >
+                    <div
+                      className="modal-header border-0"
+                      style={{ background: "rgba(0, 0, 0, 0.4)" }}
+                    >
+                      <h5
+                        className="modal-title w-100 text-center fw-bold"
+                        style={{ color: "#F1C40F" }}
+                      >
+                        To Join The Event, Login Below 👇
+                      </h5>
+                      <button
+                        type="button"
+                        className="btn-close btn-close-white"
+                        onClick={closeLoginPopup}
+                      ></button>
+                    </div>
+                    <div
+                      className="modal-body px-4 py-3"
+                      style={{
+                        borderRadius: "0 0 1rem 1rem",
+                      }}
+                    >
+                      <Login/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="row g-2">
               {currentEvent.coverImages.map((img, idx) => (
                 <div key={idx} className="col-6">

@@ -45,13 +45,15 @@ const Login = ({ onLoginSuccess, onClose }) => {
       const result = await response.json();
       if (response.ok) {
         localStorage.setItem("user", JSON.stringify(result.user));
+        toast.success("Login Successful! 🎉");
         setTimeout(() => {
-          toast.success("Login Successful! 🎉");
-        }, 2000);
+          
+          navigate("/liveEvents");
+          onLoginSuccess();
+          onClose();
+        }, 1500);
 
-        navigate("/liveEvents");
-        onLoginSuccess();
-        onClose();
+       
       } else {
         toast.error(result.message || "Login failed");
       }

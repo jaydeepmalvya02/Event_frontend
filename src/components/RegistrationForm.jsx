@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const RegistrationForm = () => {
+const RegistrationForm = ({ onEmailExists, onSuccess }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -41,8 +41,10 @@ const RegistrationForm = () => {
       );
 
       const result = await response.json();
+      
 
       if (response.ok) {
+        onSuccess()
         toast.success("Registration successful! 🎉", { autoClose: 5000 });
         localStorage.setItem("user", JSON.stringify(formData));
         setFormData({
@@ -57,6 +59,8 @@ const RegistrationForm = () => {
         });
         navigate("/liveEvents");
       } else {
+        if (response.status === 401 && result.message.includes("Email already exists")) {
+          if (onEmailExists) onEmailExists();}
         toast.error(result.message || "Registration failed");
       }
     } catch (err) {

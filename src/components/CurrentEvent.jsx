@@ -10,20 +10,15 @@ const CurrentEvent = () => {
   const [showLoginPopup, setShowLoginPopup] = useState(false);
 
   const isUserLoggedIn = () => {
-    return localStorage.getItem("userToken") !== null; // Replace with your actual login logic
+   
+    
+    return localStorage.getItem("user") !== null; // Replace with your actual login logic
   };
-
-  const handleJoinClick = () => {
-    if (isUserLoggedIn()) {
-      navigate("/liveEvents");
-    } else {
-      setShowLoginPopup(true);
-    }
-  };
-
-  const closeLoginPopup = () => {
-    setShowLoginPopup(false);
-  };
+  // useEffect(() => {
+  //   if (localStorage.getItem("user")) {
+  //     navigate("/liveEvents");
+  //   }
+  // }, []);
 
   const event = {
     title: "Data To Decision",
@@ -57,6 +52,18 @@ const CurrentEvent = () => {
       },
     ],
     coverImage: "/images/EventData2.jpg",
+  };
+
+  const handleJoinClick = () => {
+    if (isUserLoggedIn()) {
+      navigate("/liveEvents");
+    } else {
+      setShowLoginPopup(true);
+    }
+  };
+
+  const closeLoginPopup = () => {
+    setShowLoginPopup(false);
   };
 
   return (

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import RegistrationForm from "./RegistrationForm";
 import Login from "./Login";
 // eslint-disable-next-line no-unused-vars
@@ -12,10 +12,38 @@ import CurrentEvent from "./CurrentEvent";
 import Founder from "./Founder";
 import EventDetails from "./EventDetails";
 import EventHighlights from "../utils/EventHighlight";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [showRegistered, setShowRegistered] = React.useState(false);
-  const [showLogin, setShowLogin] = React.useState(false);
+  // const [showLogin, setShowLogin] = React.useState(false);
+  const navigate=useNavigate()
+  const [showLoginPopup, setShowLoginPopup] = useState(false)
+  const isUserLoggedIn = () => {
+    return localStorage.getItem("user") !== null; // Replace with your actual login logic
+  };
+  const switchToLogin = () => {
+    setShowRegistered(false);
+    setShowLoginPopup(true);
+  };
+  const handleRegisterClick = () => {
+    if (isUserLoggedIn()) {
+      navigate("/liveEvents");
+    } else {
+      setShowRegistered(true);
+    }
+  };
+  const handleJoinClick = () => {
+    if (isUserLoggedIn()) {
+      navigate("/liveEvents");
+    } else {
+      
+      setShowLoginPopup(true);
+    }
+  };
+  const closeLoginPopup = () => {
+    setShowLoginPopup(false);
+  };
   return (
     <>
       <div
@@ -79,7 +107,7 @@ const Home = () => {
                 }}
               >
                 <button
-                  onClick={() => setShowRegistered(true)}
+                  onClick={handleRegisterClick}
                   className="btn fw-bold text-white position-relative px-4 px-lg-5 py-2 py-lg-3"
                   style={{
                     background:
@@ -141,7 +169,7 @@ const Home = () => {
                     e.target.style.color = "#6c757d";
                     e.target.style.transform = "scale(1)";
                   }}
-                  onClick={() => setShowLogin(true)}
+                  onClick={handleJoinClick}
                 >
                   Join Event
                 </button>
@@ -196,14 +224,20 @@ const Home = () => {
                   />
                 </div>
                 <div className="modal-body">
-                  <RegistrationForm />
+                  <RegistrationForm
+                    onSuccess={() => {
+                      setShowRegistered(false);
+                      setShowLoginPopup(true);
+                    }}
+                    onEmailExists={switchToLogin}
+                  />
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        {showLogin && (
+        {showLoginPopup && (
           <div
             className="modal show d-block"
             tabIndex="-1"
@@ -220,7 +254,7 @@ const Home = () => {
           >
             <div className="modal-dialog modal-dialog-centered modal-lg">
               <div
-                className="modal-content rounded-4 border-0 shadow"
+                className=" modal-content rounded-4 border-0 shadow"
                 style={{
                   backgroundImage: 'url("/images/bg3.png")',
                   backgroundSize: "cover",
@@ -241,7 +275,7 @@ const Home = () => {
                   <button
                     type="button"
                     className="btn-close btn-close-white"
-                    onClick={() => setShowLogin(false)}
+                    onClick={closeLoginPopup}
                   ></button>
                 </div>
                 <div
