@@ -16,6 +16,24 @@ const RegistrationForm = ({ onEmailExists, onSuccess }) => {
     mobile: "",
     email: "",
   });
+  const sendWhatsappWelcomeMessage = async (mobile) => {
+    try {
+      await fetch("https://event-nine-xi.vercel.app/api/send-whatsapp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          to: `91${mobile}`, // Add country code
+          template: {
+            name: "welcome_msg",
+            language: { code: "en" },
+          },
+        }),
+      });
+    } catch (err) {
+      console.error("WhatsApp message failed:", err);
+    }
+  };
+  
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -46,6 +64,7 @@ const RegistrationForm = ({ onEmailExists, onSuccess }) => {
       if (response.ok) {
         onSuccess()
         toast.success("Registration successful! 🎉", { autoClose: 5000 });
+        sendWhatsappWelcomeMessage(formData.mobile);
         localStorage.setItem("user", JSON.stringify(formData));
         setFormData({
           name: "",
