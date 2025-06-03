@@ -86,6 +86,9 @@ const ShowUser = () => {
       "City",
       "Mobile",
       "Email",
+      "OS",
+      "Browser",
+      "Device Type",
     ];
 
     const csvRows = [
@@ -100,6 +103,9 @@ const ShowUser = () => {
           user.city,
           user.mobile,
           user.email,
+          user.deviceInfo?.os || "",
+          user.deviceInfo?.browser || "",
+          user.deviceInfo?.deviceType || "",
         ]
           .map((field) => `"${field}"`)
           .join(",")
@@ -198,6 +204,9 @@ const ShowUser = () => {
                 <th>City</th>
                 <th>Mobile</th>
                 <th>Email</th>
+                <th>OS</th>
+                <th>Browser</th>
+                <th>Device Type</th>
               </tr>
             </thead>
             <tbody>
@@ -219,6 +228,9 @@ const ShowUser = () => {
                     <td>{user.city}</td>
                     <td>{user.mobile}</td>
                     <td>{user.email}</td>
+                    <td>{user.deviceInfo?.os || "N/A"}</td>
+                    <td>{user.deviceInfo?.browser || "N/A"}</td>
+                    <td>{user.deviceInfo?.deviceType || "N/A"}</td>
                   </tr>
                 ))
               ) : (
