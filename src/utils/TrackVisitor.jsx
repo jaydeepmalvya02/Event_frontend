@@ -2,11 +2,14 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { UAParser } from "ua-parser-js";
+import { trackedPaths } from "../utils/trackedPaths";
 
 const TrackVisitor = () => {
-  const location = useLocation(); // 🚨 Watches route change
+  const location = useLocation();
 
   useEffect(() => {
+    if (!trackedPaths.includes(location.pathname)) return;
+
     const parser = new UAParser();
     const ua = parser.getResult();
 
@@ -28,7 +31,7 @@ const TrackVisitor = () => {
         page: location.pathname,
       });
     });
-  }, [location.pathname]); // re-run when path changes
+  }, [location.pathname]);
 
   return null;
 };
