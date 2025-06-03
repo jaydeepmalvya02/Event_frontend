@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { getDeviceInfo } from "../utils/GetDeviceInfo"
+
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -48,21 +50,22 @@ const RegistrationForm = ({ onEmailExists, onSuccess }) => {
     if (submitting) return;
     setSubmitting(true);
 
+    const deviceInfo = getDeviceInfo();
+    const payload = { ...formData, deviceInfo }; 
     try {
       const response = await fetch(
         "https://event-nine-xi.vercel.app/api/register",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(payload),
         }
       );
 
       const result = await response.json();
-      
 
       if (response.ok) {
-        onSuccess()
+        onSuccess();
         toast.success("Registration successful! 🎉", { autoClose: 5000 });
         sendWhatsappWelcomeMessage(formData.mobile);
         localStorage.setItem("user", JSON.stringify(formData));
@@ -78,8 +81,12 @@ const RegistrationForm = ({ onEmailExists, onSuccess }) => {
         });
         navigate("/liveEvents");
       } else {
-        if (response.status === 401 && result.message.includes("Email already exists")) {
-          if (onEmailExists) onEmailExists();}
+        if (
+          response.status === 401 &&
+          result.message.includes("Email already exists")
+        ) {
+          if (onEmailExists) onEmailExists();
+        }
         toast.error(result.message || "Registration failed");
       }
     } catch (err) {

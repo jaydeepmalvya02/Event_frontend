@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { getDeviceInfo } from "../utils/GetDeviceInfo";
 
 const Login = ({ onLoginSuccess, onClose }) => {
   const [isLogin, setIsLogin] = useState(true); // Toggle between login/register
@@ -68,13 +69,15 @@ const Login = ({ onLoginSuccess, onClose }) => {
   const handleRegister = async () => {
     if (submitting) return;
     setSubmitting(true);
+    const deviceInfo = getDeviceInfo(); // 👈 Get user device details
+    const payload = { ...formData, deviceInfo };
     try {
       const response = await fetch(
         "https://event-nine-xi.vercel.app/api/register",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(payload),
         }
       );
 
