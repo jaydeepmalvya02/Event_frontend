@@ -14,10 +14,13 @@ import ShowUser from "./components/ShowUser";
 import QuestionList from "./components/QuestionList";
 import UpdateVideoIdPage from "./components/UpdateVideoIdPage";
 import ProtectedRoute from "./utils/PrivateRoute";
+import TrackVisitor from "./utils/TrackVisitor";
+import AnalyticsDashboard from "./components/AnalyticsDashboard";
 
 const App = () => {
   return (
     <div>
+      <TrackVisitor />
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -38,6 +41,7 @@ const App = () => {
         <Route path="/que" element={<QuestionList />} />
         <Route path="/ytid" element={<UpdateVideoIdPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/stat" element={<AnalyticsDashboard />} />
       </Routes>
       <Footer />
     </div>

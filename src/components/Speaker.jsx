@@ -18,7 +18,7 @@ const speakers = [
     name: "Dr. Pramod Kumar Rajput",
     title: "Global Leadership Coach | Pharma Business Leader",
     bio: "Sr. Vice President (F.) At Cadila Pharma",
-    image: "/images/m13.jpeg",
+    image: "/images/m14.jpeg",
   },
   {
     name: "Anil fernandez",
