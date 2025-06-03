@@ -21,7 +21,7 @@ const AnalyticsChart = () => {
     const fetchAnalytics = async () => {
       try {
         const res = await axios.get(
-          "https://your-vercel-backend.vercel.app/api/analytics/stats"
+          "https://event-nine-xi.vercel.app/api/analytics/stats"
         );
         setAnalyticsData(res.data);
       } catch (err) {
