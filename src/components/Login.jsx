@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { getDeviceInfo } from "../utils/GetDeviceInfo";
 
 const Login = ({ onLoginSuccess, onClose }) => {
-  const [isLogin, setIsLogin] = useState(true); // Toggle between login/register
+  const [isLogin, setIsLogin] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -13,14 +13,33 @@ const Login = ({ onLoginSuccess, onClose }) => {
     division: "",
     designation: "",
     city: "",
-    state: "", // Added state field
+    state: "",
+    department: "",
     mobile: "",
     email: "",
   });
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+
+    if (name === "mobile") {
+      // Remove all non-numeric characters
+      value = value.replace(/\D/g, "");
+
+      // Remove country code if entered (e.g. +91, 91, or leading 0)
+      if (value.startsWith("91") && value.length > 10) {
+        value = value.slice(2);
+      } else if (value.startsWith("0")) {
+        value = value.replace(/^0+/, "");
+      }
+
+      // Limit to 10 digits
+      if (value.length > 10) {
+        value = value.slice(0, 10);
+      }
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -46,12 +65,13 @@ const Login = ({ onLoginSuccess, onClose }) => {
       const result = await response.json();
       if (response.ok) {
         localStorage.setItem("user", JSON.stringify(result.user));
-
+        if (!toast.isActive("login-success")) {
+          toast.success("Login Successful! 🎉", { toastId: "login-success" });
+        }
         setTimeout(() => {
-          toast.success("Login Successful! 🎉");
           navigate("/liveEvents");
-          onLoginSuccess();
-          onClose();
+          onLoginSuccess?.(); // Optional chaining in case it's undefined
+          onClose?.();
         }, 1500);
       } else {
         toast.error(result.message || "Login failed");
@@ -67,7 +87,7 @@ const Login = ({ onLoginSuccess, onClose }) => {
   const handleRegister = async () => {
     if (submitting) return;
     setSubmitting(true);
-    const deviceInfo = getDeviceInfo(); // 👈 Get user device details
+    const deviceInfo = getDeviceInfo();
     const payload = { ...formData, deviceInfo };
     try {
       const response = await fetch(
@@ -81,11 +101,9 @@ const Login = ({ onLoginSuccess, onClose }) => {
 
       const result = await response.json();
       if (response.ok) {
-        setTimeout(() => {
-          toast.success("Registration Successful! 🎉");
-        }, 2000);
-
-        setIsLogin(true); // Switch back to login
+        toast.success("Registration Successful! 🎉");
+        setTimeout(() => {}, 2000);
+        setIsLogin(true);
       } else {
         toast.error(result.message || "Registration failed");
       }
@@ -99,7 +117,18 @@ const Login = ({ onLoginSuccess, onClose }) => {
 
   return (
     <div className="container mt-5" style={{ maxWidth: 500 }}>
-      <ToastContainer />
+      <ToastContainer
+        position="top-center"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <h2 className="text-center mb-4">{isLogin ? "Login" : "Register"}</h2>
       <form>
         {!isLogin && (
@@ -127,7 +156,23 @@ const Login = ({ onLoginSuccess, onClose }) => {
               </div>
             ))}
 
-            {/* State Dropdown */}
+            <div className="mb-3">
+              <select
+                name="department"
+                className="form-select rounded-3 shadow-sm"
+                value={formData.department}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select Department</option>
+                {["Sales", "Marketing", "Student", "Others"].map((dept) => (
+                  <option key={dept} value={dept}>
+                    {dept}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="mb-3">
               <select
                 name="state"

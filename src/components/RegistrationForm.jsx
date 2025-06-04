@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { getDeviceInfo } from "../utils/GetDeviceInfo"
+import { getDeviceInfo } from "../utils/GetDeviceInfo";
 
 import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -13,6 +13,7 @@ const RegistrationForm = ({ onEmailExists, onSuccess }) => {
     companyName: "",
     division: "",
     designation: "",
+    department: "",
     state: "",
     city: "",
     mobile: "",
@@ -35,23 +36,76 @@ const RegistrationForm = ({ onEmailExists, onSuccess }) => {
       console.error("WhatsApp message failed:", err);
     }
   };
-  
 
   const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e) => {
+    let { name, value } = e.target;
+
+    if (name === "mobile") {
+      // Remove all non-numeric characters
+      value = value.replace(/\D/g, "");
+
+      // Remove country code if entered (e.g. +91, 91, or leading 0)
+      if (value.startsWith("91") && value.length > 10) {
+        value = value.slice(2);
+      } else if (value.startsWith("0")) {
+        value = value.replace(/^0+/, "");
+      }
+
+      // Limit to 10 digits
+      if (value.length > 10) {
+        value = value.slice(0, 10);
+      }
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
 
   const handleRegister = async () => {
     if (submitting) return;
-    setSubmitting(true);
 
+    // Validate required fields
+    const requiredFields = [
+      "name",
+      "companyName",
+      "division",
+      "designation",
+      "department",
+      "state",
+      "city",
+      "mobile",
+      "email",
+    ];
+
+    for (let field of requiredFields) {
+      if (!formData[field] || formData[field].trim() === "") {
+        toast.error(`Please fill in ${field.replace(/([A-Z])/g, " $1")}`);
+        return;
+      }
+    }
+
+    // ✅ Mobile validation (10-digit, starts with 6-9)
+    const mobileRegex = /^[6-9]\d{9}$/;
+    if (!mobileRegex.test(formData.mobile)) {
+      toast.error("Enter a valid 10-digit mobile number");
+      return;
+    }
+
+    // ✅ Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error("Enter a valid email address");
+      return;
+    }
+
+    setSubmitting(true);
     const deviceInfo = getDeviceInfo();
-    const payload = { ...formData, deviceInfo }; 
+    const payload = { ...formData, deviceInfo };
+
     try {
       const response = await fetch(
         "https://event-nine-xi.vercel.app/api/register",
@@ -74,6 +128,7 @@ const RegistrationForm = ({ onEmailExists, onSuccess }) => {
           companyName: "",
           division: "",
           designation: "",
+          department: "",
           state: "",
           city: "",
           mobile: "",
@@ -143,24 +198,53 @@ const RegistrationForm = ({ onEmailExists, onSuccess }) => {
 
             <form>
               {[
-                { name: "name", label: "Your Name" },
-                { name: "companyName", label: "Company Name" },
-                { name: "division", label: "Division" },
-                { name: "designation", label: "Designation" },
-                { name: "city", label: "City" },
-                { name: "mobile", label: "Mobile Number" },
-                { name: "email", label: "Email Address", type: "email" },
-              ].map(({ name, label, type = "text" }) => (
+                { name: "name", label: "Your Name", required: true },
+                { name: "companyName", label: "Company Name", required: true },
+                { name: "division", label: "Division", required: true },
+                { name: "designation", label: "Designation", required: true },
+                {
+                  name: "department",
+                  label: "Department",
+                  type: "select",
+                  options: ["Sales", "Marketing", "Student", "Others"],
+                  required: true,
+                },
+                { name: "city", label: "City", required: true },
+                { name: "mobile", label: "Mobile Number", required: true },
+                {
+                  name: "email",
+                  label: "Email Address",
+                  type: "email",
+                  required: true,
+                },
+              ].map(({ name, label, type = "text", options }) => (
                 <div className="mb-3" key={name}>
-                  <input
-                    name={name}
-                    className="form-control rounded-3 shadow-sm"
-                    placeholder={label}
-                    type={type}
-                    value={formData[name]}
-                    onChange={handleChange}
-                    required
-                  />
+                  {type === "select" ? (
+                    <select
+                      name={name}
+                      className="form-select rounded-3 shadow-sm"
+                      value={formData[name]}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Select {label}</option>
+                      {options.map((opt) => (
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      name={name}
+                      className="form-control rounded-3 shadow-sm"
+                      placeholder={label}
+                      type={type}
+                      value={formData[name]}
+                      onChange={handleChange}
+                      required
+                    />
+                  )}
                 </div>
               ))}
 
