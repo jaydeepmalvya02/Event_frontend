@@ -3,8 +3,8 @@ import React from "react";
 const speakers = [
   {
     name: "Dr. ICS Varma ",
-    title: "Co-Founder Of Regson Healthcare  ",
-    bio: "  Live Pharma Coalition| ExpertOnBoard ",
+    title: "Co-Founder ",
+    bio: " ExpertOnBoard | Live Pharma Coalition| Regson Healthcare ",
     image: "/images/m4.jfif",
   },
 ];

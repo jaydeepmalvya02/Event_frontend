@@ -69,7 +69,7 @@ const CurrentEvent = () => {
   return (
     <div className="event-wrapper py-5">
       <div className="container">
-        <h1 className="text-center fw-bold display-5 mb-4">Upcoming Event</h1>
+        <h1 className="text-center fw-bold display-5 mb-4">Recent Event</h1>
 
         <div className="event-flex-wrapper">
           {/* Left: Text Content */}

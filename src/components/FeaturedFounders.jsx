@@ -17,6 +17,13 @@ const speakers = [
     image: "/images/m12.jpeg",
     description: `Prashant Menon is an eminent business leader and executive coach with over 25 years of experience in the pharmaceutical industry. Starting in frontline sales, he rose to senior leadership roles, including Managing Director at leading Indian and global pharma companies, where he led complex operations and large cross-functional teams. A strong believer in people centric leadership, he now drives transformation as Co-founder of The Bento Coach and founder of The Workplace Dynamics. Prashant holds international coaching credentials (ICF-ACC, Marshall Goldsmith SCC, GLA360) and teaches at NMIMS Mumbai. Recognized among the Top 100 Marketing Influencers by the World Marketing Congress, he blends strategic acumen with a human-centric leadership style.`,
   },
+  {
+    name: "Anil Fernandez",
+    title: "Founder ",
+    bio: " SLIM Solutions.",
+    image: "/images/Anil1.jpg",
+    description: `Anil Fernandez is an esteemed healthcare leader, consultant, and educator with over 30 years of diverse experience spanning the pharmaceutical industry, academia, and strategic consulting. He has held influential roles at leading organizations such as Sanofi, Abbott, and Integrace, where he led strategic marketing, M&A, commercial excellence, and P&L functions. As the founder of SLIM Solutions, Anil now advises healthcare companies on innovation, leadership development, and marketing strategy. He also serves as visiting faculty at NMIMS Mumbai and mentors students at SIESCOMS, committed to nurturing future leaders and advancing a purpose-driven healthcare ecosystem.`,
+  },
 ];
 
 const FeaturedFounders = () => {
