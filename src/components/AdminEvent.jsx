@@ -4,7 +4,7 @@ import { Modal, Button } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const API_URL = "https://e-commerce-platform-ozvf.vercel.app/api/admin/event";
+const API_URL = "https://event-nine-xi.vercel.app/api/admin/event";
 
 const AdminEvent = () => {
   const [events, setEvents] = useState([]);
