@@ -10,8 +10,6 @@ const CurrentEvent = () => {
   const [showLoginPopup, setShowLoginPopup] = useState(false);
 
   const isUserLoggedIn = () => {
-   
-    
     return localStorage.getItem("user") !== null; // Replace with your actual login logic
   };
   // useEffect(() => {
@@ -51,7 +49,7 @@ const CurrentEvent = () => {
           "Co-Founder, Regson Healthcare | Live Pharma Coalition | ExpertOnBoard",
       },
     ],
-    coverImage: "/images/EventData2.jpg",
+    coverImage: "/images/eventbg.jpeg",
   };
 
   const handleJoinClick = () => {
@@ -219,7 +217,7 @@ const CurrentEvent = () => {
   }
 
   .event-image {
-    max-width: 85%;
+    max-width: 150%;
     border-radius: 1rem;
     transition: transform 0.4s ease;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);

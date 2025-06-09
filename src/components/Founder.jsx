@@ -14,9 +14,8 @@ const Founder = () => {
     <section className="py-12 bg-[#d7dde2]">
       <div className="text-center mb-12 px-4">
         <h2 className="text-3xl font-extrabold tracking-tight text-[#0F93CA]">
-          #Founder
+          Founder
         </h2>
-        
       </div>
 
       <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-lg p-6 flex flex-col md:flex-row gap-6">
@@ -28,7 +27,6 @@ const Founder = () => {
             className="w-full h-full object-cover rounded-3xl max-h-[450px]"
           />
         </div>
-
         {/* Right - Details */}
         <div className="md:w-1/2 flex flex-col justify-center text-center md:text-left px-2">
           <h3 className="text-2xl font-bold text-gray-800 mb-2">

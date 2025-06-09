@@ -1,39 +1,42 @@
-import React, { useEffect, useState, useCallback } from "react";
+// CountdownTimer.jsx
+import React, { useEffect, useState } from "react";
 
 const CountdownTimer = ({ targetDate }) => {
-  const calculateTimeLeft = useCallback(() => {
-    if (!targetDate) return null;
+  const calculateTimeLeft = () => {
     const difference = new Date(targetDate) - new Date();
     if (difference <= 0) return null;
-
     return {
       days: Math.floor(difference / (1000 * 60 * 60 * 24)),
       hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
       minutes: Math.floor((difference / 1000 / 60) % 60),
       seconds: Math.floor((difference / 1000) % 60),
     };
-  }, [targetDate]);
+  };
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   useEffect(() => {
     const timer = setInterval(() => {
-      const updated = calculateTimeLeft();
-      setTimeLeft(updated);
-      if (!updated) clearInterval(timer);
+      setTimeLeft(calculateTimeLeft());
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [calculateTimeLeft]);
+  }, [targetDate]);
 
   if (!timeLeft) {
-    return <div className="text-danger fw-bold">⏰ Event Started!</div>;
+    return (
+      <div className="mb-3">
+        <span className="badge text-black fs-6">✅ Completed</span>
+      </div>
+    );
   }
 
   return (
-    <div className="text-gray-900 fw-semibold mb-2">
-      ⏳ Starts in: {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m{" "}
-      {timeLeft.seconds}s
+    <div className="mb-3">
+      <span className="badge bg-primary fs-6">
+        Starts in: {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m{" "}
+        {timeLeft.seconds}s
+      </span>
     </div>
   );
 };

@@ -65,14 +65,12 @@ const Login = ({ onLoginSuccess, onClose }) => {
       const result = await response.json();
       if (response.ok) {
         localStorage.setItem("user", JSON.stringify(result.user));
-        if (!toast.isActive("login-success")) {
-          toast.success("Login Successful! 🎉", { toastId: "login-success" });
-        }
+        toast.success("Login Successful! 🎉", { toastId: "login-success" });
         setTimeout(() => {
           navigate("/liveEvents");
-          onLoginSuccess?.(); // Optional chaining in case it's undefined
+          onLoginSuccess?.();
           onClose?.();
-        }, 1500);
+        }, 1000);
       } else {
         toast.error(result.message || "Login failed");
       }
@@ -102,7 +100,7 @@ const Login = ({ onLoginSuccess, onClose }) => {
       const result = await response.json();
       if (response.ok) {
         toast.success("Registration Successful! 🎉");
-        setTimeout(() => {}, 2000);
+        setTimeout(() => {}, 1000);
         setIsLogin(true);
       } else {
         toast.error(result.message || "Registration failed");
@@ -119,14 +117,7 @@ const Login = ({ onLoginSuccess, onClose }) => {
     <div className="container mt-5" style={{ maxWidth: 500 }}>
       <ToastContainer
         position="top-center"
-        autoClose={4000}
-        hideProgressBar={false}
         newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
         theme="colored"
       />
       <h2 className="text-center mb-4">{isLogin ? "Login" : "Register"}</h2>

@@ -16,6 +16,8 @@ import UpdateVideoIdPage from "./components/UpdateVideoIdPage";
 import ProtectedRoute from "./utils/PrivateRoute";
 import TrackVisitor from "./utils/TrackVisitor";
 import AnalyticsDashboard from "./components/AnalyticsDashboard";
+import AdminHomePage from "./utils/AdminHomePage";
+import AdminLayout from "./utils/AdminLayout";
 
 const App = () => {
   return (
@@ -29,19 +31,23 @@ const App = () => {
         <Route path="/speakers" element={<Speaker />} />{" "}
         {/* Placeholder for speakers page */}
         <Route path="/events" element={<EventDetails />} />
+        <Route path="/liveEvents" element={<EventWebinarPage />} />
+        <Route path="about" element={<AboutPage />} />
         <Route
-          path="/liveEvents"
+          path="/admin"
           element={
-            <ProtectedRoute>
-              <EventWebinarPage />
+            <ProtectedRoute role="admin">
+              <AdminLayout />
             </ProtectedRoute>
           }
-        />
-        <Route path="/list" element={<ShowUser />} />
-        <Route path="/que" element={<QuestionList />} />
-        <Route path="/ytid" element={<UpdateVideoIdPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/stat" element={<AnalyticsDashboard />} />
+        >
+          <Route index element={<AdminHomePage />} />
+          <Route path="list" element={<ShowUser />} />
+          <Route path="que" element={<QuestionList />} />
+          <Route path="ytid" element={<UpdateVideoIdPage />} />
+
+          <Route path="stat" element={<AnalyticsDashboard />} />
+        </Route>
       </Routes>
       <Footer />
     </div>
