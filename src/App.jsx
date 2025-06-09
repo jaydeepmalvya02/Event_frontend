@@ -31,7 +31,7 @@ const App = () => {
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/speakers" element={<Speaker />} />{" "}
         {/* Placeholder for speakers page */}
-        <Route path="/events" element={<EventDetails />} />
+        <Route path="/EventDetails" element={<EventDetails />} />
         <Route path="/liveEvents" element={<EventWebinarPage />} />
         <Route path="about" element={<AboutPage />} />
         <Route
