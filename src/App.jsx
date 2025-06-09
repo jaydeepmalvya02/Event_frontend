@@ -18,6 +18,7 @@ import TrackVisitor from "./utils/TrackVisitor";
 import AnalyticsDashboard from "./components/AnalyticsDashboard";
 import AdminHomePage from "./utils/AdminHomePage";
 import AdminLayout from "./utils/AdminLayout";
+import AdminEvent from "./components/AdminEvent";
 
 const App = () => {
   return (
@@ -45,8 +46,8 @@ const App = () => {
           <Route path="list" element={<ShowUser />} />
           <Route path="que" element={<QuestionList />} />
           <Route path="ytid" element={<UpdateVideoIdPage />} />
-
           <Route path="stat" element={<AnalyticsDashboard />} />
+          <Route path="newEvent" element={<AdminEvent />} />
         </Route>
       </Routes>
       <Footer />

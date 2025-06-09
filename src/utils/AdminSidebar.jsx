@@ -2,6 +2,7 @@ import React from "react";
 import {
   FaBoxOpen,
   FaClipboardList,
+  FaEdit,
   FaSignOutAlt,
   FaStore,
   FaUser,
@@ -20,8 +21,7 @@ const AdminSidebar = () => {
     navigate("/");
   };
   return (
-    <div> 
-      
+    <div>
       <div className="p-6 ">
         <div className="mb-6">
           <Link to="/admin" className="text-2xl font-medium">
@@ -42,6 +42,17 @@ const AdminSidebar = () => {
           >
             <FaUser />
             <span>Users</span>
+          </NavLink>
+          <NavLink
+            to="/admin/newEvent"
+            className={({ isActive }) =>
+              isActive
+                ? "bg-gray-700 text-white py-3 px-4 rounded flex items-center space-x-2"
+                : "text-gray-300 hover:bg-gray-700 hover:text-white py-3 px-4 rounded flex items-center space-x-2"
+            }
+          >
+            <FaEdit />
+            <span>Events</span>
           </NavLink>
           <NavLink
             to="/admin/stat"

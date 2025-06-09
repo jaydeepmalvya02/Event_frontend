@@ -11,12 +11,13 @@ const EventDetails = () => {
   const events = [
     {
       title: "Data To Decision",
-      description: "Learn from top healthcare leaders and innovators.",
+      description:
+        "#PitchPoint on Data to Decision is here! Dive into how pharma leaders transform uniform, real-time data into smarter decisions, sharper targeting, and unstoppable sales growth.  Discover why standardized data is key to consistent strategy, impactful campaigns, and measurable ROI. Don’t miss this power-packed session, it’s where insights meet action! ",
       date: "June 07, 2025",
       time: "11:00 AM",
       dateTime: "2025-06-07T11:00:00",
       Mode: "Online Event",
-      eventLink: "https://www.youtube.com/watch?v=qJvclEApNrE",
+      eventLink: "https://www.youtube.com/watch?v=VZsPZ08tceE&t=1s",
       coverImages: ["/images/eventbg.jpeg"],
     },
     {

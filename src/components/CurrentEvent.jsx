@@ -22,7 +22,7 @@ const CurrentEvent = () => {
     title: "Data To Decision",
     subtitle: "#PitchPoint Ep. 2",
     description:
-      "In today’s dynamic pharma landscape, data isn’t just numbers — it’s the foundation of smart strategy and impactful decisions. Join us for a power-packed 45-minute session with a visionary panel of industry leaders who’ve been at the forefront of transforming insights into real-world outcomes.",
+      "#PitchPoint on Data to Decision is here! Dive into how pharma leaders transform uniform, real-time data into smarter decisions, sharper targeting, and unstoppable sales growth.  Discover why standardized data is key to consistent strategy, impactful campaigns, and measurable ROI. Don’t miss this power-packed session, it’s where insights meet action! ",
     date: "June 07, 2025",
     time: "11:00 AM onwards",
     dateTime: "2025-06-07T11:00:00",

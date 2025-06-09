@@ -65,12 +65,15 @@ const Login = ({ onLoginSuccess, onClose }) => {
       const result = await response.json();
       if (response.ok) {
         localStorage.setItem("user", JSON.stringify(result.user));
-        toast.success("Login Successful! 🎉", { toastId: "login-success" });
-        setTimeout(() => {
+        if (!toast.isActive("login-success")) {
+          toast.success("Login Successful! 🎉", { toastId: "login-success" });
+              setTimeout(() => {
           navigate("/liveEvents");
-          onLoginSuccess?.();
+          onLoginSuccess?.(); // Optional chaining in case it's undefined
           onClose?.();
         }, 1000);
+        }
+    
       } else {
         toast.error(result.message || "Login failed");
       }
@@ -117,7 +120,14 @@ const Login = ({ onLoginSuccess, onClose }) => {
     <div className="container mt-5" style={{ maxWidth: 500 }}>
       <ToastContainer
         position="top-center"
+        autoClose={1000}
+        hideProgressBar={false}
         newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
         theme="colored"
       />
       <h2 className="text-center mb-4">{isLogin ? "Login" : "Register"}</h2>
