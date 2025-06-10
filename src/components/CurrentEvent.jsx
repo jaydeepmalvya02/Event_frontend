@@ -172,7 +172,7 @@ const CurrentEvent = () => {
             </div>
 
             <button
-              onClick={() => navigate("/events")}
+              onClick={() => navigate("/EventDetails")}
               className="btn btn-light btn-lg px-4 rounded-pill mt-3"
             >
               View More Events

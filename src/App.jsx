@@ -19,6 +19,7 @@ import AnalyticsDashboard from "./components/AnalyticsDashboard";
 import AdminHomePage from "./utils/AdminHomePage";
 import AdminLayout from "./utils/AdminLayout";
 import AdminEvent from "./components/AdminEvent";
+import AdminSpeaker from "./utils/AdminSpeaker";
 
 const App = () => {
   return (
@@ -45,7 +46,7 @@ const App = () => {
           <Route index element={<AdminHomePage />} />
           <Route path="list" element={<ShowUser />} />
           <Route path="que" element={<QuestionList />} />
-          <Route path="ytid" element={<UpdateVideoIdPage />} />
+          <Route path="adminSpeaker" element={<AdminSpeaker/>} />
           <Route path="stat" element={<AnalyticsDashboard />} />
           <Route path="newEvent" element={<AdminEvent />} />
         </Route>

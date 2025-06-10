@@ -3,6 +3,7 @@ import axios from "axios";
 import { Modal, Button } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const API_URL = "https://event-nine-xi.vercel.app/api/admin/event";
 const UPLOAD_URL = "https://event-nine-xi.vercel.app/api/upload";
@@ -23,6 +24,7 @@ const AdminEvent = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [newImageFile, setNewImageFile] = useState(null);
   const [editImageFile, setEditImageFile] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchEvents();
@@ -81,7 +83,7 @@ const AdminEvent = () => {
       toast.error("❌ Image upload failed!");
     }
   };
-  
+
   const openEditModal = async (eventId) => {
     try {
       const res = await axios.get(`${API_URL}/${eventId}`);
@@ -110,6 +112,10 @@ const AdminEvent = () => {
       console.error("Update failed:", err);
       toast.error("❌ Event update failed!");
     }
+  };
+
+  const handleViewEvent = (eventId) => {
+    navigate(`/liveEvents/${eventId}`);
   };
 
   return (
@@ -208,14 +214,12 @@ const AdminEvent = () => {
                 📅 {new Date(event.date).toLocaleDateString()} | ⏰ {event.time}
               </p>
               <p>🎯 {event.mode}</p>
-              <a
-                href={event.eventLink}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
                 className="btn btn-outline-primary btn-sm me-2"
+                onClick={() => handleViewEvent(event._id)}
               >
                 🔗 View
-              </a>
+              </button>
               <button
                 className="btn btn-outline-warning btn-sm"
                 onClick={() => openEditModal(event._id)}

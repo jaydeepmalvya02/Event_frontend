@@ -168,7 +168,7 @@ const EventDetails = () => {
       {/* Highlights Grid */}
       {passedEvents.length > 0 && (
         <div className="mt-5">
-          <h4 className="fw-bold text-white mb-4 fs-5">📽️ Event Highlights</h4>
+          <h4 className="fw-bold text-white mb-4 fs-5">📽️Past Events </h4>
           <div className="row justify-content-center g-4">
             {passedEvents.map((event, index) => (
               <div key={index} className="col-12 col-md-6">
@@ -196,7 +196,7 @@ const EventDetails = () => {
                       <strong>Mode:</strong> {event.mode}
                     </p>
                     <button
-                      onClick={() => window.open(event.eventLink, "_blank")}
+                      onClick={() => navigate(`/liveEvents/${event._id}`)}
                       className="btn btn-outline-primary mt-auto"
                     >
                       🔗 Watch Highlight

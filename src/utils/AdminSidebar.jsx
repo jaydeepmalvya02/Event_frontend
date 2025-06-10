@@ -77,7 +77,7 @@ const AdminSidebar = () => {
             <span>QNA</span>
           </NavLink>
           <NavLink
-            to="/admin/ytid"
+            to="/admin/adminSpeaker"
             className={({ isActive }) =>
               isActive
                 ? "bg-gray-700 text-white py-3 px-4 rounded flex items-center space-x-2"
@@ -85,7 +85,7 @@ const AdminSidebar = () => {
             }
           >
             <FaStore />
-            <span>EventLink</span>
+            <span>Speakers</span>
           </NavLink>
         </nav>
         <div className="mt-6">
