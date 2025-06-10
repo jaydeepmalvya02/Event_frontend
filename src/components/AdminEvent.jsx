@@ -21,6 +21,8 @@ const AdminEvent = () => {
 
   const [editEvent, setEditEvent] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [newImageFile, setNewImageFile] = useState(null);
+  const [editImageFile, setEditImageFile] = useState(null);
 
   useEffect(() => {
     fetchEvents();
@@ -53,6 +55,7 @@ const AdminEvent = () => {
         eventLink: "",
         image: "",
       });
+      setNewImageFile(null);
       toast.success("✅ Event added successfully!");
     } catch (err) {
       console.error("Create event failed:", err);
@@ -60,23 +63,25 @@ const AdminEvent = () => {
     }
   };
 
-  const handleImageUpload = async (e, setEventState) => {
-    const file = e.target.files[0];
+  const handleImageUpload = async (file, setEventState) => {
+    if (!file) return toast.warning("⚠️ Please select a file first!");
     const formData = new FormData();
     formData.append("image", file);
     try {
       const res = await axios.post(UPLOAD_URL, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      const imageUrl = "https://event-nine-xi.vercel.app" + res.data.path;
+
+      const imageUrl = res.data.url; // ✅ Use this URL from backend response
+
       setEventState((prev) => ({ ...prev, image: imageUrl }));
-      toast.success("✅ Image uploaded");
+      toast.success("✅ Image uploaded successfully!");
     } catch (err) {
       console.error("Image upload failed", err);
-      toast.error("❌ Image upload failed");
+      toast.error("❌ Image upload failed!");
     }
   };
-
+  
   const openEditModal = async (eventId) => {
     try {
       const res = await axios.get(`${API_URL}/${eventId}`);
@@ -99,6 +104,7 @@ const AdminEvent = () => {
         prev.map((ev) => (ev._id === res.data._id ? res.data : ev))
       );
       setShowEditModal(false);
+      setEditImageFile(null);
       toast.success("✅ Event updated successfully!");
     } catch (err) {
       console.error("Update failed:", err);
@@ -108,36 +114,47 @@ const AdminEvent = () => {
 
   return (
     <div className="container py-5">
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="top-right" autoClose={1000} />
       <h2 className="mb-4 text-white">🛠 Admin Event Dashboard</h2>
 
-      {/* Create Form */}
       <div className="card p-4 mb-5 shadow-sm">
         <h4 className="mb-3">Create New Event</h4>
         <div className="row g-3">
-          {[
-            { label: "Title", name: "title" },
-            { label: "Description", name: "description" },
-            { label: "Event Link", name: "eventLink" },
-          ].map((field) => (
-            <div className="col-md-6" key={field.name}>
+          {["title", "description", "eventLink"].map((name) => (
+            <div className="col-md-6" key={name}>
               <input
                 type="text"
                 className="form-control"
-                placeholder={field.label}
-                name={field.name}
-                value={newEvent[field.name]}
+                placeholder={name.charAt(0).toUpperCase() + name.slice(1)}
+                name={name}
+                value={newEvent[name]}
                 onChange={handleChange}
               />
             </div>
           ))}
+
           <div className="col-md-6">
             <input
               type="file"
               className="form-control"
-              onChange={(e) => handleImageUpload(e, setNewEvent)}
+              onChange={(e) => setNewImageFile(e.target.files[0])}
             />
+            <button
+              className="btn btn-sm btn-secondary mt-2"
+              onClick={() => handleImageUpload(newImageFile, setNewEvent)}
+            >
+              📤 Upload Image
+            </button>
+            {newEvent.image && (
+              <img
+                src={newEvent.image}
+                alt="Preview"
+                className="img-thumbnail mt-2"
+                style={{ height: "150px", objectFit: "cover" }}
+              />
+            )}
           </div>
+
           <div className="col-md-3">
             <input
               type="date"
@@ -175,7 +192,6 @@ const AdminEvent = () => {
         </div>
       </div>
 
-      {/* Display Events */}
       <div className="row g-4">
         {events.map((event) => (
           <div key={event._id} className="col-md-6">
@@ -211,7 +227,6 @@ const AdminEvent = () => {
         ))}
       </div>
 
-      {/* Edit Modal */}
       <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Edit Event</Modal.Title>
@@ -219,18 +234,14 @@ const AdminEvent = () => {
         <Modal.Body>
           {editEvent && (
             <div className="row g-3">
-              {[
-                { label: "Title", name: "title" },
-                { label: "Description", name: "description" },
-                { label: "Event Link", name: "eventLink" },
-              ].map((field) => (
-                <div className="col-12" key={field.name}>
+              {["title", "description", "eventLink"].map((name) => (
+                <div className="col-12" key={name}>
                   <input
                     type="text"
                     className="form-control"
-                    placeholder={field.label}
-                    name={field.name}
-                    value={editEvent[field.name]}
+                    placeholder={name.charAt(0).toUpperCase() + name.slice(1)}
+                    name={name}
+                    value={editEvent[name]}
                     onChange={handleEditChange}
                   />
                 </div>
@@ -239,8 +250,22 @@ const AdminEvent = () => {
                 <input
                   type="file"
                   className="form-control"
-                  onChange={(e) => handleImageUpload(e, setEditEvent)}
+                  onChange={(e) => setEditImageFile(e.target.files[0])}
                 />
+                <button
+                  className="btn btn-sm btn-secondary mt-2"
+                  onClick={() => handleImageUpload(editImageFile, setEditEvent)}
+                >
+                  📤 Upload Image
+                </button>
+                {editEvent.image && (
+                  <img
+                    src={editEvent.image}
+                    alt="Preview"
+                    className="img-thumbnail mt-2"
+                    style={{ height: "150px", objectFit: "cover" }}
+                  />
+                )}
               </div>
               <div className="col-6">
                 <input
