@@ -4,46 +4,44 @@ import CountdownTimer from "./CountdownTimer";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import Login from "./Login";
+import axios from "axios";
+
+const API_URL = "https://event-nine-xi.vercel.app/api/admin/event";
 
 const EventDetails = () => {
   const navigate = useNavigate();
-
-  const events = [
-    {
-      title: "Data To Decision",
-      description:
-        "#PitchPoint on Data to Decision is here! Dive into how pharma leaders transform uniform, real-time data into smarter decisions, sharper targeting, and unstoppable sales growth.  Discover why standardized data is key to consistent strategy, impactful campaigns, and measurable ROI. Don’t miss this power-packed session, it’s where insights meet action! ",
-      date: "June 07, 2025",
-      time: "11:00 AM",
-      dateTime: "2025-06-07T11:00:00",
-      Mode: "Online Event",
-      eventLink: "https://www.youtube.com/watch?v=VZsPZ08tceE&t=1s",
-      coverImages: ["/images/eventbg.jpeg"],
-    },
-    {
-      title: "Digital Transformation in Pharma Industry",
-      description: "Explore advancements in pharmaceutical sciences.",
-      date: "May 17, 2025",
-      time: "11:00 PM",
-      dateTime: "2025-05-17T11:00:00",
-      Mode: "Online Event",
-      eventLink: "https://www.youtube.com/watch?v=VlmDT_8YyH0&t=2s",
-      coverImages: ["/images/meeting5.png"],
-    },
-  ];
-
+  const [events, setEvents] = useState([]);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const fetchEvents = async () => {
+    try {
+      const response = await axios.get(API_URL);
+      setEvents(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Failed to fetch events:", error);
+      setLoading(false);
+    }
+  };
+
   const now = new Date();
   const passedEvents = [];
   const upcomingEvents = [];
 
   events.forEach((event) => {
-    const eventDate = new Date(event.dateTime);
+    const eventDate = new Date(event.dateTime || event.date);
     if (eventDate < now) passedEvents.push(event);
     else upcomingEvents.push(event);
   });
 
-  upcomingEvents.sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime));
+  upcomingEvents.sort(
+    (a, b) => new Date(a.dateTime || a.date) - new Date(b.dateTime || b.date)
+  );
   const currentEvent = upcomingEvents.length > 0 ? upcomingEvents[0] : null;
 
   useEffect(() => {
@@ -60,17 +58,24 @@ const EventDetails = () => {
 
   const isUserLoggedIn = () => localStorage.getItem("user") !== null;
 
-  const handleJoinClick = () => {
-    isUserLoggedIn() ? navigate("/liveEvents") : setShowLoginPopup(true);
+  const handleJoinClick = (eventId) => {
+    isUserLoggedIn()
+      ? navigate(`/liveEvents/${eventId}`) // pass ID in route
+      : setShowLoginPopup(true);
   };
+  
 
   const closeLoginPopup = () => setShowLoginPopup(false);
+
+  if (loading)
+    return (
+      <div className="text-white text-center my-5">⏳ Loading events...</div>
+    );
 
   return (
     <div className="container py-5">
       <h2 className="text-center fw-bold mb-4 text-white fs-3">Our Events</h2>
 
-      {/* Current Event */}
       {currentEvent && (
         <div className="mb-5">
           <h4 className="fw-bold text-info mb-3 fs-5">
@@ -79,7 +84,7 @@ const EventDetails = () => {
 
           <div className="card shadow border-0 rounded-4 p-3 p-md-4">
             <img
-              src={currentEvent.coverImages[0]}
+              src={currentEvent.image || currentEvent.coverImages?.[0]}
               alt="Current Event"
               className="img-fluid rounded mb-3 w-100"
               style={{
@@ -90,20 +95,23 @@ const EventDetails = () => {
             />
             <h4 className="fw-bold text-primary">{currentEvent.title}</h4>
             <p className="text-muted">{currentEvent.description}</p>
-            <CountdownTimer targetDate={currentEvent.dateTime} />
+            <CountdownTimer
+              targetDate={currentEvent.dateTime || currentEvent.date}
+            />
 
             <p className="mb-1">
-              <strong>Date:</strong> {currentEvent.date}
+              <strong>Date:</strong>{" "}
+              {new Date(currentEvent.date).toDateString()}
             </p>
             <p className="mb-1">
               <strong>Time:</strong> {currentEvent.time}
             </p>
             <p className="mb-3">
-              <strong>Mode:</strong> {currentEvent.Mode}
+              <strong>Mode:</strong> {currentEvent.mode}
             </p>
 
             <button
-              onClick={handleJoinClick}
+              onClick={() => handleJoinClick(currentEvent._id)} // assume your events from DB have _id
               className="btn btn-outline-primary mb-3"
             >
               🔗 Watch Event
@@ -166,7 +174,7 @@ const EventDetails = () => {
               <div key={index} className="col-12 col-md-6">
                 <div className="card h-100 shadow border-0 rounded-4">
                   <img
-                    src={event.coverImages[0]}
+                    src={event.image || event.coverImages?.[0]}
                     alt={`Highlight ${index}`}
                     className="card-img-top rounded-top"
                     style={{
@@ -178,13 +186,14 @@ const EventDetails = () => {
                     <h5 className="fw-bold text-primary">{event.title}</h5>
                     <p className="text-muted small">{event.description}</p>
                     <p className="mb-1">
-                      <strong>Date:</strong> {event.date}
+                      <strong>Date:</strong>{" "}
+                      {new Date(event.date).toDateString()}
                     </p>
                     <p className="mb-1">
                       <strong>Time:</strong> {event.time}
                     </p>
                     <p className="mb-3">
-                      <strong>Mode:</strong> {event.Mode}
+                      <strong>Mode:</strong> {event.mode}
                     </p>
                     <button
                       onClick={() => window.open(event.eventLink, "_blank")}

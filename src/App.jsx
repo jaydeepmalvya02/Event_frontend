@@ -32,7 +32,7 @@ const App = () => {
         <Route path="/speakers" element={<Speaker />} />{" "}
         {/* Placeholder for speakers page */}
         <Route path="/EventDetails" element={<EventDetails />} />
-        <Route path="/liveEvents" element={<EventWebinarPage />} />
+        <Route path="/liveEvents/:eventId" element={<EventWebinarPage />} />
         <Route path="about" element={<AboutPage />} />
         <Route
           path="/admin"

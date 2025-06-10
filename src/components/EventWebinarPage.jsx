@@ -1,134 +1,101 @@
 import React, { useEffect, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const EventWebinarPage = () => {
+  const { eventId } = useParams(); // get ID from URL
+  const [videoId, setVideoId] = useState("");
   const [question, setQuestion] = useState("");
-  const [status, setStatus] = useState(null);
-  const [videoId, setVideoId] = useState(""); // <-- add videoId state
+  // const [status, setStatus] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch video ID from backend
-    const fetchVideoId = async () => {
+    const fetchEventVideo = async () => {
       try {
-        const res = await fetch("https://event-nine-xi.vercel.app/api/videoId");
-        const data = await res.json();
-        setVideoId(data.videoId);
-      } catch (error) {
-        console.error("Failed to fetch video ID", error);
-        toast.error("Unable to load video.");
+        const response = await fetch(
+          `https://event-nine-xi.vercel.app/api/admin/event/${eventId}`
+        );
+        const data = await response.json();
+        console.log(data);
+        
+        if (!data.eventLink) throw new Error("Video ID missing.");
+        setVideoId(data.eventLink);
+      } catch (err) {
+        console.error(err);
+        
+        toast.error("Failed to load event video.");
       }
     };
 
-    fetchVideoId();
-  }, []);
+    fetchEventVideo();
+  }, [eventId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus("sending");
-
     const user = JSON.parse(localStorage.getItem("user"));
-    const email = user?.email;
-
-    if (!email || !question) {
-      toast.error("User not logged in or question is empty.");
-      setStatus("error");
+    if (!user?.email || !question.trim()) {
+      toast.error("Login and write a question to submit.");
       return;
     }
 
     try {
-      const response = await fetch(
-        "https://event-nine-xi.vercel.app/api/query",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ question, email }),
-        }
-      );
+      const res = await fetch("https://event-nine-xi.vercel.app/api/query", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question, email: user.email }),
+      });
 
-      const result = await response.json();
-
-      if (response.ok) {
-        toast.success("Question submitted successfully!");
-        setQuestion("");
-        setStatus("success");
-      } else {
-        toast.error(result.message || "Submission failed");
-        setStatus("error");
-      }
-    } catch (err) {
-      console.error("Error:", err);
-      toast.error("Something went wrong.");
-      setStatus("error");
+      if (!res.ok) throw new Error("Failed to submit");
+      toast.success("Question submitted!");
+      setQuestion("");
+    } catch (error) {
+      console.error(error);
+      
+      toast.error("Submission failed.");
     }
-  };
-
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/");
   };
 
   return (
     <div className="bg-grey text-light min-vh-100">
       <div className="container py-4">
-        {/* YouTube Video */}
         <div className="ratio ratio-16x9 mb-4">
           {videoId ? (
             <iframe
               src={`https://www.youtube.com/embed/${videoId}`}
-              title="Webinar Video"
+              title="Live Event"
               allowFullScreen
             ></iframe>
           ) : (
-            <div className="text-center text-muted">Loading video...</div>
+            <div className="text-muted text-center">Loading video...</div>
           )}
         </div>
 
-        {/* Question Form & Logout */}
-        <div className="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
-          <form
-            className="p-3 bg-light rounded shadow-sm w-100"
-            onSubmit={handleSubmit}
-          >
-            <div className="mb-3">
-              <textarea
-                id="question"
-                className="form-control border-primary"
-                placeholder="Type your question here..."
-                value={question}
-                rows={3}
-                required
-                onChange={(e) => setQuestion(e.target.value)}
-              />
-            </div>
-            <div className="d-flex justify-content-end">
-              <button type="submit" className="btn btn-primary px-4 fw-bold">
-                🚀 Submit Question
-              </button>
-            </div>
-          </form>
-
-          <button className="btn btn-danger btn-sm mt-3" onClick={handleLogout}>
-            Logout
+        <form
+          className="bg-light p-3 rounded shadow-sm"
+          onSubmit={handleSubmit}
+        >
+          <textarea
+            className="form-control mb-3"
+            rows="3"
+            value={question}
+            placeholder="Type your question..."
+            onChange={(e) => setQuestion(e.target.value)}
+            required
+          />
+          <button type="submit" className="btn btn-primary">
+            Submit Question
           </button>
-        </div>
+        </form>
 
-        {/* Feedback */}
-        <div className="mt-3">
-          {status === "sending" && (
-            <div className="text-info">Sending your question...</div>
-          )}
-          {status === "success" && (
-            <div className="text-success">Question submitted!</div>
-          )}
-          {status === "error" && (
-            <div className="text-danger">Failed to submit question.</div>
-          )}
-        </div>
+        <button
+          onClick={() => {
+            localStorage.clear();
+            navigate("/");
+          }}
+          className="btn btn-danger mt-3"
+        >
+          Logout
+        </button>
       </div>
     </div>
   );
