@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const API_URL = "https://event-nine-xi.vercel.app/api/admin/event";
+const UPLOAD_URL = "https://event-nine-xi.vercel.app/api/upload";
 
 const AdminEvent = () => {
   const [events, setEvents] = useState([]);
@@ -59,6 +60,23 @@ const AdminEvent = () => {
     }
   };
 
+  const handleImageUpload = async (e, setEventState) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append("image", file);
+    try {
+      const res = await axios.post(UPLOAD_URL, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      const imageUrl = "https://event-nine-xi.vercel.app" + res.data.path;
+      setEventState((prev) => ({ ...prev, image: imageUrl }));
+      toast.success("✅ Image uploaded");
+    } catch (err) {
+      console.error("Image upload failed", err);
+      toast.error("❌ Image upload failed");
+    }
+  };
+
   const openEditModal = async (eventId) => {
     try {
       const res = await axios.get(`${API_URL}/${eventId}`);
@@ -101,7 +119,6 @@ const AdminEvent = () => {
             { label: "Title", name: "title" },
             { label: "Description", name: "description" },
             { label: "Event Link", name: "eventLink" },
-            { label: "Image URL", name: "image" },
           ].map((field) => (
             <div className="col-md-6" key={field.name}>
               <input
@@ -114,6 +131,13 @@ const AdminEvent = () => {
               />
             </div>
           ))}
+          <div className="col-md-6">
+            <input
+              type="file"
+              className="form-control"
+              onChange={(e) => handleImageUpload(e, setNewEvent)}
+            />
+          </div>
           <div className="col-md-3">
             <input
               type="date"
@@ -199,7 +223,6 @@ const AdminEvent = () => {
                 { label: "Title", name: "title" },
                 { label: "Description", name: "description" },
                 { label: "Event Link", name: "eventLink" },
-                { label: "Image URL", name: "image" },
               ].map((field) => (
                 <div className="col-12" key={field.name}>
                   <input
@@ -212,6 +235,13 @@ const AdminEvent = () => {
                   />
                 </div>
               ))}
+              <div className="col-12">
+                <input
+                  type="file"
+                  className="form-control"
+                  onChange={(e) => handleImageUpload(e, setEditEvent)}
+                />
+              </div>
               <div className="col-6">
                 <input
                   type="date"
