@@ -8,7 +8,9 @@ const UpdateVideoIdPage = () => {
   useEffect(() => {
     const fetchVideoId = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/videoId");
+        const response = await fetch(
+          "https://event-nine-xi.vercel.app/api/videoId"
+        );
         if (!response.ok) throw new Error("Failed to fetch");
         const data = await response.json();
         setVideoId(data.videoId);

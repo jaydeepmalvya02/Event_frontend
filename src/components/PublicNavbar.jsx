@@ -21,11 +21,31 @@ const PublicNavbar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    const admin = localStorage.getItem("admin");
-    if (user) setIsLoggedIn(true);
-    if (admin) setIsAdminLoggedIn(true);
+    const storedUser = localStorage.getItem("user");
+
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        console.log("User data:", parsedUser);
+
+        // Check if user is logged in
+        setIsLoggedIn(true);
+
+        // Check if the user is an admin
+        if (parsedUser.user.role === "admin") {
+          console.log(parsedUser.user.role);
+          
+          setIsAdminLoggedIn(true);
+          console.log("Admin is logged in");
+        }
+      } catch (error) {
+        console.error("Error parsing user data from localStorage", error);
+      }
+    } else {
+      console.log("No user data found in localStorage.");
+    }
   }, []);
+  
 
   const toggleDrawer = () => setShowDrawer(!showDrawer);
   const closeDrawer = () => setShowDrawer(false);
