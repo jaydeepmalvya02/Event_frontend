@@ -83,7 +83,7 @@ const EventHighlights = () => {
                     alt={`Highlight-${index}-img`}
                     className="img-fluid rounded shadow-sm"
                     style={{
-                      objectFit: "cover",
+                      objectFit: "contain",
                       width: "100%",
                       height: "100%",
                       backgroundColor: "#f8f9fa",

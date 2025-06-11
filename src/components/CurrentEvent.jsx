@@ -79,20 +79,20 @@ const CurrentEvent = () => {
             <h2 className="fw-bold text-dark">{event.title}</h2>
             <p className="text-[#2e2e2e ] fs-5">{event.description}</p>
 
-            <CountdownTimer targetDate={event.dateTime} />
+            <CountdownTimer targetDate={event.dateTime} className="" />
 
             <div className="event-info mb-3">
               <p className="text-black">
                 <FaCalendarAlt className="me-2 text-primary" />
-                <strong>Date:</strong> {event.date}
+                <strong>Date: </strong> {event.date}
               </p>
               <p className="text-black">
                 <FaClock className="me-2 text-primary" />
-                <strong>Time:</strong> {event.time} ({event.duration})
+                <strong>Time: </strong>  {event.time} ({event.duration})
               </p>
               <p className="text-black">
                 <FaGlobe className="me-2 text-primary" />
-                <strong>Mode:</strong> {event.mode}
+                <strong>Mode: </strong> {event.mode}
               </p>
             </div>
 
@@ -159,7 +159,7 @@ const CurrentEvent = () => {
               </div>
             )}
 
-            <div>
+            {/* <div>
               <h5 className="fw-semibold text-dark">Speakers:</h5>
               <ul className="list-unstyled">
                 {event.speakers.map((spk, i) => (
@@ -169,7 +169,7 @@ const CurrentEvent = () => {
                   </li>
                 ))}
               </ul>
-            </div>
+            </div> */}
 
             <button
               onClick={() => navigate("/EventDetails")}

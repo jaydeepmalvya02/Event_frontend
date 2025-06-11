@@ -6,6 +6,11 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 import Login from "./Login";
 import axios from "axios";
 
+// ✅ ICONS
+import { MdUpcoming } from "react-icons/md";
+import { FaRegCalendarCheck } from "react-icons/fa";
+import { AiOutlineClockCircle } from "react-icons/ai";
+
 const API_URL = "https://event-nine-xi.vercel.app/api/admin/event";
 
 const EventDetails = () => {
@@ -60,10 +65,9 @@ const EventDetails = () => {
 
   const handleJoinClick = (eventId) => {
     isUserLoggedIn()
-      ? navigate(`/liveEvents/${eventId}`) // pass ID in route
+      ? navigate(`/liveEvents/${eventId}`)
       : setShowLoginPopup(true);
   };
-  
 
   const closeLoginPopup = () => setShowLoginPopup(false);
 
@@ -78,44 +82,56 @@ const EventDetails = () => {
 
       {currentEvent && (
         <div className="mb-5">
-          <h4 className="fw-bold text-info mb-3 fs-5">
-            🔥 Current & Upcoming Event
+          <h4 className="fw-bold text-info mb-4 fs-2 d-flex align-items-center gap-2">
+            <MdUpcoming /> Current & Upcoming Event
           </h4>
 
-          <div className="card shadow border-0 rounded-4 p-3 p-md-4">
-            <img
-              src={currentEvent.image || currentEvent.coverImages?.[0]}
-              alt="Current Event"
-              className="img-fluid rounded mb-3 w-100"
-              style={{
-                objectFit: "cover",
-                height: "auto",
-                maxHeight: "400px",
-              }}
-            />
-            <h4 className="fw-bold text-primary">{currentEvent.title}</h4>
-            <p className="text-muted">{currentEvent.description}</p>
-            <CountdownTimer
-              targetDate={currentEvent.dateTime || currentEvent.date}
-            />
+          <div className="card shadow border-0 rounded-4 p-3 p-md-4 bg-light">
+            <div className="row g-4 align-items-center">
+              <div className="col-lg-6">
+                <img
+                  src={currentEvent.image || currentEvent.coverImages?.[0]}
+                  alt="Current Event"
+                  className="img-fluid rounded-3 w-100"
+                  style={{
+                    objectFit: "cover",
+                    maxHeight: "400px",
+                    aspectRatio: "16 / 9",
+                  }}
+                />
+              </div>
+              <div className="col-lg-6">
+                <h4 className="fw-bold text-primary mb-2">
+                  {currentEvent.title}
+                </h4>
+                <p className="text-muted">{currentEvent.description}</p>
 
-            <p className="mb-1">
-              <strong>Date:</strong>{" "}
-              {new Date(currentEvent.date).toDateString()}
-            </p>
-            <p className="mb-1">
-              <strong>Time:</strong> {currentEvent.time}
-            </p>
-            <p className="mb-3">
-              <strong>Mode:</strong> {currentEvent.mode}
-            </p>
+                <CountdownTimer
+                  targetDate={currentEvent.dateTime || currentEvent.date}
+                />
 
-            <button
-              onClick={() => handleJoinClick(currentEvent._id)} // assume your events from DB have _id
-              className="btn btn-outline-primary mb-3"
-            >
-              🔗 Watch Event
-            </button>
+                <p className="mb-1">
+                  
+                  <strong>Date:</strong>{" "}
+                  {new Date(currentEvent.date).toDateString()}
+                </p>
+                <p className="mb-1">
+                 
+                  <strong>Time:</strong> {currentEvent.time}
+                </p>
+                <p className="mb-3">
+                
+                  <strong>Mode:</strong> {currentEvent.mode}
+                </p>
+
+                <button
+                  onClick={() => handleJoinClick(currentEvent._id)}
+                  className="btn btn-outline-primary"
+                >
+                  🔗 Watch Event
+                </button>
+              </div>
+            </div>
 
             {showLoginPopup && (
               <div
@@ -168,7 +184,9 @@ const EventDetails = () => {
       {/* Highlights Grid */}
       {passedEvents.length > 0 && (
         <div className="mt-5">
-          <h4 className="fw-bold text-white mb-4 fs-5">📽️Past Events </h4>
+          <h4 className="fw-bold text-info mb-3 fs-2 d-flex align-items-center gap-2">
+            <FaRegCalendarCheck /> Past Events
+          </h4>
           <div className="row justify-content-center g-4">
             {passedEvents.map((event, index) => (
               <div key={index} className="col-12 col-md-6">
@@ -186,13 +204,16 @@ const EventDetails = () => {
                     <h5 className="fw-bold text-primary">{event.title}</h5>
                     <p className="text-muted small">{event.description}</p>
                     <p className="mb-1">
+                      <AiOutlineClockCircle className="inline me-2 text-warning" />
                       <strong>Date:</strong>{" "}
                       {new Date(event.date).toDateString()}
                     </p>
                     <p className="mb-1">
+                      <AiOutlineClockCircle className="inline me-2 text-warning" />
                       <strong>Time:</strong> {event.time}
                     </p>
                     <p className="mb-3">
+                      <AiOutlineClockCircle className="inline me-2 text-warning" />
                       <strong>Mode:</strong> {event.mode}
                     </p>
                     <button

@@ -73,9 +73,7 @@ const AdminEvent = () => {
       const res = await axios.post(UPLOAD_URL, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
-      const imageUrl = res.data.url; // ✅ Use this URL from backend response
-
+      const imageUrl = res.data.url;
       setEventState((prev) => ({ ...prev, image: imageUrl }));
       toast.success("✅ Image uploaded successfully!");
     } catch (err) {
@@ -114,6 +112,19 @@ const AdminEvent = () => {
     }
   };
 
+  const handleDeleteEvent = async (eventId) => {
+    if (!window.confirm("Are you sure you want to delete this event?")) return;
+
+    try {
+      await axios.delete(`${API_URL}/${eventId}`);
+      setEvents((prev) => prev.filter((ev) => ev._id !== eventId));
+      toast.success("🗑️ Event deleted successfully!");
+    } catch (err) {
+      console.error("Delete failed:", err);
+      toast.error("❌ Failed to delete the event.");
+    }
+  };
+
   const handleViewEvent = (eventId) => {
     navigate(`/liveEvents/${eventId}`);
   };
@@ -121,7 +132,7 @@ const AdminEvent = () => {
   return (
     <div className="container py-5">
       <ToastContainer position="top-right" autoClose={1000} />
-      <h2 className="mb-4 text-white">🛠 Admin Event Dashboard</h2>
+      <h2 className="mb-4 text-white"> Admin Event Dashboard</h2>
 
       <div className="card p-4 mb-5 shadow-sm">
         <h4 className="mb-3">Create New Event</h4>
@@ -156,7 +167,7 @@ const AdminEvent = () => {
                 src={newEvent.image}
                 alt="Preview"
                 className="img-thumbnail mt-2"
-                style={{ height: "150px", objectFit: "cover" }}
+                style={{ height: "150px", objectFit: "contain" }}
               />
             )}
           </div>
@@ -206,7 +217,7 @@ const AdminEvent = () => {
                 src={event.image}
                 alt={event.title}
                 className="img-fluid rounded mb-3"
-                style={{ height: "200px", objectFit: "cover" }}
+                style={{ height: "200px", objectFit: "contain" }}
               />
               <h5 className="text-primary fw-bold">{event.title}</h5>
               <p>{event.description}</p>
@@ -225,6 +236,12 @@ const AdminEvent = () => {
                 onClick={() => openEditModal(event._id)}
               >
                 ✏️ Edit
+              </button>
+              <button
+                className="btn btn-outline-danger btn-sm ms-2"
+                onClick={() => handleDeleteEvent(event._id)}
+              >
+                🗑️ Delete
               </button>
             </div>
           </div>

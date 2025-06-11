@@ -32,7 +32,7 @@ const QuestionList = () => {
 
   return (
     <Container className="my-5">
-      <h3 className="mb-4">Submitted Questions</h3>
+      <h3 className="mb-4 text-white">Submitted Questions</h3>
 
       {loading && <Spinner animation="border" variant="primary" />}
 

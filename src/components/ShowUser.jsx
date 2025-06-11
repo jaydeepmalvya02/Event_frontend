@@ -2,16 +2,20 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Modal, Button, Form } from "react-bootstrap";
+import { FaWhatsapp } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
+import { FiDownload } from "react-icons/fi";
 
 const ShowUser = () => {
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
 
-  // Email Modal States
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [emailSubject, setEmailSubject] = useState("");
   const [emailMessage, setEmailMessage] = useState("");
@@ -21,10 +25,13 @@ const ShowUser = () => {
       try {
         const res = await axios.get("https://event-nine-xi.vercel.app/api/");
         setUsers(res.data);
+        setFilteredUsers(res.data);
         setLoading(false);
+
       } catch (error) {
         console.error(error);
-        setError("Failed to fetch users. Please try again later.");
+        
+        setError("Failed to fetch users.");
         setLoading(false);
       }
     };
@@ -43,15 +50,26 @@ const ShowUser = () => {
     if (selectAll) {
       setSelectedUsers([]);
     } else {
-      const allEmails = users.map((user) => user.email);
+      const allEmails = filteredUsers.map((user) => user.email);
       setSelectedUsers(allEmails);
     }
     setSelectAll(!selectAll);
   };
 
+  const handleSearch = (value) => {
+    setSearchKeyword(value);
+    const keyword = value.toLowerCase();
+    const filtered = users.filter((user) =>
+      [user.name, user.email, user.companyName, user.city].some((field) =>
+        field?.toLowerCase().includes(keyword)
+      )
+    );
+    setFilteredUsers(filtered);
+  };
+
   const sendTemplateMessage = async () => {
     if (!selectedTemplate || selectedUsers.length === 0) {
-      alert("Please select a template and at least one user.");
+      toast.warning("Please select a template and users.");
       return;
     }
 
@@ -62,7 +80,7 @@ const ShowUser = () => {
             "https://event-nine-xi.vercel.app/api/send-whatsapp",
             {
               messaging_product: "whatsapp",
-              to: `91${email}`, // Add country code if mobile
+              to: `91${email}`,
               type: "template",
               template: {
                 name: selectedTemplate,
@@ -72,17 +90,17 @@ const ShowUser = () => {
           );
         })
       );
-
-      toast.success("WhatsApp template messages sent successfully!");
+      toast.success("WhatsApp messages sent!");
     } catch (err) {
       console.error(err);
+      
       toast.error("Failed to send WhatsApp messages.");
     }
   };
 
   const sendEmails = async () => {
     if (!emailSubject || !emailMessage || selectedUsers.length === 0) {
-      toast.warning("Fill all fields and select at least one user.");
+      toast.warning("Fill all fields and select users.");
       return;
     }
 
@@ -99,6 +117,7 @@ const ShowUser = () => {
       setEmailMessage("");
     } catch (error) {
       console.error(error);
+      
       toast.error("Failed to send emails.");
     }
   };
@@ -155,48 +174,58 @@ const ShowUser = () => {
     <div className="container my-5">
       <h2 className="text-center text-white mb-4">User Management</h2>
 
-      <div className="d-flex justify-content-between mb-3">
-        <button
-          className="px-5 py-2 bg-emerald-600 text-white rounded-full"
-          onClick={downloadCSV}
-        >
-          Download CSV
-        </button>
-
-        <div className="d-flex gap-2">
+      <div className="row g-3 align-items-center mb-4">
+        <div className="col-12 col-md-4">
           <input
             type="text"
-            className="px-4 py-2 rounded bg-[#443A52] text-white border"
-            placeholder="Enter Template Name"
+            className="form-control rounded shadow-sm px-3 py-2"
+            placeholder="🔍 Search name, email, company..."
+            value={searchKeyword}
+            onChange={(e) => handleSearch(e.target.value)}
+          />
+        </div>
+
+        <div className="col-12 col-md-3">
+          <input
+            type="text"
+            className="form-control rounded shadow-sm px-3 py-2"
+            placeholder="Template Name"
             value={selectedTemplate}
             onChange={(e) => setSelectedTemplate(e.target.value)}
           />
+        </div>
+
+        <div className="col-12 col-md-5 d-flex flex-wrap gap-2 justify-content-md-end">
           <button
-            className="px-4 py-2 bg-green-600 text-white rounded"
+            className="btn btn-success shadow-sm"
             onClick={sendTemplateMessage}
           >
-            Send WhatsApp
+            <FaWhatsapp className="me-1" /> Send WhatsApp
           </button>
           <button
-            className="px-4 py-2 bg-blue-600 text-white rounded"
+            className="btn btn-info text-white shadow-sm"
             onClick={() => setShowEmailModal(true)}
           >
-            Send Email
+            <MdEmail className="me-1" /> Send Email
+          </button>
+          <button
+            className="btn btn-outline-primary shadow-sm"
+            onClick={downloadCSV}
+          >
+            <FiDownload className="me-1" /> Export CSV
           </button>
         </div>
       </div>
 
       {loading ? (
         <div className="text-center">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
+          <div className="spinner-border text-primary" role="status" />
         </div>
       ) : error ? (
         <div className="alert alert-danger text-center">{error}</div>
       ) : (
         <div className="table-responsive">
-          <table className="table table-bordered table-striped table-hover">
+          <table className="table table-bordered table-striped table-hover text-nowrap small">
             <thead className="table-dark">
               <tr>
                 <th>
@@ -220,8 +249,8 @@ const ShowUser = () => {
               </tr>
             </thead>
             <tbody>
-              {users.length > 0 ? (
-                users.map((user) => (
+              {filteredUsers.length > 0 ? (
+                filteredUsers.map((user) => (
                   <tr key={user._id}>
                     <td>
                       <input
@@ -245,7 +274,7 @@ const ShowUser = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="12" className="text-center">
+                  <td colSpan="12" className="text-center text-muted">
                     No users found.
                   </td>
                 </tr>
