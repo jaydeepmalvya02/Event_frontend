@@ -134,7 +134,7 @@ const RegistrationForm = ({ onEmailExists, onSuccess }) => {
           mobile: "",
           email: "",
         });
-        navigate("/liveEvents");
+        navigate("/EventDetails");
       } else {
         if (
           response.status === 401 &&

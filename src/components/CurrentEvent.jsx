@@ -1,277 +1,244 @@
-import React, { useState } from "react";
-import CountdownTimer from "./CountdownTimer";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaCalendarAlt, FaClock, FaGlobe } from "react-icons/fa";
+import CountdownTimer from "./CountdownTimer";
 import Login from "./Login";
+import axios from "axios";
+import { FaCalendarAlt, FaClock, FaGlobe } from "react-icons/fa";
+
+const API_URL = "https://event-nine-xi.vercel.app/api/admin/event";
 
 const CurrentEvent = () => {
   const navigate = useNavigate();
-
+  const [events, setEvents] = useState([]);
+  const [currentEvent, setCurrentEvent] = useState(null);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const isUserLoggedIn = () => {
-    return localStorage.getItem("user") !== null; // Replace with your actual login logic
-  };
-  // useEffect(() => {
-  //   if (localStorage.getItem("user")) {
-  //     navigate("/liveEvents");
-  //   }
-  // }, []);
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
-  const event = {
-    title: "Data To Decision",
-    subtitle: "#PitchPoint Ep. 2",
-    description:
-      "#PitchPoint on Data to Decision is here! Dive into how pharma leaders transform uniform, real-time data into smarter decisions, sharper targeting, and unstoppable sales growth.  Discover why standardized data is key to consistent strategy, impactful campaigns, and measurable ROI. Don’t miss this power-packed session, it’s where insights meet action! ",
-    date: "June 07, 2025",
-    time: "11:00 AM onwards",
-    dateTime: "2025-06-07T11:00:00",
-    duration: "45 Minutes",
-    mode: "Online Event",
-    eventLink: "https://e-commerce-platform-ozvf.vercel.app/liveEvents",
-    youtubeLink: "https://www.youtube.com/watch?v=qJvclEApNrE",
-    speakers: [
-      {
-        name: "Dr. Subhojit Mukherjee",
-        title: "Head of India Formulations, Celsius Healthcare Pvt. Ltd.",
-      },
-      {
-        name: "Mr. Devesh Gangani",
-        title: "AGM, Alkem Laboratories Ltd.",
-      },
-      {
-        name: "Dr. Pramod Kumar Rajput",
-        title: "Global Leadership Coach | Sr. VP (F.), Cadila Pharma",
-      },
-      {
-        name: "Dr. ICS Varma",
-        title:
-          "Co-Founder, Regson Healthcare | Live Pharma Coalition | ExpertOnBoard",
-      },
-    ],
-    coverImage: "/images/eventbg.jpeg",
-  };
+  const fetchEvents = async () => {
+    try {
+      const response = await axios.get(API_URL);
+      if (Array.isArray(response.data)) {
+        const allEvents = response.data;
+        const now = new Date();
 
-  const handleJoinClick = () => {
-    if (isUserLoggedIn()) {
-      navigate("/liveEvents");
-    } else {
-      setShowLoginPopup(true);
+        const upcomingEvents = allEvents.filter(
+          (e) => new Date(e.dateTime || e.date) >= now
+        );
+        const passedEvents = allEvents.filter(
+          (e) => new Date(e.dateTime || e.date) < now
+        );
+
+        upcomingEvents.sort(
+          (a, b) =>
+            new Date(a.dateTime || a.date) - new Date(b.dateTime || b.date)
+        );
+        passedEvents.sort(
+          (a, b) =>
+            new Date(b.dateTime || b.date) - new Date(a.dateTime || a.date)
+        );
+
+        const selectedEvent =
+          upcomingEvents.length > 0
+            ? upcomingEvents[0]
+            : passedEvents[0] || null;
+
+        setEvents(allEvents);
+        setCurrentEvent(selectedEvent);
+      }
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const closeLoginPopup = () => {
-    setShowLoginPopup(false);
-  };
+  const isUserLoggedIn = () => localStorage.getItem("user") !== null;
+  const handleJoinClick = () =>
+    isUserLoggedIn()
+      ? navigate(`/liveEvents/${currentEvent._id}`)
+      : setShowLoginPopup(true);
+  const closeLoginPopup = () => setShowLoginPopup(false);
+
+  if (loading)
+    return (
+      <div className="text-center py-5 text-dark">⏳ Loading event...</div>
+    );
+  if (!currentEvent)
+    return (
+      <div className="text-center py-5 text-dark">
+        📭 No current event found.
+      </div>
+    );
 
   return (
-    <div className="event-wrapper py-5">
-      <div className="container">
-        <h1 className="text-center fw-bold display-5 mb-4">Recent Event</h1>
+    <div className="container py-5">
+      <h2 className="text-center fw-bold mb-4 fs-3 text-primary">
+        {new Date(currentEvent.dateTime || currentEvent.date) >= new Date()
+          ? "Upcoming Event"
+          : "Recent Past Event"}
+      </h2>
 
-        <div className="event-flex-wrapper">
-          {/* Left: Text Content */}
-          <div className="event-text">
-            <span className="badge bg-white text-dark mb-2 w-fit-content">
-              {event.subtitle}
-            </span>
+      <h5
+        className="text-gray-600 text-center mt-2"
+        style={{ fontStyle: "italic" }}
+      >
+        Join the <span className="text-red-400">#PitchPoint</span> event and unlock powerful insights,{" "}
+        <br />
+        real-world strategies, and expert connections to supercharge your
+        growth!
+      </h5>
 
-            <h2 className="fw-bold text-dark">{event.title}</h2>
-            <p className="text-[#2e2e2e ] fs-5">{event.description}</p>
-
-            <CountdownTimer targetDate={event.dateTime} className="" />
-
-            <div className="event-info mb-3">
-              <p className="text-black">
-                <FaCalendarAlt className="me-2 text-primary" />
-                <strong>Date: </strong> {event.date}
-              </p>
-              <p className="text-black">
-                <FaClock className="me-2 text-primary" />
-                <strong>Time: </strong>  {event.time} ({event.duration})
-              </p>
-              <p className="text-black">
-                <FaGlobe className="me-2 text-primary" />
-                <strong>Mode: </strong> {event.mode}
-              </p>
+      <div
+        className="card event-card border-0 p-3 p-md-4 mt-4"
+        style={{
+          borderRadius: "20px",
+          backgroundColor: "#d7dde2",
+          animation: "fadeInUp 0.7s ease-in-out",
+        }}
+      >
+        <div className="row g-4 align-items-center">
+          <div className="col-lg-6">
+            <div className="image-wrapper">
+              <img
+                src={currentEvent.image}
+                alt="Event"
+                className="img-fluid w-100 event-image"
+              />
             </div>
+          </div>
 
-            {/* Updated Join Button */}
+          <div
+            className="col-lg-6 ps-lg-4"
+            style={{
+              borderLeft: "5px solid #007bff",
+              paddingLeft: "1rem",
+            }}
+          >
+            <h4 className="fw-bold text-dark mb-3">{currentEvent.title}</h4>
+            <p className="text-dark mb-3" style={{ fontSize: "0.95rem" }}>
+              {currentEvent.description}
+            </p>
+
+            <CountdownTimer
+              targetDate={currentEvent.dateTime || currentEvent.date}
+            />
+
+            <p className="mb-2 text-dark">
+              <FaCalendarAlt className="me-2 text-primary fs-5 inline" />
+              <strong className="me-1">Date:</strong>
+              {new Date(currentEvent.date).toLocaleDateString()}
+            </p>
+            <p className="mb-2 text-dark">
+              <FaClock className="me-2 text-primary fs-5 inline" />
+              <strong className="me-1">Time:</strong>
+              {currentEvent.time} AM
+            </p>
+            <p className="mb-3 text-dark">
+              <FaGlobe className="me-2 text-primary fs-5 inline" />
+              <strong className="me-1">Mode:</strong>
+              {currentEvent.mode}
+            </p>
+
             <button
               onClick={handleJoinClick}
-              className="btn btn-light btn-lg px-4 rounded-pill mt-3"
+              className="btn fw-bold text-white position-relative px-4 px-lg-5 py-2 py-lg-3"
+              style={{
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                border: "none",
+                boxShadow: "0 4px 15px rgba(118, 75, 162, 0.3)",
+                transition: "all 0.3s ease",
+                overflow: "hidden",
+                fontSize: "clamp(0.9rem, 2vw, 1.1rem)",
+                letterSpacing: "0.5px",
+                margin: "0.5rem",
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = "translateY(-3px)";
+                e.target.style.boxShadow = "0 8px 25px rgba(118, 75, 162, 0.5)";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = "translateY(0)";
+                e.target.style.boxShadow = "0 4px 15px rgba(118, 75, 162, 0.3)";
+              }}
             >
-              🔗 Join on ExpertOnBoard
+              Join on ExpertOnBoard
             </button>
-
-            {/* Login Popup */}
-            {showLoginPopup && (
-              <div
-                className="modal show d-block"
-                tabIndex="-1"
-                style={{
-                  backgroundColor: "rgba(0, 0, 0, 0.6)",
-                  backdropFilter: "blur(3px)",
-                  position: "fixed",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  zIndex: 1050,
-                }}
-              >
-                <div className="modal-dialog modal-dialog-centered modal-lg">
-                  <div
-                    className=" modal-content rounded-4 border-0 shadow"
-                    style={{
-                      backgroundImage: 'url("/images/bg3.png")',
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      color: "#fff",
-                    }}
-                  >
-                    <div
-                      className="modal-header border-0"
-                      style={{ background: "rgba(0, 0, 0, 0.4)" }}
-                    >
-                      <h5
-                        className="modal-title w-100 text-center fw-bold"
-                        style={{ color: "#F1C40F" }}
-                      >
-                        To Join The Event, Login Below 👇
-                      </h5>
-                      <button
-                        type="button"
-                        className="btn-close btn-close-white"
-                        onClick={closeLoginPopup}
-                      ></button>
-                    </div>
-                    <div
-                      className="modal-body px-4 py-3"
-                      style={{
-                        borderRadius: "0 0 1rem 1rem",
-                      }}
-                    >
-                      <Login />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* <div>
-              <h5 className="fw-semibold text-dark">Speakers:</h5>
-              <ul className="list-unstyled">
-                {event.speakers.map((spk, i) => (
-                  <li key={i} className="mb-1">
-                    <strong className="">{spk.name}</strong>{" "}
-                    <small className="text-black">— {spk.title}</small>
-                  </li>
-                ))}
-              </ul>
-            </div> */}
-
             <button
               onClick={() => navigate("/EventDetails")}
-              className="btn btn-light btn-lg px-4 rounded-pill mt-3"
+              className="btn fw-bold text-white position-relative px-4 px-lg-5 py-2 py-lg-3"
+              style={{
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                border: "none",
+                boxShadow: "0 4px 15px rgba(118, 75, 162, 0.3)",
+                transition: "all 0.3s ease",
+                overflow: "hidden",
+                fontSize: "clamp(0.9rem, 2vw, 1.1rem)",
+                letterSpacing: "0.5px",
+                margin: "0.5rem",
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = "translateY(-3px)";
+                e.target.style.boxShadow = "0 8px 25px rgba(118, 75, 162, 0.5)";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = "translateY(0)";
+                e.target.style.boxShadow = "0 4px 15px rgba(118, 75, 162, 0.3)";
+              }}
             >
               View More Events
             </button>
           </div>
-
-          {/* Right: Image */}
-          <div className="event-image-container">
-            <img src={event.coverImage} alt="Event" className="event-image" />
-          </div>
         </div>
+
+        {showLoginPopup && (
+          <div
+            className="modal show d-block"
+            style={{
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
+              backdropFilter: "blur(3px)",
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 1050,
+            }}
+          >
+            <div className="modal-dialog modal-dialog-centered modal-lg">
+              <div
+                className="modal-content rounded-4 border-0 shadow"
+                style={{
+                  backgroundImage: 'url("/images/bg3.png")',
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  color: "#fff",
+                }}
+              >
+                <div
+                  className="modal-header border-0"
+                  style={{ background: "rgba(0, 0, 0, 0.4)" }}
+                >
+                  <h5 className="modal-title w-100 text-center fw-bold text-warning">
+                    To Join The Event, Login Below 👇
+                  </h5>
+                  <button
+                    type="button"
+                    className="btn-close btn-close-white"
+                    onClick={closeLoginPopup}
+                  ></button>
+                </div>
+                <div className="modal-body px-4 py-3">
+                  <Login />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-
-      <style>{`
-  .event-wrapper {
-    background: #d3aaa0;
-    backdrop-filter: blur(4px);
-    color: #1a1a1a;
-  }
-
- .event-flex-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  flex-wrap: wrap;
-   /* add left margin */
-}
-
-
-  .event-text {
-    flex: 1 1 55%;
-    min-width: 280px;
-    margin-bottom: 2rem;
-  }
-
-  .event-image-container {
-    flex: 1 1 40%; /* shrink image side */
-    min-width: 260px;
-    text-align: center;
-    margin-top: 0.5rem;
-  }
-
-  .event-image {
-    max-width: 150%;
-    border-radius: 1rem;
-    transition: transform 0.4s ease;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    margin: 0 auto;
-  }
-
-  .event-image:hover {
-    transform: scale(1.03);
-  }
-
-  .event-info p {
-    margin: 0.4rem 0;
-    display: flex;
-    align-items: center;
-  }
-
-  .w-fit-content {
-    width: fit-content;
-    display: inline-block;
-  }
-
-  /* Responsive for smaller screens */
-  @media (max-width: 992px) {
-    .event-flex-wrapper {
-      flex-direction: column;
-      gap: 2rem;
-    }
-
-    .event-image {
-      width: 100%;
-      max-width: 100%;
-    }
-
-    .event-text,
-    .event-image-container {
-      order: unset;
-      width: 100%;
-    }
-  }
-
-  @media (max-width: 576px) {
-    .event-flex-wrapper {
-      gap: 1.5rem;
-    }
-
-    .event-image-container {
-      margin-top: 1rem;
-    }
-
-    .event-image {
-      max-width: 95%;
-    }
-  }
-`}</style>
     </div>
   );
 };

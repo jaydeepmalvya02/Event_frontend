@@ -68,7 +68,7 @@ const Login = ({ onLoginSuccess, onClose }) => {
         if (!toast.isActive("login-success")) {
           toast.success("Login Successful! 🎉", { toastId: "login-success" });
               setTimeout(() => {
-          navigate("/liveEvents");
+          navigate("/EventDetails");
           onLoginSuccess?.(); // Optional chaining in case it's undefined
           onClose?.();
         }, 1000);

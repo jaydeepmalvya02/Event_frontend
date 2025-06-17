@@ -28,14 +28,14 @@ const Home = () => {
   };
   const handleRegisterClick = () => {
     if (isUserLoggedIn()) {
-      navigate("/liveEvents");
+      navigate("/EventDetails");
     } else {
       setShowRegistered(true);
     }
   };
   const handleJoinClick = () => {
     if (isUserLoggedIn()) {
-      navigate("/liveEvents");
+      navigate("/EventDetails");
     } else {
       
       setShowLoginPopup(true);
@@ -291,8 +291,8 @@ const Home = () => {
           </div>
         )}
       </div>
-      <div>
-        <CurrentEvent />
+      <div className="bg-red-200">
+        <CurrentEvent  />
       </div>
       <div>
         <FeaturedSpeakers />

@@ -3,17 +3,16 @@ import SpeakerCard from "./SpeakerCard";
 
 const speakers = [
   {
-    name: "Dr. Pramod Kumar Rajput",
-    title: "Global Leadership Coach | Pharma Business Leader",
-    bio: "Sr. Vice President (F.) At Cadila Pharma",
+    name: "Dr. P. K. Rajput",
+    title: "Pharma Business Leader | Sr. Vice President (F.) ",
+    bio: " Cadila",
     image: "/images/m10.jpg",
     description: `Dr. Pramod Rajput is a respected corporate leader turned educator...`,
   },
   {
     name: "Prashant Menon",
-    title:
-      "Founder Director at Workplace Dynamics | Co-Founder at The Bento Coach",
-    bio: "Transforming leadership and teams through workplace intelligence.",
+    title: "Strategy Consultant | Leadership Coach | Founder Director",
+    bio: "Workplace Dynamics.",
     image: "/images/m12.jpeg",
     description: `Prashant Menon is an eminent business leader and executive coach...`,
   },
@@ -23,6 +22,13 @@ const speakers = [
     bio: "SLIM Solutions.",
     image: "/images/Anil1.jpg",
     description: `Anil Fernandez is an esteemed healthcare leader, consultant, and educator...`,
+  },
+  {
+    name: "Dr Ashok Kumar Bhattacharya",
+    title: "(F.) Executive Director | Country Manager",
+    bio: "Takeda Pharma",
+    image: "/images/Ashok1.jpeg",
+    description: `Dr. Ashok Kumar Bhattacharya, PhD (HC), MLE (Harvard), is a veteran pharma leader with over 40 years experience at GSK, Merck, and Takeda. As former Executive Director of Takeda India, he led major brand launches, M&A, and strategic growth. A Harvard Square Leadership Fellow and INSEAD-trained executive, he’s received the Lifetime Achievement, ICON of Healthcare, and Glory of India awards.`,
   },
 ];
 
@@ -50,16 +56,16 @@ const FeaturedFounders = () => {
         </h2>
       </div>
 
-      <div className="flex flex-col sm:flex-row  sm:scrollbar-none gap-6 px-4 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 max-w-7xl mx-auto">
         {speakers.map((speaker, idx) => (
           <div
             key={idx}
             onMouseEnter={() => handleMouseEnter(idx)}
             onMouseLeave={handleMouseLeave}
-            className="relative group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col sm:flex-row overflow-hidden w-full sm:min-w-[400px]"
+            className="relative group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-row overflow-hidden w-full"
           >
             {/* Image */}
-            <div className="w-full sm:w-1/2 h-60 sm:h-auto overflow-hidden">
+            <div className="w-1/2 h-60 sm:h-auto overflow-hidden">
               <img
                 src={speaker.image}
                 alt={speaker.name}
@@ -67,16 +73,16 @@ const FeaturedFounders = () => {
               />
             </div>
 
-            {/* Basic Info */}
-            <div className="p-6 sm:w-1/2 flex flex-col justify-center">
-              <h3 className="text-xl font-semibold text-gray-800">
+            {/* Info */}
+            <div className="p-6 w-1/2 flex flex-col justify-center">
+              <h3 className="text-lg font-semibold text-gray-800">
                 {speaker.name}
               </h3>
               <p className="text-sm text-[#0F93CA] mb-2">{speaker.title}</p>
               <p className="text-gray-600 text-sm">{speaker.bio}</p>
             </div>
 
-            {/* Popup Description */}
+            {/* Hover Popup */}
             {activeIndex === idx && (
               <div className="absolute inset-0 z-20 bg-sky-100 bg-opacity-90 text-black transition-opacity duration-300 flex items-center justify-center p-6 text-sm text-center backdrop-blur-sm rounded-2xl">
                 <SpeakerCard speaker={speaker} />
