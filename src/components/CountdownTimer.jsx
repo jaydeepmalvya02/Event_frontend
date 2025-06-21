@@ -26,7 +26,7 @@ const CountdownTimer = ({ targetDate }) => {
   if (!timeLeft) {
     return (
       <div className="mb-3">
-        <span className="badge text-black fs-6">✅ Completed</span>
+        <span className="badge text-black fs-6">✅ Started</span>
       </div>
     );
   }
