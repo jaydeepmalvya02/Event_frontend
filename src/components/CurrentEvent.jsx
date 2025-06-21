@@ -13,6 +13,21 @@ const CurrentEvent = () => {
   const [currentEvent, setCurrentEvent] = useState(null);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [loading, setLoading] = useState(true);
+  const buildISTTargetDate = (dateISO, time = "00:00") => {
+    if (!dateISO) return null;
+
+    // Extract date part (yyyy-mm-dd) from ISO
+    const datePart = new Date(dateISO).toISOString().split("T")[0];
+
+    // Combine date and time into a single string (IST assumed)
+    const combined = `${datePart}T${time}:00+05:30`;
+
+    // Convert to ISO in UTC
+    const utcDate = new Date(combined).toISOString();
+
+    return utcDate;
+  };
+  
 
   useEffect(() => {
     fetchEvents();
@@ -26,19 +41,21 @@ const CurrentEvent = () => {
         const now = new Date();
 
         const upcomingEvents = allEvents.filter(
-          (e) => new Date(e.dateTime || e.date) >= now
+          (e) => new Date(buildISTTargetDate(e.date, e.time)) >= now
         );
         const passedEvents = allEvents.filter(
-          (e) => new Date(e.dateTime || e.date) < now
+          (e) => new Date(buildISTTargetDate(e.date, e.time)) < now
         );
 
         upcomingEvents.sort(
           (a, b) =>
-            new Date(a.dateTime || a.date) - new Date(b.dateTime || b.date)
+            new Date(buildISTTargetDate(a.date, a.time)) -
+            new Date(buildISTTargetDate(b.date, b.time))
         );
         passedEvents.sort(
           (a, b) =>
-            new Date(b.dateTime || b.date) - new Date(a.dateTime || a.date)
+            new Date(buildISTTargetDate(b.date, b.time)) -
+            new Date(buildISTTargetDate(a.date, a.time))
         );
 
         const selectedEvent =
@@ -57,16 +74,19 @@ const CurrentEvent = () => {
   };
 
   const isUserLoggedIn = () => localStorage.getItem("user") !== null;
+
   const handleJoinClick = () =>
     isUserLoggedIn()
       ? navigate(`/liveEvents/${currentEvent._id}`)
       : setShowLoginPopup(true);
+
   const closeLoginPopup = () => setShowLoginPopup(false);
 
   if (loading)
     return (
       <div className="text-center py-5 text-dark">⏳ Loading event...</div>
     );
+
   if (!currentEvent)
     return (
       <div className="text-center py-5 text-dark">
@@ -74,10 +94,12 @@ const CurrentEvent = () => {
       </div>
     );
 
+  const targetDate = buildISTTargetDate(currentEvent.date, currentEvent.time);
+
   return (
     <div className="container py-5">
       <h2 className="text-center fw-bold mb-4 fs-3 text-primary">
-        {new Date(currentEvent.dateTime || currentEvent.date) >= new Date()
+        {new Date(targetDate) >= new Date()
           ? "Upcoming Event"
           : "Recent Past Event"}
       </h2>
@@ -86,8 +108,8 @@ const CurrentEvent = () => {
         className="text-gray-600 text-center mt-2"
         style={{ fontStyle: "italic" }}
       >
-        Join the <span className="text-red-400">#PitchPoint</span> event and unlock powerful insights,{" "}
-        <br />
+        Join the <span className="text-red-400">#PitchPoint</span> event and
+        unlock powerful insights, <br />
         real-world strategies, and expert connections to supercharge your
         growth!
       </h5>
@@ -123,9 +145,7 @@ const CurrentEvent = () => {
               {currentEvent.description}
             </p>
 
-            <CountdownTimer
-              targetDate={currentEvent.dateTime || currentEvent.date}
-            />
+            <CountdownTimer targetDate={targetDate} />
 
             <p className="mb-2 text-dark">
               <FaCalendarAlt className="me-2 text-primary fs-5 inline" />
