@@ -82,7 +82,7 @@ const AdminLoginPopup = ({ onClose, onAdminLoginSuccess }) => {
 
         <div className="d-grid">
           <button
-            type="button"
+            type="submit"
             className="btn btn-dark"
             onClick={handleAdminLogin}
             disabled={submitting}

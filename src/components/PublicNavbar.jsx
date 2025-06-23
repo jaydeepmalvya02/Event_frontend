@@ -10,47 +10,36 @@ import {
 import { NavLink, useNavigate } from "react-router-dom";
 import logo from "/images/ExpertLogo.jpeg";
 import Login from "./Login";
-import AdminLoginPopup from "../utils/AdminLoginPopup";
+import RegisterationForm from "./RegistrationForm"; // ✅ Your registration form component
 
 const PublicNavbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [showDrawer, setShowDrawer] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showAdminModal, setShowAdminModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-
-    if (storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        console.log("User data:", parsedUser);
-
-        // Check if user is logged in
+    try {
+      const user = JSON.parse(storedUser);
+      if (user && user.user && user.user.email) {
         setIsLoggedIn(true);
-
-        // Check if the user is an admin
-        if (parsedUser.user.role === "admin") {
-          console.log(parsedUser.user.role);
-          
-          setIsAdminLoggedIn(true);
-          console.log("Admin is logged in");
-        }
-      } catch (error) {
-        console.error("Error parsing user data from localStorage", error);
+      } else {
+        setIsLoggedIn(false);
       }
-    } else {
-      console.log("No user data found in localStorage.");
+    } catch (error) {
+      console.error("Invalid user data in localStorage", error);
+      setIsLoggedIn(false);
     }
   }, []);
   
-
   const toggleDrawer = () => setShowDrawer(!showDrawer);
   const closeDrawer = () => setShowDrawer(false);
   const openLoginModal = () => setShowLoginModal(true);
   const closeLoginModal = () => setShowLoginModal(false);
+  const openRegisterModal = () => setShowRegisterModal(true);
+  const closeRegisterModal = () => setShowRegisterModal(false);
 
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
@@ -60,17 +49,8 @@ const PublicNavbar = () => {
   const handleLogout = () => {
     localStorage.clear();
     setIsLoggedIn(false);
-    setIsAdminLoggedIn(false);
     navigate("/");
     closeDrawer();
-  };
-
-  const handleAdminClick = () => {
-    if (isAdminLoggedIn) {
-      navigate("/admin");
-    } else {
-      setShowAdminModal(true);
-    }
   };
 
   const navLinks = [
@@ -84,7 +64,7 @@ const PublicNavbar = () => {
   return (
     <>
       <Navbar expand="lg" className="bg-light shadow-sm py-2">
-        <Container>
+        <Container className="d-flex justify-content-between align-items-center">
           <Navbar.Brand
             as={NavLink}
             to="/"
@@ -93,17 +73,9 @@ const PublicNavbar = () => {
             <img src={logo} alt="Logo" width="80" height="80" />
           </Navbar.Brand>
 
-          <Button
-            variant="outline-primary"
-            className="d-lg-none"
-            onClick={toggleDrawer}
-          >
-            ☰
-          </Button>
-
           <Navbar.Collapse
             id="navbar-nav"
-            className="justify-content-center d-none d-lg-flex align-items-center"
+            className="d-none d-lg-flex justify-content-center"
           >
             <Nav className="text-center gap-3">
               {navLinks.map(({ to, label }) => (
@@ -111,7 +83,6 @@ const PublicNavbar = () => {
                   key={to}
                   as={NavLink}
                   to={to}
-                  onClick={closeDrawer}
                   className={({ isActive }) =>
                     `fw-semibold nav-custom ${
                       isActive ? "text-primary active-nav" : "text-dark"
@@ -122,47 +93,35 @@ const PublicNavbar = () => {
                 </Nav.Link>
               ))}
             </Nav>
+          </Navbar.Collapse>
 
+          <div className="d-flex align-items-center gap-2">
             {!isLoggedIn ? (
               <>
-                <Button
-                  variant="outline-primary"
-                  onClick={openLoginModal}
-                  className="ms-3"
-                >
+                <Button variant="outline-primary" onClick={openLoginModal}>
                   Login
                 </Button>
-                <Button
-                  variant="outline-warning"
-                  onClick={handleAdminClick}
-                  className="ms-2"
-                >
-                  Admin Login
+                <Button variant="outline-success" onClick={openRegisterModal}>
+                  Register
                 </Button>
               </>
             ) : (
-              <>
-                <Button
-                  variant="outline-danger"
-                  onClick={handleLogout}
-                  className="ms-3"
-                >
-                  Logout
-                </Button>
-                <Button
-                  variant="outline-success"
-                  onClick={handleAdminClick}
-                  className="ms-3"
-                >
-                  Admin
-                </Button>
-              </>
+              <Button variant="outline-danger" onClick={handleLogout}>
+                Logout
+              </Button>
             )}
-          </Navbar.Collapse>
+            <Button
+              variant="outline-primary"
+              className="d-lg-none"
+              onClick={toggleDrawer}
+            >
+              ☰
+            </Button>
+          </div>
         </Container>
       </Navbar>
 
-      {/* Mobile Drawer */}
+      {/* Drawer for small screens */}
       <Offcanvas
         show={showDrawer}
         onHide={closeDrawer}
@@ -194,63 +153,15 @@ const PublicNavbar = () => {
               </Nav.Link>
             ))}
           </Nav>
-
-          <div className="mt-3">
-            {!isLoggedIn ? (
-              <>
-                <Button
-                  variant="primary"
-                  onClick={() => {
-                    openLoginModal();
-                    closeDrawer();
-                  }}
-                  className="w-100 mb-2"
-                >
-                  Login
-                </Button>
-                <Button
-                  variant="outline-success"
-                  onClick={() => {
-                    closeDrawer();
-                    handleAdminClick();
-                  }}
-                  className="w-100"
-                >
-                  Admin
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  variant="danger"
-                  onClick={handleLogout}
-                  className="w-100"
-                >
-                  Logout
-                </Button>
-                <Button
-                  variant="success"
-                  onClick={() => {
-                    closeDrawer();
-                    handleAdminClick();
-                  }}
-                  className="w-100 mt-2"
-                >
-                  Admin
-                </Button>
-              </>
-            )}
-          </div>
         </Offcanvas.Body>
       </Offcanvas>
 
-      {/* User Login Modal */}
+      {/* Login Modal */}
       <Modal
         show={showLoginModal}
         onHide={closeLoginModal}
         centered
-        backdropClassName="modal-backdrop-custom"
-        dialogClassName="modal-dialog-centered modal-lg"
+        dialogClassName="modal-lg"
       >
         <div className="modal-content custom-bg">
           <Modal.Header closeButton className="custom-bg">
@@ -267,29 +178,24 @@ const PublicNavbar = () => {
         </div>
       </Modal>
 
-      {/* Admin Login Modal */}
-      {showAdminModal && (
-        <Modal
-          show={showAdminModal}
-          onHide={() => setShowAdminModal(false)}
-          centered
-        >
-          <Modal.Header closeButton className="bg-dark text-white">
-            <Modal.Title className="mx-auto">Admin Panel Login</Modal.Title>
+      {/* Register Modal */}
+      <Modal
+        show={showRegisterModal}
+        onHide={closeRegisterModal}
+        centered
+        dialogClassName="modal-lg"
+      >
+        <div className="modal-content custom-bg">
+          <Modal.Header closeButton className="custom-bg">
+            <Modal.Title className="w-100 text-center">
+              Register for ExpertOnBoard
+            </Modal.Title>
           </Modal.Header>
-          <Modal.Body className="bg-light">
-            <AdminLoginPopup
-              onClose={() => setShowAdminModal(false)}
-              onAdminLoginSuccess={() => {
-                setShowAdminModal(false);
-                setIsLoggedIn(true);
-                setIsAdminLoggedIn(true);
-                navigate("/admin");
-              }}
-            />
+          <Modal.Body className="custom-bg">
+            <RegisterationForm onClose={closeRegisterModal} />
           </Modal.Body>
-        </Modal>
-      )}
+        </div>
+      </Modal>
 
       <style>{`
         .nav-custom {
@@ -297,7 +203,6 @@ const PublicNavbar = () => {
           position: relative;
           transition: all 0.2s ease-in-out;
         }
-
         .nav-custom::after {
           content: '';
           position: absolute;
@@ -308,30 +213,13 @@ const PublicNavbar = () => {
           background-color: #0d6efd;
           transition: width 0.3s ease;
         }
-
-        .nav-custom:hover::after {
-          width: 100%;
-        }
-
+        .nav-custom:hover::after,
         .active-nav::after {
           width: 100%;
         }
-
         .nav-custom:hover {
           color: #0d6efd;
         }
-
-        @media (max-width: 991.98px) {
-          .offcanvas {
-            width: 50% !important;
-          }
-        }
-
-        .modal-backdrop-custom {
-          background-color: rgba(0, 0, 0, 0.6);
-          backdrop-filter: blur(3px);
-        }
-
         .modal-content.custom-bg {
           background-image: url('/images/bg3.png');
           background-size: cover;
@@ -341,7 +229,6 @@ const PublicNavbar = () => {
           border: none;
           box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
-
         .modal-header.custom-bg {
           background: rgba(0, 0, 0, 0.4);
           border-bottom: none;
@@ -349,7 +236,6 @@ const PublicNavbar = () => {
           font-weight: 700;
           justify-content: center;
         }
-
         .modal-body.custom-bg {
           border-radius: 0 0 1rem 1rem;
           padding: 2rem;
@@ -357,29 +243,6 @@ const PublicNavbar = () => {
           justify-content: center;
           align-items: center;
           background: transparent;
-        }
-
-        .modal-body.custom-bg .login-box {
-          background: rgba(255, 255, 255, 0.9);
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-          border-radius: 1rem;
-          padding: 2rem;
-          max-width: 400px;
-          width: 100%;
-          color: #000;
-        }
-
-        .modal-body.custom-bg .btn-primary {
-          font-weight: 700;
-          font-size: 1.1rem;
-          border-radius: 0.75rem;
-          padding: 0.5rem 0;
-          width: 100%;
-        }
-
-        .modal-header.custom-bg .btn-close {
-          filter: invert(1) brightness(2);
-          opacity: 1;
         }
       `}</style>
     </>
