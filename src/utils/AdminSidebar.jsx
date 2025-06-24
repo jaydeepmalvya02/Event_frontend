@@ -3,6 +3,7 @@ import {
   FaBoxOpen,
   FaClipboardList,
   FaEdit,
+  FaLaptop,
   FaPeopleCarry,
   FaSignOutAlt,
   FaSpeakerDeck,
@@ -88,6 +89,17 @@ const AdminSidebar = () => {
           >
             <FaStore />
             <span>Speakers</span>
+          </NavLink>
+          <NavLink
+            to="/admin/admin-job"
+            className={({ isActive }) =>
+              isActive
+                ? "bg-gray-700 text-white py-3 px-4 rounded flex items-center space-x-2"
+                : "text-gray-300 hover:bg-gray-700 hover:text-white py-3 px-4 rounded flex items-center space-x-2"
+            }
+          >
+            <FaLaptop />
+            <span>Job Management</span>
           </NavLink>
         </nav>
         <div className="mt-6">

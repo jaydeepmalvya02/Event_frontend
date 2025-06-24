@@ -20,6 +20,8 @@ import AdminHomePage from "./utils/AdminHomePage";
 import AdminLayout from "./utils/AdminLayout";
 import AdminEvent from "./components/AdminEvent";
 import AdminSpeaker from "./utils/AdminSpeaker";
+import AdminJobPanel from "./jobs/AdminJobPanel";
+import FindJobs from "./jobs/FindJobs";
 
 const App = () => {
   return (
@@ -33,6 +35,7 @@ const App = () => {
         <Route path="/speakers" element={<Speaker />} />{" "}
         {/* Placeholder for speakers page */}
         <Route path="/EventDetails" element={<EventDetails />} />
+        <Route path="/findJobs" element={<FindJobs />} />
         <Route path="/liveEvents/:eventId" element={<EventWebinarPage />} />
         <Route path="about" element={<AboutPage />} />
         <Route
@@ -49,6 +52,7 @@ const App = () => {
           <Route path="adminSpeaker" element={<AdminSpeaker />} />
           <Route path="stat" element={<AnalyticsDashboard />} />
           <Route path="newEvent" element={<AdminEvent />} />
+          <Route path="admin-job" element={<AdminJobPanel />} />
         </Route>
       </Routes>
       <Footer />

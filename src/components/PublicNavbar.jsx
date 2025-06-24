@@ -57,6 +57,7 @@ const PublicNavbar = () => {
     { to: "/", label: "Home" },
     { to: "/speakers", label: "Speakers" },
     { to: "/EventDetails", label: "Events" },
+    { to: "/findJobs", label: "Jobs" },
     { to: "/about", label: "About" },
     { to: "/contact", label: "Contact Us" },
   ];

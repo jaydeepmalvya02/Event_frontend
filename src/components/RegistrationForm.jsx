@@ -120,7 +120,7 @@ const RegistrationForm = ({ onEmailExists, onSuccess }) => {
 
       if (response.ok) {
         onSuccess();
-        toast.success("Registration successful! 🎉", { autoClose: 5000 });
+        toast.success("Registration successful! 🎉", { autoClose: 3000 });
         sendWhatsappWelcomeMessage(formData.mobile);
         localStorage.setItem("user", JSON.stringify(formData));
         setFormData({
