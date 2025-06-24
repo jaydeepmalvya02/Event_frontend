@@ -111,16 +111,13 @@ const EventDetails = () => {
                 />
 
                 <p className="mb-1">
-                  
                   <strong>Date:</strong>{" "}
                   {new Date(currentEvent.date).toDateString()}
                 </p>
                 <p className="mb-1">
-                 
                   <strong>Time:</strong> {currentEvent.time}
                 </p>
                 <p className="mb-3">
-                
                   <strong>Mode:</strong> {currentEvent.mode}
                 </p>
 
@@ -181,52 +178,51 @@ const EventDetails = () => {
         </div>
       )}
 
-      {/* Highlights Grid */}
       {passedEvents.length > 0 && (
         <div className="mt-5">
-          <h4 className="fw-bold text-info mb-3 fs-2 d-flex align-items-center gap-2">
+          <h4 className="fw-bold text-info mb-4 fs-2 d-flex align-items-center gap-2">
             <FaRegCalendarCheck /> Past Events
           </h4>
-          <div className="row justify-content-center g-4">
-            {passedEvents.map((event, index) => (
-              <div key={index} className="col-12 col-md-6">
-                <div className="card h-100 shadow border-0 rounded-4">
+          {passedEvents.map((event, index) => (
+            <div
+              key={index}
+              className="card shadow border-0 rounded-4 p-3 p-md-4 mb-4 bg-light"
+            >
+              <div className="row g-4 align-items-center">
+                <div className="col-lg-6">
                   <img
                     src={event.image || event.coverImages?.[0]}
-                    alt={`Highlight ${index}`}
-                    className="card-img-top rounded-top"
+                    alt={`Event ${index}`}
+                    className="img-fluid rounded-3 w-100"
                     style={{
-                      objectFit: "contain",
-                      height: "220px",
+                      objectFit: "cover",
+                      maxHeight: "400px",
+                      aspectRatio: "16 / 9",
                     }}
                   />
-                  <div className="card-body bg-white p-3 d-flex flex-column">
-                    <h5 className="fw-bold text-primary">{event.title}</h5>
-                    <p className="text-muted small">{event.description}</p>
-                    <p className="mb-1">
-                      <AiOutlineClockCircle className="inline me-2 text-warning" />
-                      <strong>Date:</strong>{" "}
-                      {new Date(event.date).toDateString()}
-                    </p>
-                    <p className="mb-1">
-                      <AiOutlineClockCircle className="inline me-2 text-warning" />
-                      <strong>Time:</strong> {event.time}
-                    </p>
-                    <p className="mb-3">
-                      <AiOutlineClockCircle className="inline me-2 text-warning" />
-                      <strong>Mode:</strong> {event.mode}
-                    </p>
-                    <button
-                      onClick={() => navigate(`/liveEvents/${event._id}`)}
-                      className="btn btn-outline-primary mt-auto"
-                    >
-                      🔗 Watch Highlight
-                    </button>
-                  </div>
+                </div>
+                <div className="col-lg-6">
+                  <h4 className="fw-bold text-primary mb-2">{event.title}</h4>
+                  <p className="text-muted">{event.description}</p>
+                  <p className="mb-1">
+                    <strong>Date:</strong> {new Date(event.date).toDateString()}
+                  </p>
+                  <p className="mb-1">
+                    <strong>Time:</strong> {event.time}
+                  </p>
+                  <p className="mb-3">
+                    <strong>Mode:</strong> {event.mode}
+                  </p>
+                  <button
+                    onClick={() => navigate(`/liveEvents/${event._id}`)}
+                    className="btn btn-outline-primary"
+                  >
+                    🔗 Watch Highlight
+                  </button>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       )}
     </div>

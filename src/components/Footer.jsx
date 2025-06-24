@@ -202,16 +202,53 @@ const Footer = () => {
                   {loading ? "Subscribing..." : "Subscribe"}
                 </button>
               </form>
+              {/* Admin Button */}
+              <div className="mt-4 w-full ">
+                <Button className="w-full"
+                  variant={
+                    localStorage.getItem("user") &&
+                    JSON.parse(localStorage.getItem("user"))?.user?.role ===
+                      "admin"
+                      ? "success"
+                      : "outline-dark"
+                  }
+                  size="sm"
+                  onClick={() => {
+                    const storedUser = localStorage.getItem("user");
+                    try {
+                      const parsedUser = JSON.parse(storedUser);
+                      if (parsedUser?.user?.role === "admin") {
+                        navigate("/admin");
+                        window.scrollTo(0, 0);
+                      } else {
+                        setShowAdminModal(true);
+                      }
+                    } catch (err) {
+                      console.error("Invalid user data in localStorage", err);
+                      setShowAdminModal(true);
+                    }
+                  }}
+                >
+                  {localStorage.getItem("user") &&
+                  JSON.parse(localStorage.getItem("user"))?.user?.role ===
+                    "admin"
+                    ? "Go to Admin Panel"
+                    : "Admin Login"}
+                </Button>
+              </div>
             </div>
           </div>
 
           {/* Bottom Bar */}
-          <div className="md:flex justify-between text-center text-sm text-gray-600 border-t border-gray-300 pt-4">
-            <p className="mb-2 md:mb-0">
-              &copy; {new Date().getFullYear()} Designed and Developed By
+          <div className="border-t border-gray-300 pt-4 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-600">
+            {/* Copyright */}
+            <p className="text-center">
+              &copy; {new Date().getFullYear()} Designed and Developed by
               InstaMD. All rights reserved.
             </p>
-            <div className="flex justify-center gap-4">
+
+            {/* Footer Links */}
+            <div className="flex flex-wrap justify-center gap-4">
               <span
                 onClick={() => handleNavigate("/privacy")}
                 className="hover:text-indigo-600 transition cursor-pointer"
@@ -231,39 +268,6 @@ const Footer = () => {
                 FAQ
               </span>
             </div>
-          </div>
-
-          {/* Admin Button */}
-          <div className="text-center mt-4">
-            <Button
-              variant={
-                localStorage.getItem("user") &&
-                JSON.parse(localStorage.getItem("user"))?.user?.role === "admin"
-                  ? "success"
-                  : "outline-dark"
-              }
-              size="sm"
-              onClick={() => {
-                const storedUser = localStorage.getItem("user");
-                try {
-                  const parsedUser = JSON.parse(storedUser);
-                  if (parsedUser?.user?.role === "admin") {
-                    navigate("/admin");
-                    window.scrollTo(0, 0);
-                  } else {
-                    setShowAdminModal(true);
-                  }
-                } catch (err) {
-                  console.error("Invalid user data in localStorage", err);
-                  setShowAdminModal(true);
-                }
-              }}
-            >
-              {localStorage.getItem("user") &&
-              JSON.parse(localStorage.getItem("user"))?.user?.role === "admin"
-                ? "Go to Admin Panel"
-                : "Admin Login"}
-            </Button>
           </div>
         </div>
       </footer>

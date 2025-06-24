@@ -118,18 +118,7 @@ const Login = ({ onLoginSuccess, onClose }) => {
 
   return (
     <div className="container mt-5" style={{ maxWidth: 500 }}>
-      <ToastContainer
-        position="top-center"
-        autoClose={1000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
+   
       <h2 className="text-center mb-4">{isLogin ? "Login" : "Register"}</h2>
       <form>
         {!isLogin && (

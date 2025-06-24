@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useParams, } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
 
 const EventWebinarPage = () => {
-  const { eventId } = useParams(); // get ID from URL
+  const { eventId } = useParams();
   const [videoId, setVideoId] = useState("");
   const [question, setQuestion] = useState("");
-  // const [status, setStatus] = useState(null);
-  const navigate = useNavigate();
+  const [eventData, setEventData] = useState(null);
+  // const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEventVideo = async () => {
@@ -16,13 +16,12 @@ const EventWebinarPage = () => {
           `https://event-nine-xi.vercel.app/api/admin/event/${eventId}`
         );
         const data = await response.json();
-        console.log(data);
-        
+
         if (!data.eventLink) throw new Error("Video ID missing.");
         setVideoId(data.eventLink);
+        setEventData(data);
       } catch (err) {
         console.error(err);
-        
         toast.error("Failed to load event video.");
       }
     };
@@ -50,52 +49,79 @@ const EventWebinarPage = () => {
       setQuestion("");
     } catch (error) {
       console.error(error);
-      
       toast.error("Submission failed.");
     }
   };
 
   return (
-    <div className="bg-grey text-light min-vh-100">
-      <div className="container py-4">
-        <div className="ratio ratio-16x9 mb-4">
-          {videoId ? (
-            <iframe
-              src={`https://www.youtube.com/embed/${videoId}`}
-              title="Live Event"
-              allowFullScreen
-            ></iframe>
-          ) : (
-            <div className="text-muted text-center">Loading video...</div>
-          )}
+    <div className="bg-light min-vh-100 py-4">
+      <ToastContainer />
+      <div className="container">
+        {/* Title Centered at Top */}
+        {eventData && (
+          <h2 className="text-center fw-bold text-primary mb-4">
+            {eventData.title}
+          </h2>
+        )}
+
+        {/* Main Row: Video + Interaction */}
+        <div className="row g-4 mb-4">
+          <div className="col-lg-8">
+            <div className="ratio ratio-16x9 rounded shadow">
+              {videoId ? (
+                <iframe
+                  src={`https://www.youtube.com/embed/${videoId}`}
+                  title="Live Event"
+                  allowFullScreen
+                ></iframe>
+              ) : (
+                <div className="text-muted text-center pt-5">
+                  Loading video...
+                </div>
+              )}
+            </div>
+
+            {/* Description Below Video Frame */}
+            {eventData?.description && (
+              <div className="mt-3 p-3 bg-white rounded shadow-sm">
+                <h5 className="fw-semibold">About the Event:</h5>
+                <p className="text-muted mb-0">{eventData.description}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Question Form & Logout */}
+          <div className="col-lg-4">
+            <form
+              className="bg-white p-4 rounded shadow"
+              onSubmit={handleSubmit}
+            >
+              <h5 className="mb-3 fw-bold text-primary">Ask a Question</h5>
+              <textarea
+                className="form-control mb-3"
+                rows="4"
+                value={question}
+                placeholder="Type your question..."
+                onChange={(e) => setQuestion(e.target.value)}
+                required
+              />
+              <button type="submit" className="btn btn-primary w-100 mb-2">
+                Submit Question
+              </button>
+            </form>
+            {/* <button
+              onClick={() => {
+                localStorage.clear();
+                navigate("/");
+              }}
+              className="btn btn-outline-danger w-100 mt-3"
+            >
+              Logout
+            </button> */}
+          </div>
         </div>
 
-        <form
-          className="bg-light p-3 rounded shadow-sm"
-          onSubmit={handleSubmit}
-        >
-          <textarea
-            className="form-control mb-3"
-            rows="3"
-            value={question}
-            placeholder="Type your question..."
-            onChange={(e) => setQuestion(e.target.value)}
-            required
-          />
-          <button type="submit" className="btn btn-primary">
-            Submit Question
-          </button>
-        </form>
-
-        <button
-          onClick={() => {
-            localStorage.clear();
-            navigate("/");
-          }}
-          className="btn btn-danger mt-3"
-        >
-          Logout
-        </button>
+       
       </div>
     </div>
   );

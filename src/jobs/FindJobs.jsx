@@ -7,36 +7,37 @@ import {
   Row,
   Col,
   Spinner,
-  Table,
   Modal,
 } from "react-bootstrap";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const FindJobs = () => {
   const [jobs, setJobs] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState("card");
 
-  const [showCreateModal, setShowCreateModal] = useState(false);
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
-  const [newJob, setNewJob] = useState({
-    title: "",
-    company: "",
-    location: "",
-    type: "",
-    experience: "",
-    description: "",
-  });
-  const baseUrl = "https://event-nine-xi.vercel.app";
+
+  const userData = JSON.parse(localStorage.getItem("user")) || {};
   const [resumeFile, setResumeFile] = useState(null);
+
   const [candidateData, setCandidateData] = useState({
-    name: "",
-    email: "",
-    phone: "",
+    name: userData.name || "",
+    email: userData.email || "",
+    phone: userData.mobile || "",
+    department: "",
   });
+
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedType, setSelectedType] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+
+  const navigate = useNavigate();
+  const baseUrl = "https://event-nine-xi.vercel.app";
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -53,274 +54,328 @@ const FindJobs = () => {
     fetchJobs();
   }, []);
 
-  const handleSearch = (value) => {
-    setSearch(value);
-    const keyword = value.toLowerCase();
-    const result = jobs.filter((job) =>
-      [job.title, job.company, job.location].some((field) =>
-        field?.toLowerCase().includes(keyword)
-      )
-    );
+  const handleFilter = () => {
+    const keyword = search.toLowerCase();
+
+    const result = jobs.filter((job) => {
+      const matchSearch =
+        !keyword ||
+        [job.title, job.company, job.location].some((field) =>
+          field?.toLowerCase().includes(keyword)
+        );
+      const matchLocation =
+        !selectedLocation || job.location === selectedLocation;
+      const matchType = !selectedType || job.type === selectedType;
+      const matchDepartment =
+        !selectedDepartment || job.department === selectedDepartment;
+
+      return matchSearch && matchLocation && matchType && matchDepartment;
+    });
+
     setFiltered(result);
   };
 
-  const handleCreateJob = async () => {
-    try {
-      const res = await axios.post(`${baseUrl}/api/jobs`, newJob);
-      const savedJob = res.data.savedJob;
-      setJobs((prev) => [...prev, savedJob]);
-      setFiltered((prev) => [...prev, savedJob]);
-      setShowCreateModal(false);
-    } catch (err) {
-      console.error("Error creating job:", err);
-    }
-  };
-
   const handleApply = async () => {
-    if (
-      !resumeFile ||
-      !selectedJob ||
-      !candidateData.name ||
-      !candidateData.email
-    ) {
-      alert("Please fill all required fields and upload your resume.");
+    if (!selectedJob) {
+      alert("Please select a job.");
       return;
     }
 
     try {
-      const fileFormData = new FormData();
-      fileFormData.append("pdf", resumeFile);
+      let resumeUrl = localStorage.getItem("resumeUrl");
 
-      const uploadRes = await axios.post(`${baseUrl}/api/uploadPdf`, fileFormData);
-      const resumeUrl = uploadRes.data?.url;
-      if (!resumeUrl) throw new Error("Resume upload failed");
+      if (!resumeUrl) {
+        if (!resumeFile) {
+          alert("Please upload your resume.");
+          return;
+        }
+
+        const fileFormData = new FormData();
+        fileFormData.append("pdf", resumeFile);
+
+        const uploadRes = await axios.post(
+          `${baseUrl}/api/uploadPdf`,
+          fileFormData
+        );
+        resumeUrl = uploadRes.data?.url;
+        if (!resumeUrl) throw new Error("Resume upload failed");
+
+        localStorage.setItem("resumeUrl", resumeUrl);
+      }
 
       const payload = {
         jobId: selectedJob._id,
-        name: candidateData.name,
-        email: candidateData.email,
-        phone: candidateData.phone,
+        name: userData.name,
+        email: userData.email,
+        phone: userData.mobile,
         resumeUrl,
-        jobData: {
-          _id: selectedJob._id,
-          title: selectedJob.title,
-          company: selectedJob.company,
-          location: selectedJob.location,
-          type: selectedJob.type,
-          experience: selectedJob.experience,
-          description: selectedJob.description,
-          createdAt: selectedJob.createdAt,
-          updatedAt: selectedJob.updatedAt,
-        },
+        department: candidateData.department,
+        jobData: selectedJob,
       };
 
-      await axios.post(`${baseUrl}/api/jobs/apply`, payload);
-      alert("🎉 Application submitted successfully!");
+     const {data}= await axios.post(`${baseUrl}/api/jobs/apply`, payload);
+     if(data.success){
+      toast.success(" Application submitted successfully!");
       setShowApplyModal(false);
-      setCandidateData({ name: "", email: "", phone: "" });
+      setCandidateData((prev) => ({ ...prev, department: "" }));
       setResumeFile(null);
+     }
+     
     } catch (err) {
       console.error("Failed to apply:", err);
-      alert("❌ Failed to apply. Please try again.");
+      toast.error(" Failed to apply. Please try again.");
     }
   };
 
+  const unique = (field) => Array.from(new Set(jobs.map((job) => job[field])));
+
   return (
-    <div className="container py-5">
-      <h2 className="text-center mb-4 text-white">Explore Job Opportunities</h2>
-
-      <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-        <InputGroup className="flex-grow-1">
-          <Form.Control
-            placeholder="🔍 Search by title, company, or location"
-            value={search}
-            onChange={(e) => handleSearch(e.target.value)}
-          />
-          <Button variant="outline-secondary" onClick={() => handleSearch("")}>
-            Reset
-          </Button>
-        </InputGroup>
-
-        <div className="d-flex gap-2">
-          <Button variant="primary" onClick={() => setShowCreateModal(true)}>
-            Create Job Opening
-          </Button>
-          <Button
-            variant="light"
-            onClick={() => setViewMode(viewMode === "card" ? "table" : "card")}
-          >
-            Switch to {viewMode === "card" ? "Table View" : "Card View"}
+    <section className="job-section">
+      <div className="container py-5">
+        <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+          <h2 className="text-gray-800 font-serif">
+            Explore Job Opportunities
+          </h2>
+          <Button variant="primary" onClick={() => navigate("/createJobs")}>
+            + Create Job
           </Button>
         </div>
-      </div>
 
-      {loading ? (
-        <div className="text-center my-5">
-          <Spinner animation="border" />
-        </div>
-      ) : filtered.length === 0 ? (
-        <p className="text-white text-center">No jobs found.</p>
-      ) : viewMode === "card" ? (
-        <Row xs={1} md={2} lg={3} className="g-4">
-          {filtered.map((job) => (
-            <Col key={job._id}>
-              <Card className="h-100 shadow-sm">
-                <Card.Body>
-                  <Card.Title>{job.title}</Card.Title>
-                  <Card.Subtitle className="mb-2 text-muted">
-                    {job.company}
-                  </Card.Subtitle>
-                  <Card.Text>
-                    <strong>Location:</strong> {job.location} <br />
-                    <strong>Type:</strong> {job.type} <br />
-                    <strong>Experience:</strong> {job.experience} yrs
-                  </Card.Text>
-                  <Card.Text className="small text-muted">
-                    {job.description?.slice(0, 100)}...
-                  </Card.Text>
-                  <Button
-                    variant="outline-success"
-                    onClick={() => {
-                      setSelectedJob(job);
-                      setShowApplyModal(true);
-                    }}
-                  >
-                    Apply
-                  </Button>
-                </Card.Body>
-              </Card>
+        {/* Unified Search and Filter Bar */}
+        <Card className="p-3 mb-4 shadow-sm bg-light">
+          <Row className="g-2 align-items-center">
+            <Col md={3} sm={6}>
+              <Form.Control
+                placeholder="Search title, company, location"
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  handleFilter();
+                }}
+              />
             </Col>
-          ))}
-        </Row>
-      ) : (
-        <div className="table-responsive">
-          <Table striped bordered hover responsive>
-            <thead className="table-dark">
-              <tr>
-                <th>Title</th>
-                <th>Company</th>
-                <th>Location</th>
-                <th>Type</th>
-                <th>Experience</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((job) => (
-                <tr key={job._id}>
-                  <td>{job.title}</td>
-                  <td>{job.company}</td>
-                  <td>{job.location}</td>
-                  <td>{job.type}</td>
-                  <td>{job.experience} yrs</td>
-                  <td>{job.description?.slice(0, 100)}...</td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </div>
-      )}
+            <Col md={3} sm={6}>
+              <Form.Select
+                value={selectedLocation}
+                onChange={(e) => {
+                  setSelectedLocation(e.target.value);
+                  handleFilter();
+                }}
+              >
+                <option value="">All Locations</option>
+                {unique("location").map((loc) => (
+                  <option key={loc}>{loc}</option>
+                ))}
+              </Form.Select>
+            </Col>
+            <Col md={3} sm={6}>
+              <Form.Select
+                value={selectedType}
+                onChange={(e) => {
+                  setSelectedType(e.target.value);
+                  handleFilter();
+                }}
+              >
+                <option value="">All Types</option>
+                {unique("type").map((type) => (
+                  <option key={type}>{type}</option>
+                ))}
+              </Form.Select>
+            </Col>
+            <Col md={3} sm={6}>
+              <Form.Select
+                value={selectedDepartment}
+                onChange={(e) => {
+                  setSelectedDepartment(e.target.value);
+                  handleFilter();
+                }}
+              >
+                <option value="">All Departments</option>
+                {unique("department").map((dept) => (
+                  <option key={dept}>{dept}</option>
+                ))}
+              </Form.Select>
+            </Col>
+            <Col xs={12} className="d-flex justify-content-end mt-2">
+              <Button
+                variant="outline-dark"
+                size="sm"
+                onClick={() => {
+                  setSearch("");
+                  setSelectedLocation("");
+                  setSelectedType("");
+                  setSelectedDepartment("");
+                  setFiltered(jobs);
+                }}
+              >
+                Reset Filters
+              </Button>
+            </Col>
+          </Row>
+        </Card>
 
-      {/* Create Modal */}
-      <Modal show={showCreateModal} onHide={() => setShowCreateModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Create Job Opening</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            {[
-              "title",
-              "company",
-              "location",
-              "type",
-              "experience",
-              "description",
-            ].map((field) => (
-              <Form.Group className="mb-3" key={field}>
+        {/* Job Listings */}
+        {loading ? (
+          <div className="text-center my-5">
+            <Spinner animation="border" />
+          </div>
+        ) : filtered.length === 0 ? (
+          <p className="text-center text-muted">No jobs found.</p>
+        ) : (
+          <Row xs={1} className="g-4">
+            {filtered.map((job) => (
+              <Col key={job._id}>
+                <Card className="h-100 shadow job-card border-0 rounded-4 bg-white bg-opacity-75">
+                  <Card.Body>
+                    <Card.Title>{job.title}</Card.Title>
+                    <Card.Subtitle className="mb-2 text-muted">
+                      {job.company}
+                    </Card.Subtitle>
+                    <Card.Text>
+                      <strong>Location:</strong> {job.location} <br />
+                      <strong>Type:</strong> {job.type} <br />
+                      <strong>Department:</strong> {job.department} <br />
+                      <strong>Experience:</strong> {job.experience} yrs
+                    </Card.Text>
+                    <Card.Text className="small text-muted">
+                      {job.description?.slice(0, 100)}...
+                    </Card.Text>
+                    <Button
+                      variant="outline-success"
+                      onClick={() => {
+                        setSelectedJob(job);
+                        setShowApplyModal(true);
+                      }}
+                    >
+                      Apply
+                    </Button>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        )}
+
+        {/* Apply Modal */}
+        <Modal
+          show={showApplyModal}
+          onHide={() => setShowApplyModal(false)}
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Apply to {selectedJob?.title}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              {["name", "email", "phone"].map((field) => (
+                <Form.Group className="mb-3" key={field}>
+                  <Form.Label>
+                    {field.charAt(0).toUpperCase() + field.slice(1)}*
+                  </Form.Label>
+                  <Form.Control
+                    type={field === "email" ? "email" : "text"}
+                    value={candidateData[field]}
+                    onChange={(e) =>
+                      setCandidateData({
+                        ...candidateData,
+                        [field]: e.target.value,
+                      })
+                    }
+                    required
+                  />
+                </Form.Group>
+              ))}
+
+              <Form.Group className="mb-3">
+                <Form.Label>Department*</Form.Label>
+                <Form.Select
+                  value={candidateData.department}
+                  onChange={(e) =>
+                    setCandidateData({
+                      ...candidateData,
+                      department: e.target.value,
+                    })
+                  }
+                  required
+                >
+                  <option value="">Select Department</option>
+                  <option value="Technical">Technical</option>
+                  <option value="Sales Marketing">Sales Marketing</option>
+                  <option value="Customer Support">Customer Support</option>
+                </Form.Select>
+              </Form.Group>
+
+              <Form.Group className="mb-2">
                 <Form.Label>
-                  {field.charAt(0).toUpperCase() + field.slice(1)}
+                  Upload Resume (PDF only){" "}
+                  {localStorage.getItem("resumeUrl") && (
+                    <span className="text-success">(Already uploaded)</span>
+                  )}
                 </Form.Label>
                 <Form.Control
-                  type={field === "experience" ? "number" : "text"}
-                  value={newJob[field]}
-                  onChange={(e) =>
-                    setNewJob({ ...newJob, [field]: e.target.value })
-                  }
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => setResumeFile(e.target.files[0])}
+                  disabled={!!localStorage.getItem("resumeUrl")}
                 />
+                {localStorage.getItem("resumeUrl") && (
+                  <Button
+                    size="sm"
+                    variant="danger"
+                    className="mt-2"
+                    onClick={() => {
+                      localStorage.removeItem("resumeUrl");
+                      alert("Resume removed. You can now upload a new one.");
+                      setResumeFile(null);
+                    }}
+                  >
+                    Remove Resume
+                  </Button>
+                )}
               </Form.Group>
-            ))}
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowCreateModal(false)}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={handleCreateJob}>
-            Post Job
-          </Button>
-        </Modal.Footer>
-      </Modal>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => setShowApplyModal(false)}
+            >
+              Cancel
+            </Button>
+            <Button variant="success" onClick={handleApply}>
+              Submit Application
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
 
-      {/* Apply Modal */}
-      <Modal show={showApplyModal} onHide={() => setShowApplyModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Apply to {selectedJob?.title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>Full Name*</Form.Label>
-              <Form.Control
-                type="text"
-                value={candidateData.name}
-                onChange={(e) =>
-                  setCandidateData({ ...candidateData, name: e.target.value })
-                }
-                required
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Email*</Form.Label>
-              <Form.Control
-                type="email"
-                value={candidateData.email}
-                onChange={(e) =>
-                  setCandidateData({ ...candidateData, email: e.target.value })
-                }
-                required
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Phone Number</Form.Label>
-              <Form.Control
-                type="tel"
-                value={candidateData.phone}
-                onChange={(e) =>
-                  setCandidateData({ ...candidateData, phone: e.target.value })
-                }
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Upload Resume (PDF only)*</Form.Label>
-              <Form.Control
-                type="file"
-                accept=".pdf"
-                onChange={(e) => setResumeFile(e.target.files[0])}
-                required
-              />
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowApplyModal(false)}>
-            Cancel
-          </Button>
-          <Button variant="success" onClick={handleApply}>
-            Submit Application
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </div>
+      <style>
+        {`
+        .job-section {
+          background: linear-gradient(to right, #f8f9fa, #e9f1ff);
+        }
+
+        .job-card {
+        
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .job-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .job-card .card-title {
+          color: #0d6efd;
+          font-weight: 600;
+        }
+
+        .job-card .card-subtitle {
+          font-weight: 500;
+        }
+      `}
+      </style>
+    </section>
   );
 };
 

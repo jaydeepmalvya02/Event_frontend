@@ -22,11 +22,14 @@ import AdminEvent from "./components/AdminEvent";
 import AdminSpeaker from "./utils/AdminSpeaker";
 import AdminJobPanel from "./jobs/AdminJobPanel";
 import FindJobs from "./jobs/FindJobs";
+import JobPostingForm from "./jobs/JobPostingForm";
+import { ToastContainer } from "react-toastify";
 
 const App = () => {
   return (
     <div>
       <TrackVisitor />
+      <ToastContainer position="top-center" autoClose={3000} />
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -36,6 +39,7 @@ const App = () => {
         {/* Placeholder for speakers page */}
         <Route path="/EventDetails" element={<EventDetails />} />
         <Route path="/findJobs" element={<FindJobs />} />
+        <Route path="/createJobs" element={<JobPostingForm />} />
         <Route path="/liveEvents/:eventId" element={<EventWebinarPage />} />
         <Route path="about" element={<AboutPage />} />
         <Route

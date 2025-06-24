@@ -10,7 +10,7 @@ import {
 import { NavLink, useNavigate } from "react-router-dom";
 import logo from "/images/ExpertLogo.jpeg";
 import Login from "./Login";
-import RegisterationForm from "./RegistrationForm"; // ✅ Your registration form component
+import RegisterationForm from "./RegistrationForm";
 
 const PublicNavbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,12 +20,15 @@ const PublicNavbar = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
     try {
-      const user = JSON.parse(storedUser);
-      if (user && user.user && user.user.email) {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      console.log("Stored user:", storedUser);
+
+      if (storedUser?.email) {
+        console.log("User is logged in:", storedUser.email);
         setIsLoggedIn(true);
       } else {
+        console.log("No user email found, logging out.");
         setIsLoggedIn(false);
       }
     } catch (error) {
@@ -34,6 +37,7 @@ const PublicNavbar = () => {
     }
   }, []);
   
+
   const toggleDrawer = () => setShowDrawer(!showDrawer);
   const closeDrawer = () => setShowDrawer(false);
   const openLoginModal = () => setShowLoginModal(true);
@@ -53,14 +57,28 @@ const PublicNavbar = () => {
     closeDrawer();
   };
 
-  const navLinks = [
+  const publicLinks = [
     { to: "/", label: "Home" },
+    { to: "/about", label: "About" },
+  ];
+
+  const protectedLinks = [
     { to: "/speakers", label: "Speakers" },
     { to: "/EventDetails", label: "Events" },
     { to: "/findJobs", label: "Jobs" },
-    { to: "/about", label: "About" },
-    { to: "/contact", label: "Contact Us" },
+   
+
   ];
+
+  const handleProtectedClick = (e, to) => {
+    if (!isLoggedIn) {
+      e.preventDefault();
+      setShowLoginModal(true);
+    } else {
+      navigate(to);
+      closeDrawer();
+    }
+  };
 
   return (
     <>
@@ -74,16 +92,18 @@ const PublicNavbar = () => {
             <img src={logo} alt="Logo" width="80" height="80" />
           </Navbar.Brand>
 
-          <Navbar.Collapse
-            id="navbar-nav"
-            className="d-none d-lg-flex justify-content-center"
-          >
+          <Navbar.Collapse className="d-none d-lg-flex justify-content-center">
             <Nav className="text-center gap-3">
-              {navLinks.map(({ to, label }) => (
+              {[...publicLinks, ...protectedLinks].map(({ to, label }) => (
                 <Nav.Link
                   key={to}
                   as={NavLink}
                   to={to}
+                  onClick={(e) =>
+                    protectedLinks.some((link) => link.to === to) &&
+                    !isLoggedIn &&
+                    handleProtectedClick(e, to)
+                  }
                   className={({ isActive }) =>
                     `fw-semibold nav-custom ${
                       isActive ? "text-primary active-nav" : "text-dark"
@@ -122,28 +142,23 @@ const PublicNavbar = () => {
         </Container>
       </Navbar>
 
-      {/* Drawer for small screens */}
-      <Offcanvas
-        show={showDrawer}
-        onHide={closeDrawer}
-        placement="end"
-        className="w-50"
-      >
-        <Offcanvas.Header
-          closeButton
-          closeVariant="white"
-          className="bg-primary text-white"
-        >
+      {/* Offcanvas Mobile Drawer */}
+      <Offcanvas show={showDrawer} onHide={closeDrawer} placement="end">
+        <Offcanvas.Header closeButton className="bg-primary text-white">
           <Offcanvas.Title>ExpertOnBoard</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body className="p-3">
           <Nav className="flex-column gap-2">
-            {navLinks.map(({ to, label }) => (
+            {[...publicLinks, ...protectedLinks].map(({ to, label }) => (
               <Nav.Link
                 key={to}
                 as={NavLink}
                 to={to}
-                onClick={closeDrawer}
+                onClick={(e) =>
+                  protectedLinks.some((link) => link.to === to) &&
+                  !isLoggedIn &&
+                  handleProtectedClick(e, to)
+                }
                 className={({ isActive }) =>
                   `fw-semibold nav-custom p-3 rounded ${
                     isActive ? "bg-primary text-white" : "text-dark"
