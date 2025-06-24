@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 
 const EventWebinarPage = () => {
@@ -7,7 +7,7 @@ const EventWebinarPage = () => {
   const [videoId, setVideoId] = useState("");
   const [question, setQuestion] = useState("");
   const [eventData, setEventData] = useState(null);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEventVideo = async () => {
@@ -19,7 +19,7 @@ const EventWebinarPage = () => {
 
         if (!data.eventLink) throw new Error("Video ID missing.");
         setVideoId(data.eventLink);
-        setEventData(data);
+        setEventData(data); // Save full event details
       } catch (err) {
         console.error(err);
         toast.error("Failed to load event video.");
@@ -57,13 +57,6 @@ const EventWebinarPage = () => {
     <div className="bg-light min-vh-100 py-4">
       <ToastContainer />
       <div className="container">
-        {/* Title Centered at Top */}
-        {eventData && (
-          <h2 className="text-center fw-bold text-primary mb-4">
-            {eventData.title}
-          </h2>
-        )}
-
         {/* Main Row: Video + Interaction */}
         <div className="row g-4 mb-4">
           <div className="col-lg-8">
@@ -75,22 +68,11 @@ const EventWebinarPage = () => {
                   allowFullScreen
                 ></iframe>
               ) : (
-                <div className="text-muted text-center pt-5">
-                  Loading video...
-                </div>
+                <div className="text-muted text-center pt-5">Loading video...</div>
               )}
             </div>
-
-            {/* Description Below Video Frame */}
-            {eventData?.description && (
-              <div className="mt-3 p-3 bg-white rounded shadow-sm">
-                <h5 className="fw-semibold">About the Event:</h5>
-                <p className="text-muted mb-0">{eventData.description}</p>
-              </div>
-            )}
           </div>
 
-          {/* Question Form & Logout */}
           <div className="col-lg-4">
             <form
               className="bg-white p-4 rounded shadow"
@@ -109,7 +91,7 @@ const EventWebinarPage = () => {
                 Submit Question
               </button>
             </form>
-            {/* <button
+            <button
               onClick={() => {
                 localStorage.clear();
                 navigate("/");
@@ -117,11 +99,18 @@ const EventWebinarPage = () => {
               className="btn btn-outline-danger w-100 mt-3"
             >
               Logout
-            </button> */}
+            </button>
           </div>
         </div>
 
-       
+        {/* Event Details Below */}
+        {eventData && (
+          <div className="bg-white p-4 rounded  text-start">
+            <h4 className="fw-bold text-primary mb-2">{eventData.title}</h4>
+            <p className="text-muted">{eventData.description}</p>
+            
+          </div>
+        )}
       </div>
     </div>
   );
