@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 
 const EventWebinarPage = () => {
@@ -7,7 +7,7 @@ const EventWebinarPage = () => {
   const [videoId, setVideoId] = useState("");
   const [question, setQuestion] = useState("");
   const [eventData, setEventData] = useState(null);
-  const navigate = useNavigate();
+ 
 
   useEffect(() => {
     const fetchEventVideo = async () => {
@@ -91,15 +91,7 @@ const EventWebinarPage = () => {
                 Submit Question
               </button>
             </form>
-            <button
-              onClick={() => {
-                localStorage.clear();
-                navigate("/");
-              }}
-              className="btn btn-outline-danger w-100 mt-3"
-            >
-              Logout
-            </button>
+            
           </div>
         </div>
 
