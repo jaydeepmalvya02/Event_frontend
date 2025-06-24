@@ -46,7 +46,7 @@ const App = () => {
           <Route index element={<AdminHomePage />} />
           <Route path="list" element={<ShowUser />} />
           <Route path="que" element={<QuestionList />} />
-          <Route path="adminSpeaker" element={<AdminSpeaker/>} />
+          <Route path="adminSpeaker" element={<AdminSpeaker />} />
           <Route path="stat" element={<AnalyticsDashboard />} />
           <Route path="newEvent" element={<AdminEvent />} />
         </Route>

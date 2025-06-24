@@ -27,10 +27,8 @@ const ShowUser = () => {
         setUsers(res.data);
         setFilteredUsers(res.data);
         setLoading(false);
-
       } catch (error) {
         console.error(error);
-        
         setError("Failed to fetch users.");
         setLoading(false);
       }
@@ -93,7 +91,6 @@ const ShowUser = () => {
       toast.success("WhatsApp messages sent!");
     } catch (err) {
       console.error(err);
-      
       toast.error("Failed to send WhatsApp messages.");
     }
   };
@@ -117,7 +114,6 @@ const ShowUser = () => {
       setEmailMessage("");
     } catch (error) {
       console.error(error);
-      
       toast.error("Failed to send emails.");
     }
   };
@@ -134,6 +130,9 @@ const ShowUser = () => {
       "City",
       "Mobile",
       "Email",
+      "Role",
+      "LinkedIn",
+      "Experience",
       "OS",
       "Browser",
       "Device Type",
@@ -151,6 +150,9 @@ const ShowUser = () => {
           user.city,
           user.mobile,
           user.email,
+          user.role || "",
+          user.linkedin || "",
+          user.experience || "",
           user.deviceInfo?.os || "",
           user.deviceInfo?.browser || "",
           user.deviceInfo?.deviceType || "",
@@ -243,6 +245,9 @@ const ShowUser = () => {
                 <th>City</th>
                 <th>Mobile</th>
                 <th>Email</th>
+                <th>Role</th>
+                <th>LinkedIn</th>
+                <th>Experience</th>
                 <th>OS</th>
                 <th>Browser</th>
                 <th>Device Type</th>
@@ -267,6 +272,21 @@ const ShowUser = () => {
                     <td>{user.city}</td>
                     <td>{user.mobile}</td>
                     <td>{user.email}</td>
+                    <td>{user.role || "N/A"}</td>
+                    <td>
+                      {user.linkedin ? (
+                        <a
+                          href={user.linkedin}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          LinkedIn
+                        </a>
+                      ) : (
+                        "N/A"
+                      )}
+                    </td>
+                    <td>{user.experience || "N/A"}</td>
                     <td>{user.deviceInfo?.os || "N/A"}</td>
                     <td>{user.deviceInfo?.browser || "N/A"}</td>
                     <td>{user.deviceInfo?.deviceType || "N/A"}</td>
@@ -274,7 +294,7 @@ const ShowUser = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="12" className="text-center text-muted">
+                  <td colSpan="15" className="text-center text-muted">
                     No users found.
                   </td>
                 </tr>

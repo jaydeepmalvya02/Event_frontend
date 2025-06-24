@@ -51,7 +51,7 @@ const AdminLoginPopup = ({ onClose, onAdminLoginSuccess }) => {
 
   return (
     <div className="container mt-4" style={{ maxWidth: 400 }}>
-      <ToastContainer position="top-center" autoClose={4000} theme="colored" />
+      <ToastContainer position="top-center" autoClose={1000} theme="colored" />
       <h4 className="text-center mb-4">Admin Login</h4>
       <form>
         <div className="form-floating mb-3">

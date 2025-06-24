@@ -3,7 +3,9 @@ import {
   FaBoxOpen,
   FaClipboardList,
   FaEdit,
+  FaPeopleCarry,
   FaSignOutAlt,
+  FaSpeakerDeck,
   FaStore,
   FaUser,
 } from "react-icons/fa";

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Facebook,
@@ -58,20 +58,20 @@ const Footer = () => {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        const parsedUser = JSON.parse(storedUser);
-        if (parsedUser?.user?.role === "admin") {
-          navigate("/admin");
-          window.scrollTo(0, 0);
-        }
-      } catch (err) {
-        console.error("Invalid user data in localStorage", err);
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   const storedUser = localStorage.getItem("user");
+  //   if (storedUser) {
+  //     try {
+  //       const parsedUser = JSON.parse(storedUser);
+  //       if (parsedUser?.user?.role === "admin") {
+  //         navigate("/admin");
+  //         window.scrollTo(0, 0);
+  //       }
+  //     } catch (err) {
+  //       console.error("Invalid user data in localStorage", err);
+  //     }
+  //   }
+  // }, []);
   
 
   return (

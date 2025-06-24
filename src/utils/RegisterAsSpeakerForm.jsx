@@ -7,18 +7,18 @@ import "react-toastify/dist/ReactToastify.css";
 const initialState = {
   name: "",
   designation: "",
-  company: "",
+  companyName: "",
   department: "",
   experience: "",
   linkedin: "",
   email: "",
-  phone: "",
+  mobile: "", // ✅ updated from "phone"
   state: "",
   city: "",
   division: "",
-  bio: "",
-  image: "",
+  role: "speaker",
 };
+
 
 const RegisterAsSpeakerForm = ({ onSuccess, onClose }) => {
   const [formData, setFormData] = useState(initialState);
@@ -34,22 +34,25 @@ const RegisterAsSpeakerForm = ({ onSuccess, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    console.log(formData);
+    
     try {
-      const res = await axios.post(
-        "https://event-nine-xi.vercel.app/api/speakers",
+      const { data } = await axios.post(
+        "https://event-nine-xi.vercel.app/api/register",
         formData
       );
-      if (res.status === 200 || res.status === 201) {
+      if (data.success ) {
         toast.success("✅ Speaker registration submitted!");
         setFormData(initialState);
         onSuccess?.();
+        
       } else {
-        toast.error("❌ Submission failed. Try again.");
+        toast.error(data.message);
       }
     } catch (error) {
       console.error(error.message);
       
-      toast.error("❌ Network or server error!");
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -57,7 +60,7 @@ const RegisterAsSpeakerForm = ({ onSuccess, onClose }) => {
 
   return (
     <>
-      <ToastContainer autoClose={1500} pauseOnHover closeOnClick />
+     
       <Form
         onSubmit={handleSubmit}
         className="bg-white rounded shadow p-4"
@@ -94,9 +97,9 @@ const RegisterAsSpeakerForm = ({ onSuccess, onClose }) => {
             <Form.Group className="mb-3">
               <Form.Label>Company*</Form.Label>
               <Form.Control
-                name="company"
+                name="companyName"
                 required
-                value={formData.company}
+                value={formData.companyName}
                 onChange={handleChange}
                 placeholder="Company/Organization"
               />
@@ -160,10 +163,10 @@ const RegisterAsSpeakerForm = ({ onSuccess, onClose }) => {
             <Form.Group className="mb-3">
               <Form.Label>Phone Number*</Form.Label>
               <Form.Control
-                name="phone"
+                name="mobile"
                 type="tel"
                 required
-                value={formData.phone}
+                value={formData.mobile}
                 onChange={handleChange}
                 placeholder="9876543210"
               />
