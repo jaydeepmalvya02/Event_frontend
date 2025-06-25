@@ -1,1 +1,1 @@
-export const trackedPaths = ["/", "/events", "/liveEvents", "/register"];
+export const TrackedPaths = ["/", "/events", "/liveEvents", "/register"];

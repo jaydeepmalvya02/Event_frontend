@@ -2,13 +2,13 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { UAParser } from "ua-parser-js";
-import { trackedPaths } from "../utils/trackedPaths";
+import { TrackedPaths } from "../utils/TrackedPaths";
 
 const TrackVisitor = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (!trackedPaths.includes(location.pathname)) return;
+    if (!TrackedPaths.includes(location.pathname)) return;
 
     const parser = new UAParser();
     const ua = parser.getResult();

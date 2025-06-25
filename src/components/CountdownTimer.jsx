@@ -16,9 +16,7 @@ const CountdownTimer = ({ targetDate }) => {
     const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // 1 hour event duration
 
     // Debug logs — helpful during development
-    console.log("⏰ Now:", now.toISOString());
-    console.log("🟢 StartTime:", startTime.toISOString());
-    console.log("🔴 EndTime:", endTime.toISOString());
+  
 
     if (!startTime || isNaN(startTime)) return;
 

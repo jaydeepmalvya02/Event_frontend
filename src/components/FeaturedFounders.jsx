@@ -97,7 +97,7 @@ const FeaturedFounders = () => {
             )}
           </div>
         ))}
-        <style jsx>{`
+        <style>{`
           .custom-scroll::-webkit-scrollbar {
             width: 0px;
           }
