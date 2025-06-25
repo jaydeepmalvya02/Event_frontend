@@ -1,7 +1,15 @@
 import React, { useState } from "react";
-import { Form, Button, Row, Col, Spinner, ToastContainer } from "react-bootstrap";
+import {
+  Form,
+  Button,
+  Row,
+  Col,
+  Spinner,
+  ToastContainer,
+} from "react-bootstrap";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const initialState = {
   title: "",
@@ -16,8 +24,10 @@ const initialState = {
 const JobPostingForm = ({ onSuccess }) => {
   const [formData, setFormData] = useState(initialState);
   const [loading, setLoading] = useState(false);
-  
+  const navigate = useNavigate();
+
   const baseUrl = "https://event-nine-xi.vercel.app";
+
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -26,10 +36,7 @@ const JobPostingForm = ({ onSuccess }) => {
     setLoading(true);
 
     try {
-      const { data } = await axios.post(
-    `${baseUrl}/api/jobs`,
-        formData
-      );
+      const { data } = await axios.post(`${baseUrl}/api/jobs`, formData);
 
       if (data.success) {
         toast.success("✅ Job posted successfully!");
@@ -46,9 +53,12 @@ const JobPostingForm = ({ onSuccess }) => {
     }
   };
 
+  const handleClose = () => {
+    navigate("/");
+  };
+
   return (
     <section className="jobPosting-section py-5">
-      
       <Form
         onSubmit={handleSubmit}
         className="bg-white p-5 rounded shadow-lg border"
@@ -162,14 +172,17 @@ const JobPostingForm = ({ onSuccess }) => {
           </Col>
         </Row>
 
-        <div className="text-end mt-3">
+        <div className="d-flex justify-content-between mt-3">
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+
           <Button type="submit" variant="primary" disabled={loading}>
             {loading ? <Spinner size="sm" animation="border" /> : "Post Job"}
           </Button>
         </div>
       </Form>
 
-      {/* Custom Styling */}
       <style>
         {`
           .jobPosting-section {

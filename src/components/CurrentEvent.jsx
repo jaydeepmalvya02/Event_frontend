@@ -252,7 +252,12 @@ const CurrentEvent = () => {
                   ></button>
                 </div>
                 <div className="modal-body px-4 py-3">
-                  <Login />
+                  <Login
+                    onLoginSuccess={() => {
+                      setShowLoginPopup(false);
+                      navigate(`/liveEvents/${currentEvent._id}`);
+                    }}
+                  />
                 </div>
               </div>
             </div>

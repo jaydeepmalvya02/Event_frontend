@@ -1,43 +1,36 @@
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  Form,
-  InputGroup,
-  Button,
-  Row,
-  Col,
-  Spinner,
-  Modal,
-} from "react-bootstrap";
+import { Card, Form, Button, Row, Col, Spinner, Modal } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Login from "../components/Login";
+import { useAuth } from "../context/AuthContext"; // ✅ AuthContext
 
 const FindJobs = () => {
   const [jobs, setJobs] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
-
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
-
-  const userData = JSON.parse(localStorage.getItem("user")) || {};
   const [resumeFile, setResumeFile] = useState(null);
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [pendingJob, setPendingJob] = useState(null);
+
+  const { user, isLoggedIn } = useAuth(); // ✅ use context
+  const navigate = useNavigate();
+  const baseUrl = "https://event-nine-xi.vercel.app";
 
   const [candidateData, setCandidateData] = useState({
-    name: userData.name || "",
-    email: userData.email || "",
-    phone: userData.mobile || "",
+    name: user?.name || "",
+    email: user?.email || "",
+    phone: user?.mobile || "",
     department: "",
   });
 
   const [selectedLocation, setSelectedLocation] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("");
-
-  const navigate = useNavigate();
-  const baseUrl = "https://event-nine-xi.vercel.app";
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -56,7 +49,6 @@ const FindJobs = () => {
 
   const handleFilter = () => {
     const keyword = search.toLowerCase();
-
     const result = jobs.filter((job) => {
       const matchSearch =
         !keyword ||
@@ -68,66 +60,64 @@ const FindJobs = () => {
       const matchType = !selectedType || job.type === selectedType;
       const matchDepartment =
         !selectedDepartment || job.department === selectedDepartment;
-
       return matchSearch && matchLocation && matchType && matchDepartment;
     });
-
     setFiltered(result);
   };
 
   const handleApply = async () => {
-    if (!selectedJob) {
-      alert("Please select a job.");
-      return;
-    }
-
+    if (!selectedJob) return;
     try {
       let resumeUrl = localStorage.getItem("resumeUrl");
-
       if (!resumeUrl) {
         if (!resumeFile) {
           alert("Please upload your resume.");
           return;
         }
-
         const fileFormData = new FormData();
         fileFormData.append("pdf", resumeFile);
-
         const uploadRes = await axios.post(
           `${baseUrl}/api/uploadPdf`,
           fileFormData
         );
         resumeUrl = uploadRes.data?.url;
         if (!resumeUrl) throw new Error("Resume upload failed");
-
         localStorage.setItem("resumeUrl", resumeUrl);
       }
 
       const payload = {
         jobId: selectedJob._id,
-        name: userData.name,
-        email: userData.email,
-        phone: userData.mobile,
+        name: candidateData.name,
+        email: candidateData.email,
+        phone: candidateData.phone,
         resumeUrl,
         department: candidateData.department,
         jobData: selectedJob,
       };
 
-     const {data}= await axios.post(`${baseUrl}/api/jobs/apply`, payload);
-     if(data.success){
-      toast.success(" Application submitted successfully!");
-      setShowApplyModal(false);
-      setCandidateData((prev) => ({ ...prev, department: "" }));
-      setResumeFile(null);
-     }
-     
+      const { data } = await axios.post(`${baseUrl}/api/jobs/apply`, payload);
+      if (data.success) {
+        toast.success("Application submitted successfully!");
+        setShowApplyModal(false);
+        setCandidateData((prev) => ({ ...prev, department: "" }));
+        setResumeFile(null);
+      }
     } catch (err) {
       console.error("Failed to apply:", err);
-      toast.error(" Failed to apply. Please try again.");
+      toast.error("Failed to apply. Please try again.");
     }
   };
 
   const unique = (field) => Array.from(new Set(jobs.map((job) => job[field])));
+
+  const handleCreateJobClick = () => {
+    if (isLoggedIn) {
+      navigate("/createJobs");
+    } else {
+      setPendingJob("redirectToCreateJob");
+      setShowLoginPopup(true);
+    }
+  };
 
   return (
     <section className="job-section">
@@ -136,12 +126,12 @@ const FindJobs = () => {
           <h2 className="text-gray-800 font-serif">
             Explore Job Opportunities
           </h2>
-          <Button variant="primary" onClick={() => navigate("/createJobs")}>
+          <Button variant="primary" onClick={handleCreateJobClick}>
             + Create Job
           </Button>
         </div>
 
-        {/* Unified Search and Filter Bar */}
+        {/* Filters */}
         <Card className="p-3 mb-4 shadow-sm bg-light">
           <Row className="g-2 align-items-center">
             <Col md={3} sm={6}>
@@ -214,7 +204,7 @@ const FindJobs = () => {
           </Row>
         </Card>
 
-        {/* Job Listings */}
+        {/* Job Cards */}
         {loading ? (
           <div className="text-center my-5">
             <Spinner animation="border" />
@@ -243,8 +233,13 @@ const FindJobs = () => {
                     <Button
                       variant="outline-success"
                       onClick={() => {
-                        setSelectedJob(job);
-                        setShowApplyModal(true);
+                        if (isLoggedIn) {
+                          setSelectedJob(job);
+                          setShowApplyModal(true);
+                        } else {
+                          setPendingJob(job);
+                          setShowLoginPopup(true);
+                        }
                       }}
                     >
                       Apply
@@ -285,7 +280,6 @@ const FindJobs = () => {
                   />
                 </Form.Group>
               ))}
-
               <Form.Group className="mb-3">
                 <Form.Label>Department*</Form.Label>
                 <Form.Select
@@ -304,7 +298,6 @@ const FindJobs = () => {
                   <option value="Customer Support">Customer Support</option>
                 </Form.Select>
               </Form.Group>
-
               <Form.Group className="mb-2">
                 <Form.Label>
                   Upload Resume (PDF only){" "}
@@ -325,7 +318,6 @@ const FindJobs = () => {
                     className="mt-2"
                     onClick={() => {
                       localStorage.removeItem("resumeUrl");
-                      alert("Resume removed. You can now upload a new one.");
                       setResumeFile(null);
                     }}
                   >
@@ -347,6 +339,40 @@ const FindJobs = () => {
             </Button>
           </Modal.Footer>
         </Modal>
+
+        {/* Login Modal */}
+        <Modal
+          show={showLoginPopup}
+          onHide={() => setShowLoginPopup(false)}
+          centered
+        >
+          <Modal.Body>
+            <Login
+              onLoginSuccess={() => {
+                const updatedUser = JSON.parse(localStorage.getItem("user"));
+                if (pendingJob === "redirectToCreateJob") {
+                  setShowLoginPopup(false);
+                  setPendingJob(null);
+                  navigate("/createJobs");
+                  return;
+                }
+                if (pendingJob && updatedUser) {
+                  setCandidateData({
+                    name: updatedUser.name,
+                    email: updatedUser.email,
+                    phone: updatedUser.mobile,
+                    department: "",
+                  });
+                  setSelectedJob(pendingJob);
+                  setShowApplyModal(true);
+                  setPendingJob(null);
+                }
+                setShowLoginPopup(false);
+              }}
+              onClose={() => setShowLoginPopup(false)}
+            />
+          </Modal.Body>
+        </Modal>
       </div>
 
       <style>
@@ -356,7 +382,6 @@ const FindJobs = () => {
         }
 
         .job-card {
-        
           transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 

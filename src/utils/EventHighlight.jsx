@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Login from "../components/Login"; // Ensure path is correct
 
 const EventHighlights = () => {
   const [passedEvents, setPassedEvents] = useState([]);
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [pendingEventId, setPendingEventId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -13,17 +16,13 @@ const EventHighlights = () => {
           "https://event-nine-xi.vercel.app/api/admin/event"
         );
         const data = await response.json();
-        console.log("Fetched Events:", data);
-
         const now = new Date();
 
         const past = data.filter((event) => {
-          // Convert ISO date + 24hr time to one datetime string
           const eventDate = new Date(event.date);
           const [hours, minutes] = event.time.split(":");
           eventDate.setHours(+hours);
           eventDate.setMinutes(+minutes);
-
           return eventDate < now;
         });
 
@@ -35,6 +34,31 @@ const EventHighlights = () => {
 
     fetchEvents();
   }, []);
+
+  const isUserLoggedIn = () => localStorage.getItem("user") !== null;
+
+  const handleWatchHighlight = (eventId) => {
+    if (isUserLoggedIn()) {
+      navigate(`/liveEvents/${eventId}`);
+    } else {
+      setPendingEventId(eventId); // Save for post-login redirect
+      setShowLoginPopup(true);
+    }
+  };
+
+  const closeLoginPopup = () => {
+    setShowLoginPopup(false);
+    setPendingEventId(null);
+  };
+
+  const handleLoginSuccess = () => {
+    const updatedUser = JSON.parse(localStorage.getItem("user"));
+    if (updatedUser && pendingEventId) {
+      navigate(`/liveEvents/${pendingEventId}`);
+      setPendingEventId(null);
+      setShowLoginPopup(false);
+    }
+  };
 
   if (passedEvents.length === 0) {
     return (
@@ -105,7 +129,7 @@ const EventHighlights = () => {
                 </p>
 
                 <button
-                  onClick={() => navigate(`/liveEvents/${event._id}`)}
+                  onClick={() => handleWatchHighlight(event._id)}
                   className="btn btn-outline-primary mb-3"
                 >
                   🔗 Watch Highlight
@@ -115,6 +139,55 @@ const EventHighlights = () => {
           );
         })}
       </div>
+
+      {/* ✅ Login Modal Popup */}
+      {showLoginPopup && (
+        <div
+          className="modal show d-block"
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.6)",
+            backdropFilter: "blur(3px)",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 1050,
+          }}
+        >
+          <div className="modal-dialog modal-dialog-centered modal-lg">
+            <div
+              className="modal-content rounded-4 border-0 shadow"
+              style={{
+                backgroundImage: 'url("/images/bg3.png")',
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                color: "#fff",
+              }}
+            >
+              <div
+                className="modal-header border-0"
+                style={{ background: "rgba(0, 0, 0, 0.4)" }}
+              >
+                <h5 className="modal-title w-100 text-center fw-bold text-warning">
+                  To Watch the Highlight, Please Login 👇
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close btn-close-white"
+                  onClick={closeLoginPopup}
+                ></button>
+              </div>
+              <div className="modal-body px-4 py-3">
+                <Login
+                  onLoginSuccess={handleLoginSuccess}
+                  onClose={closeLoginPopup}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -9,7 +9,6 @@ import axios from "axios";
 // ✅ ICONS
 import { MdUpcoming } from "react-icons/md";
 import { FaRegCalendarCheck } from "react-icons/fa";
-import { AiOutlineClockCircle } from "react-icons/ai";
 
 const API_URL = "https://event-nine-xi.vercel.app/api/admin/event";
 
@@ -17,6 +16,7 @@ const EventDetails = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [pendingEventId, setPendingEventId] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -64,12 +64,27 @@ const EventDetails = () => {
   const isUserLoggedIn = () => localStorage.getItem("user") !== null;
 
   const handleJoinClick = (eventId) => {
-    isUserLoggedIn()
-      ? navigate(`/liveEvents/${eventId}`)
-      : setShowLoginPopup(true);
+    if (isUserLoggedIn()) {
+      navigate(`/liveEvents/${eventId}`);
+    } else {
+      setPendingEventId(eventId);
+      setShowLoginPopup(true);
+    }
   };
 
-  const closeLoginPopup = () => setShowLoginPopup(false);
+  const closeLoginPopup = () => {
+    setShowLoginPopup(false);
+    setPendingEventId(null);
+  };
+
+  const handleLoginSuccess = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user && pendingEventId) {
+      navigate(`/liveEvents/${pendingEventId}`);
+      setPendingEventId(null);
+      setShowLoginPopup(false);
+    }
+  };
 
   if (loading)
     return (
@@ -80,6 +95,7 @@ const EventDetails = () => {
     <div className="container py-5">
       <h2 className="text-center fw-bold mb-4 text-white fs-3">Our Events</h2>
 
+      {/* Current/Upcoming Event */}
       {currentEvent && (
         <div className="mb-5">
           <h4 className="fw-bold text-info mb-4 fs-2 d-flex align-items-center gap-2">
@@ -129,55 +145,11 @@ const EventDetails = () => {
                 </button>
               </div>
             </div>
-
-            {showLoginPopup && (
-              <div
-                className="modal show d-block"
-                style={{
-                  backgroundColor: "rgba(0, 0, 0, 0.6)",
-                  backdropFilter: "blur(3px)",
-                  position: "fixed",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  zIndex: 1050,
-                }}
-              >
-                <div className="modal-dialog modal-dialog-centered modal-lg">
-                  <div
-                    className="modal-content rounded-4 border-0 shadow"
-                    style={{
-                      backgroundImage: 'url("/images/bg3.png")',
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      color: "#fff",
-                    }}
-                  >
-                    <div
-                      className="modal-header border-0"
-                      style={{ background: "rgba(0, 0, 0, 0.4)" }}
-                    >
-                      <h5 className="modal-title w-100 text-center fw-bold text-warning">
-                        To Join The Event, Login Below 👇
-                      </h5>
-                      <button
-                        type="button"
-                        className="btn-close btn-close-white"
-                        onClick={closeLoginPopup}
-                      ></button>
-                    </div>
-                    <div className="modal-body px-4 py-3">
-                      <Login />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       )}
 
+      {/* Past Events */}
       {passedEvents.length > 0 && (
         <div className="mt-5">
           <h4 className="fw-bold text-info mb-4 fs-2 d-flex align-items-center gap-2">
@@ -214,7 +186,7 @@ const EventDetails = () => {
                     <strong>Mode:</strong> {event.mode}
                   </p>
                   <button
-                    onClick={() => navigate(`/liveEvents/${event._id}`)}
+                    onClick={() => handleJoinClick(event._id)}
                     className="btn btn-outline-primary"
                   >
                     🔗 Watch Highlight
@@ -223,6 +195,55 @@ const EventDetails = () => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* ✅ Login Modal */}
+      {showLoginPopup && (
+        <div
+          className="modal show d-block"
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.6)",
+            backdropFilter: "blur(3px)",
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 1050,
+          }}
+        >
+          <div className="modal-dialog modal-dialog-centered modal-lg">
+            <div
+              className="modal-content rounded-4 border-0 shadow"
+              style={{
+                backgroundImage: 'url("/images/bg3.png")',
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                color: "#fff",
+              }}
+            >
+              <div
+                className="modal-header border-0"
+                style={{ background: "rgba(0, 0, 0, 0.4)" }}
+              >
+                <h5 className="modal-title w-100 text-center fw-bold text-warning">
+                  To Join The Event, Login Below 👇
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close btn-close-white"
+                  onClick={closeLoginPopup}
+                ></button>
+              </div>
+              <div className="modal-body px-4 py-3">
+                <Login
+                  onLoginSuccess={handleLoginSuccess}
+                  onClose={closeLoginPopup}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

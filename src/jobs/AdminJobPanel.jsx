@@ -72,7 +72,9 @@ const AdminJobPanel = () => {
       try {
         await axios.delete(`${baseUrl}/api/jobs/${id}`,);
         toast.success("Job deleted!");
-        fetchJobs();
+        setTimeout(()=>{
+          fetchJobs();
+        },1000)
       } catch (err) {
         console.error(err);
         toast.error("Failed to delete job");

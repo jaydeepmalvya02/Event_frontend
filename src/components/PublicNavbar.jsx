@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Navbar,
   Nav,
@@ -11,32 +11,14 @@ import { NavLink, useNavigate } from "react-router-dom";
 import logo from "/images/ExpertLogo.jpeg";
 import Login from "./Login";
 import RegisterationForm from "./RegistrationForm";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const PublicNavbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn, login, logout } = useAuth();
   const [showDrawer, setShowDrawer] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    try {
-      const storedUser = JSON.parse(localStorage.getItem("user"));
-      console.log("Stored user:", storedUser);
-
-      if (storedUser?.email) {
-        console.log("User is logged in:", storedUser.email);
-        setIsLoggedIn(true);
-      } else {
-        console.log("No user email found, logging out.");
-        setIsLoggedIn(false);
-      }
-    } catch (error) {
-      console.error("Invalid user data in localStorage", error);
-      setIsLoggedIn(false);
-    }
-  }, []);
-  
 
   const toggleDrawer = () => setShowDrawer(!showDrawer);
   const closeDrawer = () => setShowDrawer(false);
@@ -45,14 +27,13 @@ const PublicNavbar = () => {
   const openRegisterModal = () => setShowRegisterModal(true);
   const closeRegisterModal = () => setShowRegisterModal(false);
 
-  const handleLoginSuccess = () => {
-    setIsLoggedIn(true);
+  const handleLoginSuccess = (user) => {
+    login(user);
     closeLoginModal();
   };
 
   const handleLogout = () => {
-    localStorage.clear();
-    setIsLoggedIn(false);
+    logout();
     navigate("/");
     closeDrawer();
   };
@@ -60,15 +41,12 @@ const PublicNavbar = () => {
   const publicLinks = [
     { to: "/", label: "Home" },
     { to: "/about", label: "About" },
-  ];
-
-  const protectedLinks = [
     { to: "/speakers", label: "Speakers" },
     { to: "/EventDetails", label: "Events" },
     { to: "/findJobs", label: "Jobs" },
-   
-
   ];
+
+  const protectedLinks = [];
 
   const handleProtectedClick = (e, to) => {
     if (!isLoggedIn) {

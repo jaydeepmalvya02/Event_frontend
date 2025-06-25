@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useAuth } from "../context/AuthContext"; // ✅ Import AuthContext
 import { getDeviceInfo } from "../utils/GetDeviceInfo";
 
 const Login = ({ onLoginSuccess, onClose }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const { login } = useAuth(); // ✅ Destructure login from context
+
   const [formData, setFormData] = useState({
     name: "",
     companyName: "",
@@ -18,26 +19,18 @@ const Login = ({ onLoginSuccess, onClose }) => {
     mobile: "",
     email: "",
   });
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     let { name, value } = e.target;
 
     if (name === "mobile") {
-      // Remove all non-numeric characters
       value = value.replace(/\D/g, "");
-
-      // Remove country code if entered (e.g. +91, 91, or leading 0)
       if (value.startsWith("91") && value.length > 10) {
         value = value.slice(2);
       } else if (value.startsWith("0")) {
         value = value.replace(/^0+/, "");
       }
-
-      // Limit to 10 digits
-      if (value.length > 10) {
-        value = value.slice(0, 10);
-      }
+      if (value.length > 10) value = value.slice(0, 10);
     }
 
     setFormData((prev) => ({
@@ -49,6 +42,7 @@ const Login = ({ onLoginSuccess, onClose }) => {
   const handleLogin = async () => {
     if (submitting) return;
     setSubmitting(true);
+
     try {
       const response = await fetch(
         "https://event-nine-xi.vercel.app/api/login",
@@ -63,17 +57,14 @@ const Login = ({ onLoginSuccess, onClose }) => {
       );
 
       const result = await response.json();
+
       if (response.ok) {
-        localStorage.setItem("user", JSON.stringify(result.user));
-        if (!toast.isActive("login-success")) {
-          toast.success("Login Successful! 🎉", { toastId: "login-success" });
-              setTimeout(() => {
-          navigate("/EventDetails");
-          onLoginSuccess?.(); // Optional chaining in case it's undefined
+        login(result.user); // ✅ Update global context
+        toast.success("Login Successful! 🎉", { toastId: "login-success" });
+        setTimeout(() => {
+          onLoginSuccess?.(result.user); // optional callback
           onClose?.();
         }, 1000);
-        }
-    
       } else {
         toast.error(result.message || "Login failed");
       }
@@ -90,6 +81,7 @@ const Login = ({ onLoginSuccess, onClose }) => {
     setSubmitting(true);
     const deviceInfo = getDeviceInfo();
     const payload = { ...formData, deviceInfo };
+
     try {
       const response = await fetch(
         "https://event-nine-xi.vercel.app/api/register",
@@ -101,9 +93,9 @@ const Login = ({ onLoginSuccess, onClose }) => {
       );
 
       const result = await response.json();
+
       if (response.ok) {
         toast.success("Registration Successful! 🎉");
-        setTimeout(() => {}, 1000);
         setIsLogin(true);
       } else {
         toast.error(result.message || "Registration failed");
@@ -118,7 +110,6 @@ const Login = ({ onLoginSuccess, onClose }) => {
 
   return (
     <div className="container mt-5" style={{ maxWidth: 500 }}>
-   
       <h2 className="text-center mb-4">{isLogin ? "Login" : "Register"}</h2>
       <form>
         {!isLogin && (

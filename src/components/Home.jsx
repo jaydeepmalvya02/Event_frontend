@@ -284,7 +284,12 @@ const Home = () => {
                     borderRadius: "0 0 1rem 1rem",
                   }}
                 >
-                  <Login />
+                  <Login
+                    onLoginSuccess={() => {
+                      setShowLoginPopup(false);
+                      navigate("/EventDetails");
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -292,7 +297,7 @@ const Home = () => {
         )}
       </div>
       <div className="bg-red-200">
-        <CurrentEvent  />
+        <CurrentEvent />
       </div>
       <div>
         <FeaturedSpeakers />

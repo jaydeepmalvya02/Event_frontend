@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext"; // ✅ Import AuthContext
 
 const AdminLoginPopup = ({ onClose, onAdminLoginSuccess }) => {
   const [adminData, setAdminData] = useState({ email: "", password: "" });
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth(); // ✅ Destructure login from context
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,9 +18,11 @@ const AdminLoginPopup = ({ onClose, onAdminLoginSuccess }) => {
     }));
   };
 
-  const handleAdminLogin = async () => {
+  const handleAdminLogin = async (e) => {
+    e.preventDefault();
     if (submitting) return;
     setSubmitting(true);
+
     try {
       const response = await fetch(
         "https://event-nine-xi.vercel.app/api/admin/login",
@@ -30,9 +34,11 @@ const AdminLoginPopup = ({ onClose, onAdminLoginSuccess }) => {
       );
 
       const result = await response.json();
+
       if (response.ok) {
-        localStorage.setItem("user", JSON.stringify(result));
+        login(result); // ✅ Use context to store user globally
         toast.success("Admin login successful! 👨‍💼");
+
         setTimeout(() => {
           onAdminLoginSuccess?.(); // trigger parent update
           onClose?.();
@@ -53,7 +59,7 @@ const AdminLoginPopup = ({ onClose, onAdminLoginSuccess }) => {
     <div className="container mt-4" style={{ maxWidth: 400 }}>
       <ToastContainer position="top-center" autoClose={1000} theme="colored" />
       <h4 className="text-center mb-4">Admin Login</h4>
-      <form>
+      <form onSubmit={handleAdminLogin}>
         <div className="form-floating mb-3">
           <input
             type="email"
@@ -81,12 +87,7 @@ const AdminLoginPopup = ({ onClose, onAdminLoginSuccess }) => {
         </div>
 
         <div className="d-grid">
-          <button
-            type="submit"
-            className="btn btn-dark"
-            onClick={handleAdminLogin}
-            disabled={submitting}
-          >
+          <button type="submit" className="btn btn-dark" disabled={submitting}>
             {submitting ? "Logging in..." : "Login as Admin"}
           </button>
         </div>
