@@ -155,21 +155,20 @@ const PublicNavbar = () => {
         show={showLoginModal}
         onHide={closeLoginModal}
         centered
+        backdrop="static"
         dialogClassName="modal-lg"
       >
-        <div className="modal-content custom-bg">
-          <Modal.Header closeButton className="custom-bg">
-            <Modal.Title className="w-100 text-center">
-              To Join The Event, Login Below 👇
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="custom-bg">
-            <Login
-              onClose={closeLoginModal}
-              onLoginSuccess={handleLoginSuccess}
-            />
-          </Modal.Body>
-        </div>
+        <Modal.Header closeButton style={{ backgroundColor: "#212529" }}>
+          <Modal.Title className="text-warning w-100 text-center">
+            To Join The Event, Login Below 👇
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ backgroundColor: "#f8f9fa" }}>
+          <Login
+            onClose={closeLoginModal}
+            onLoginSuccess={handleLoginSuccess}
+          />
+        </Modal.Body>
       </Modal>
 
       {/* Register Modal */}
@@ -177,18 +176,17 @@ const PublicNavbar = () => {
         show={showRegisterModal}
         onHide={closeRegisterModal}
         centered
+        backdrop="static"
         dialogClassName="modal-lg"
       >
-        <div className="modal-content custom-bg">
-          <Modal.Header closeButton className="custom-bg">
-            <Modal.Title className="w-100 text-center">
-              Register for ExpertOnBoard
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="custom-bg">
-            <RegisterationForm onClose={closeRegisterModal} />
-          </Modal.Body>
-        </div>
+        <Modal.Header closeButton style={{ backgroundColor: "#212529" }}>
+          <Modal.Title className="text-warning w-100 text-center">
+            Register for ExpertOnBoard
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ backgroundColor: "#f8f9fa" }}>
+          <RegisterationForm onClose={closeRegisterModal} />
+        </Modal.Body>
       </Modal>
 
       <style>{`
@@ -238,6 +236,22 @@ const PublicNavbar = () => {
           align-items: center;
           background: transparent;
         }
+          .modal-content {
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+.modal-header {
+  border-bottom: none;
+}
+.modal-title {
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+.btn-close {
+  filter: invert(1);
+}
+
       `}</style>
     </>
   );

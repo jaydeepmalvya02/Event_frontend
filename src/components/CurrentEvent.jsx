@@ -214,6 +214,7 @@ const CurrentEvent = () => {
           </div>
         </div>
 
+        {/* Login Modal */}
         {showLoginPopup && (
           <div
             className="modal show d-block"
@@ -229,20 +230,9 @@ const CurrentEvent = () => {
             }}
           >
             <div className="modal-dialog modal-dialog-centered modal-lg">
-              <div
-                className="modal-content rounded-4 border-0 shadow"
-                style={{
-                  backgroundImage: 'url("/images/bg3.png")',
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  color: "#fff",
-                }}
-              >
-                <div
-                  className="modal-header border-0"
-                  style={{ background: "rgba(0, 0, 0, 0.4)" }}
-                >
-                  <h5 className="modal-title w-100 text-center fw-bold text-warning">
+              <div className="modal-content rounded-4 overflow-hidden shadow">
+                <div className="modal-header bg-dark border-0">
+                  <h5 className="modal-title w-100 text-center text-warning fw-semibold">
                     To Join The Event, Login Below 👇
                   </h5>
                   <button
@@ -251,11 +241,12 @@ const CurrentEvent = () => {
                     onClick={closeLoginPopup}
                   ></button>
                 </div>
-                <div className="modal-body px-4 py-3">
+                <div className="modal-body bg-light p-4">
                   <Login
                     onLoginSuccess={() => {
                       setShowLoginPopup(false);
                       navigate(`/liveEvents/${currentEvent._id}`);
+                      window.scrollTo(0,0)
                     }}
                   />
                 </div>
@@ -263,6 +254,13 @@ const CurrentEvent = () => {
             </div>
           </div>
         )}
+
+        {/* Optional close icon fix */}
+        <style>{`
+        .btn-close {
+          filter: invert(1);
+        }
+      `}</style>
       </div>
     </div>
   );

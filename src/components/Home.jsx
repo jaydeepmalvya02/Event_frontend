@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import RegistrationForm from "./RegistrationForm";
 import Login from "./Login";
-// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { Modal } from "react-bootstrap";
 
 import "../App.css";
 import FeaturedSpeakers from "./FeaturedSpeakers";
@@ -10,22 +11,22 @@ import ConferenceInfo from "./ConferenceInfo";
 import FeaturedFounders from "./FeaturedFounders";
 import CurrentEvent from "./CurrentEvent";
 import Founder from "./Founder";
-import EventDetails from "./EventDetails";
 import EventHighlights from "../utils/EventHighlight";
-import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const [showRegistered, setShowRegistered] = React.useState(false);
-  // const [showLogin, setShowLogin] = React.useState(false);
-  const navigate=useNavigate()
-  const [showLoginPopup, setShowLoginPopup] = useState(false)
+  const [showRegistered, setShowRegistered] = useState(false);
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const navigate = useNavigate();
+
   const isUserLoggedIn = () => {
-    return localStorage.getItem("user") !== null; // Replace with your actual login logic
+    return localStorage.getItem("user") !== null;
   };
+
   const switchToLogin = () => {
     setShowRegistered(false);
     setShowLoginPopup(true);
   };
+
   const handleRegisterClick = () => {
     if (isUserLoggedIn()) {
       navigate("/EventDetails");
@@ -33,17 +34,19 @@ const Home = () => {
       setShowRegistered(true);
     }
   };
+
   const handleJoinClick = () => {
     if (isUserLoggedIn()) {
       navigate("/EventDetails");
     } else {
-      
       setShowLoginPopup(true);
     }
   };
+
   const closeLoginPopup = () => {
     setShowLoginPopup(false);
   };
+
   return (
     <>
       <div
@@ -64,7 +67,6 @@ const Home = () => {
             maxWidth: "1400px",
           }}
         >
-          {/* Section 1 */}
           <div className="row flex-lg-row-reverse align-items-center g-4 py-4 mx-auto">
             <motion.div
               className="col-12 col-lg-6"
@@ -73,20 +75,17 @@ const Home = () => {
               transition={{ duration: 1 }}
             >
               <h1
-                className="display-5 fw-bold mb-3 p-2 p-md-4 m-2 font-stretch-95% transition-colors duration-300"
+                className="display-5 fw-bold mb-3 p-2 p-md-4 m-2"
                 style={{
                   fontFamily: "'Poppins', sans-serif",
                   fontWeight: 700,
                   fontSize: "clamp(40px, 6vw, 85px)",
                   lineHeight: "1.2",
                   color: "#E9777C",
-                  cursor: "pointer",
                   textAlign: window.innerWidth < 768 ? "center" : "left",
                 }}
               >
                 About our #PitchPoint.
-                {/* <span style={{ fontStyle: "italic" }}>#PitchPoint.</span> */}
-                {/* {" "} { <span style={{ fontFamily: "Harrington" }}> #PitchPoint.</span> } */}
               </h1>
               <p
                 className="lead p-2 p-md-4 m-2 text-white"
@@ -115,7 +114,6 @@ const Home = () => {
                     border: "none",
                     boxShadow: "0 4px 15px rgba(118, 75, 162, 0.3)",
                     transition: "all 0.3s ease",
-                    overflow: "hidden",
                     fontSize: "clamp(0.9rem, 2vw, 1.1rem)",
                     letterSpacing: "0.5px",
                     margin: "0.5rem",
@@ -132,22 +130,6 @@ const Home = () => {
                   }}
                 >
                   Register Now
-                  <span
-                    className="position-absolute top-0 start-0 w-100 h-100"
-                    style={{
-                      background: "rgba(255, 255, 255, 0.15)",
-                      transform: "skewX(-45deg) translateX(-100%)",
-                      transition: "transform 0.5s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.transform =
-                        "skewX(-45deg) translateX(100%)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.transform =
-                        "skewX(-45deg) translateX(-100%)";
-                    }}
-                  />
                 </button>
 
                 <button
@@ -178,131 +160,77 @@ const Home = () => {
           </div>
         </div>
 
-        {showRegistered && (
-          <div
-            className="modal show d-block"
-            tabIndex="-1"
-            style={{
-              backgroundColor: "rgba(0, 0, 0, 0.6)",
-              backdropFilter: "blur(3px)",
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 1050,
-            }}
-          >
-            <div className="modal-dialog modal-dialog-centered modal-lg">
-              <div
-                className="modal-content"
-                style={{
-                  backgroundImage: 'url("/images/bg2.jfif")',
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              >
-                <div className="modal-header">
-                  <h5
-                    className="modal-title fw-bold"
-                    style={{ color: "#9BA15D" }}
-                  >
-                    Let's Connect
-                  </h5>
-                  <button
-                    type="button"
-                    className="btn-close"
-                    onClick={() => setShowRegistered(false)}
-                    style={{
-                      filter: "invert(1)",
-                      opacity: 0.9,
-                      transition: "all 0.3s ease",
-                    }}
-                    onMouseEnter={(e) => (e.target.style.opacity = 1)}
-                    onMouseLeave={(e) => (e.target.style.opacity = 0.9)}
-                    aria-label="Close"
-                  />
-                </div>
-                <div className="modal-body">
-                  <RegistrationForm
-                    onSuccess={() => {
-                      setShowRegistered(false);
-                      setShowLoginPopup(true);
-                    }}
-                    onEmailExists={switchToLogin}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* REGISTER MODAL */}
+        <Modal
+          show={showRegistered}
+          onHide={() => setShowRegistered(false)}
+          centered
+          backdrop="static"
+        >
+          <Modal.Header closeButton style={{ backgroundColor: "#212529" }}>
+            <Modal.Title className="text-warning w-100 text-center">
+              Let's Connect 🚀
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body style={{ backgroundColor: "#f8f9fa" }}>
+            <RegistrationForm
+              onSuccess={() => {
+                setShowRegistered(false);
+                setShowLoginPopup(true);
+              }}
+              onEmailExists={switchToLogin}
+            />
+          </Modal.Body>
+          <style>
+            {`
+              .modal-content {
+                border-radius: 1rem;
+                overflow: hidden;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+              }
+              .modal-header {
+                border-bottom: none;
+              }
+              .modal-title {
+                font-weight: 600;
+                font-size: 1.25rem;
+              }
+              .btn-close {
+                filter: invert(1);
+              }
+            `}
+          </style>
+        </Modal>
 
-        {showLoginPopup && (
-          <div
-            className="modal show d-block"
-            tabIndex="-1"
-            style={{
-              backgroundColor: "rgba(0, 0, 0, 0.6)",
-              backdropFilter: "blur(3px)",
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 1050,
-            }}
-          >
-            <div className="modal-dialog modal-dialog-centered modal-lg">
-              <div
-                className=" modal-content rounded-4 border-0 shadow"
-                style={{
-                  backgroundImage: 'url("/images/bg3.png")',
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  color: "#fff",
-                }}
-              >
-                <div
-                  className="modal-header border-0"
-                  style={{ background: "rgba(0, 0, 0, 0.4)" }}
-                >
-                  <h5
-                    className="modal-title w-100 text-center fw-bold"
-                    style={{ color: "#F1C40F" }}
-                  >
-                    To Join The Event, Login Below 👇
-                  </h5>
-                  <button
-                    type="button"
-                    className="btn-close btn-close-white"
-                    onClick={closeLoginPopup}
-                  ></button>
-                </div>
-                <div
-                  className="modal-body px-4 py-3"
-                  style={{
-                    borderRadius: "0 0 1rem 1rem",
-                  }}
-                >
-                  <Login
-                    onLoginSuccess={() => {
-                      setShowLoginPopup(false);
-                      navigate("/EventDetails");
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* LOGIN MODAL */}
+        <Modal
+          show={showLoginPopup}
+          onHide={closeLoginPopup}
+          centered
+          backdrop="static"
+        >
+          <Modal.Header closeButton style={{ backgroundColor: "#212529" }}>
+            <Modal.Title className="text-warning w-100 text-center">
+              To Join The Event, Login Below 👇
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body style={{ backgroundColor: "#f8f9fa" }}>
+            <Login
+              onLoginSuccess={() => {
+                setShowLoginPopup(false);
+                navigate("/EventDetails");
+              }}
+            />
+          </Modal.Body>
+        </Modal>
       </div>
+
       <div className="bg-red-200">
         <CurrentEvent />
       </div>
       <div>
         <FeaturedSpeakers />
       </div>
-
       <div>
         <ConferenceInfo />
       </div>
@@ -313,7 +241,6 @@ const Home = () => {
         <Founder />
       </div>
       <div
-        className=""
         style={{
           backgroundImage: "url('/images/bg6.avif')",
           backgroundSize: "cover",

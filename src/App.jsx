@@ -28,8 +28,9 @@ import { ToastContainer } from "react-toastify";
 const App = () => {
   return (
     <div>
+      <ToastContainer  autoClose={1000}/>
       <TrackVisitor />
-      <ToastContainer position="top-center" autoClose={2000} />
+      
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />

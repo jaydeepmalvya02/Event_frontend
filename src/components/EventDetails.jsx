@@ -5,8 +5,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import Login from "./Login";
 import axios from "axios";
-
-// ✅ ICONS
 import { MdUpcoming } from "react-icons/md";
 import { FaRegCalendarCheck } from "react-icons/fa";
 
@@ -48,18 +46,6 @@ const EventDetails = () => {
     (a, b) => new Date(a.dateTime || a.date) - new Date(b.dateTime || b.date)
   );
   const currentEvent = upcomingEvents.length > 0 ? upcomingEvents[0] : null;
-
-  useEffect(() => {
-    const carousel = document.querySelector("#highlightsCarousel");
-    if (carousel && window.bootstrap) {
-      new window.bootstrap.Carousel(carousel, {
-        interval: 3000,
-        ride: "carousel",
-        pause: false,
-        wrap: true,
-      });
-    }
-  }, []);
 
   const isUserLoggedIn = () => localStorage.getItem("user") !== null;
 
@@ -198,7 +184,7 @@ const EventDetails = () => {
         </div>
       )}
 
-      {/* ✅ Login Modal */}
+      {/* Login Modal */}
       {showLoginPopup && (
         <div
           className="modal show d-block"
@@ -214,20 +200,9 @@ const EventDetails = () => {
           }}
         >
           <div className="modal-dialog modal-dialog-centered modal-lg">
-            <div
-              className="modal-content rounded-4 border-0 shadow"
-              style={{
-                backgroundImage: 'url("/images/bg3.png")',
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                color: "#fff",
-              }}
-            >
-              <div
-                className="modal-header border-0"
-                style={{ background: "rgba(0, 0, 0, 0.4)" }}
-              >
-                <h5 className="modal-title w-100 text-center fw-bold text-warning">
+            <div className="modal-content rounded-4 overflow-hidden shadow">
+              <div className="modal-header bg-dark border-0">
+                <h5 className="modal-title w-100 text-center text-warning fw-semibold">
                   To Join The Event, Login Below 👇
                 </h5>
                 <button
@@ -236,7 +211,7 @@ const EventDetails = () => {
                   onClick={closeLoginPopup}
                 ></button>
               </div>
-              <div className="modal-body px-4 py-3">
+              <div className="modal-body bg-light p-4">
                 <Login
                   onLoginSuccess={handleLoginSuccess}
                   onClose={closeLoginPopup}
@@ -246,6 +221,13 @@ const EventDetails = () => {
           </div>
         </div>
       )}
+
+      {/* Optional close icon fix */}
+      <style>{`
+        .btn-close {
+          filter: invert(1);
+        }
+      `}</style>
     </div>
   );
 };
