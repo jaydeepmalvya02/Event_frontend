@@ -75,7 +75,7 @@ const Speaker = () => {
               &times;
             </button>
             <h3 className="text-2xl font-bold text-center text-[#0F93CA] mb-4">
-              📣 Become a PitchPoint Speaker
+              Become a PitchPoint Speaker
             </h3>
             <RegisterAsSpeakerForm
               onSuccess={() => setShowModal(false)}
