@@ -75,7 +75,7 @@ const RegisterAsSpeakerForm = ({ onSuccess, onClose }) => {
                 required
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Your full name"
+            
               />
             </Form.Group>
           </Col>
@@ -88,7 +88,7 @@ const RegisterAsSpeakerForm = ({ onSuccess, onClose }) => {
                 required
                 value={formData.designation}
                 onChange={handleChange}
-                placeholder="Senior Developer"
+       
               />
             </Form.Group>
           </Col>
@@ -101,7 +101,7 @@ const RegisterAsSpeakerForm = ({ onSuccess, onClose }) => {
                 required
                 value={formData.companyName}
                 onChange={handleChange}
-                placeholder="Company/Organization"
+             
               />
             </Form.Group>
           </Col>
@@ -113,7 +113,7 @@ const RegisterAsSpeakerForm = ({ onSuccess, onClose }) => {
                 name="department"
                 value={formData.department}
                 onChange={handleChange}
-                placeholder="Optional"
+               
               />
             </Form.Group>
           </Col>
@@ -127,7 +127,7 @@ const RegisterAsSpeakerForm = ({ onSuccess, onClose }) => {
                 required
                 value={formData.experience}
                 onChange={handleChange}
-                placeholder="e.g., 5"
+         
               />
             </Form.Group>
           </Col>
@@ -140,7 +140,7 @@ const RegisterAsSpeakerForm = ({ onSuccess, onClose }) => {
                 type="url"
                 value={formData.linkedin}
                 onChange={handleChange}
-                placeholder="https://linkedin.com/in/..."
+        
               />
             </Form.Group>
           </Col>
@@ -154,7 +154,7 @@ const RegisterAsSpeakerForm = ({ onSuccess, onClose }) => {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="you@example.com"
+               
               />
             </Form.Group>
           </Col>
@@ -168,7 +168,7 @@ const RegisterAsSpeakerForm = ({ onSuccess, onClose }) => {
                 required
                 value={formData.mobile}
                 onChange={handleChange}
-                placeholder="9876543210"
+            
               />
             </Form.Group>
           </Col>
@@ -202,7 +202,7 @@ const RegisterAsSpeakerForm = ({ onSuccess, onClose }) => {
                 name="division"
                 value={formData.division}
                 onChange={handleChange}
-                placeholder="e.g., Product, Marketing"
+            
               />
             </Form.Group>
           </Col>

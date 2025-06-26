@@ -42,6 +42,7 @@ const JobPostingForm = ({ onSuccess }) => {
         toast.success("✅ Job posted successfully!");
         setFormData(initialState);
         onSuccess?.();
+        navigate("/findJobs");
       } else {
         toast.error(data.message || "Something went wrong!");
       }
@@ -77,7 +78,7 @@ const JobPostingForm = ({ onSuccess }) => {
                 required
                 value={formData.title}
                 onChange={handleChange}
-                placeholder="e.g., Frontend Developer"
+               
               />
             </Form.Group>
           </Col>
@@ -90,7 +91,7 @@ const JobPostingForm = ({ onSuccess }) => {
                 required
                 value={formData.company}
                 onChange={handleChange}
-                placeholder="e.g., Tech Corp"
+
               />
             </Form.Group>
           </Col>
@@ -103,7 +104,7 @@ const JobPostingForm = ({ onSuccess }) => {
                 required
                 value={formData.location}
                 onChange={handleChange}
-                placeholder="e.g., Bengaluru or Remote"
+               
               />
             </Form.Group>
           </Col>
@@ -151,7 +152,7 @@ const JobPostingForm = ({ onSuccess }) => {
                 required
                 value={formData.experience}
                 onChange={handleChange}
-                placeholder="e.g., 2"
+               
               />
             </Form.Group>
           </Col>
@@ -166,7 +167,7 @@ const JobPostingForm = ({ onSuccess }) => {
                 required
                 value={formData.description}
                 onChange={handleChange}
-                placeholder="Brief about responsibilities, skills required, etc."
+             
               />
             </Form.Group>
           </Col>

@@ -79,17 +79,17 @@ const EventDetails = () => {
 
   return (
     <div className="container py-5">
-      <h2 className="text-center fw-bold mb-4 text-white fs-3">Our Events</h2>
+      <h2 className="text-center fw-bold mb-4 text-white fs-3 font-serif">Our Events</h2>
 
       {/* Current/Upcoming Event */}
       {currentEvent && (
         <div className="mb-5">
-          <h4 className="fw-bold text-info mb-4 fs-2 d-flex align-items-center gap-2">
-            <MdUpcoming /> Current & Upcoming Event
+          <h4 className="fw-bold text-light font-serif mb-4 fs-2 d-flex align-items-center gap-2">
+           Current & Upcoming Event
           </h4>
 
           <div className="card shadow border-0 rounded-4 p-3 p-md-4 bg-light">
-            <div className="row g-4 align-items-center">
+            <div className="row g-4 align-items-start">
               <div className="col-lg-6">
                 <img
                   src={currentEvent.image || currentEvent.coverImages?.[0]}
@@ -138,15 +138,15 @@ const EventDetails = () => {
       {/* Past Events */}
       {passedEvents.length > 0 && (
         <div className="mt-5">
-          <h4 className="fw-bold text-info mb-4 fs-2 d-flex align-items-center gap-2">
-            <FaRegCalendarCheck /> Past Events
+          <h4 className="fw-bold text-white font-serif mb-4 fs-2 d-flex align-items-center gap-2">
+             Past Events
           </h4>
           {passedEvents.map((event, index) => (
             <div
               key={index}
               className="card shadow border-0 rounded-4 p-3 p-md-4 mb-4 bg-light"
             >
-              <div className="row g-4 align-items-center">
+              <div className="row g-4 align-items-start">
                 <div className="col-lg-6">
                   <img
                     src={event.image || event.coverImages?.[0]}
@@ -202,8 +202,8 @@ const EventDetails = () => {
           <div className="modal-dialog modal-dialog-centered modal-lg">
             <div className="modal-content rounded-4 overflow-hidden shadow">
               <div className="modal-header bg-dark border-0">
-                <h5 className="modal-title w-100 text-center text-warning fw-semibold">
-                  To Join The Event, Login Below 👇
+                <h5 className="modal-title w-100 text-center text-white fw-semibold">
+                  To Join The Event, Login Below 
                 </h5>
                 <button
                   type="button"

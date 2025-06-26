@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import RegistrationForm from "./RegistrationForm";
 import Login from "./Login";
+import RegisterAsSpeakerForm from "../utils/RegisterAsSpeakerForm";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Modal } from "react-bootstrap";
-
+import { Modal, Form } from "react-bootstrap";
+import { Spinner } from "react-bootstrap";
 import "../App.css";
 import FeaturedSpeakers from "./FeaturedSpeakers";
 import ConferenceInfo from "./ConferenceInfo";
@@ -16,6 +17,9 @@ import EventHighlights from "../utils/EventHighlight";
 const Home = () => {
   const [showRegistered, setShowRegistered] = useState(false);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [showSpeakerModal, setShowSpeakerModal] = useState(false);
+  const [isSpeaker, setIsSpeaker] = useState(false);
+
   const navigate = useNavigate();
 
   const isUserLoggedIn = () => {
@@ -31,7 +35,7 @@ const Home = () => {
     if (isUserLoggedIn()) {
       navigate("/EventDetails");
     } else {
-      setShowRegistered(true);
+      isSpeaker ? setShowSpeakerModal(true) : setShowRegistered(true);
     }
   };
 
@@ -41,10 +45,6 @@ const Home = () => {
     } else {
       setShowLoginPopup(true);
     }
-  };
-
-  const closeLoginPopup = () => {
-    setShowLoginPopup(false);
   };
 
   return (
@@ -98,6 +98,7 @@ const Home = () => {
                 ExpertOnBoard, designed to bring together the thoughts of
                 leaders, innovators, and professionals from the pharma space.
               </p>
+
               <div
                 className="d-grid gap-2 d-md-flex justify-content-md-start p-2 p-md-4 m-2"
                 style={{
@@ -129,7 +130,7 @@ const Home = () => {
                       "0 4px 15px rgba(118, 75, 162, 0.3)";
                   }}
                 >
-                  Register Now
+                  {isSpeaker ? "Register as Speaker" : "Register Now"}
                 </button>
 
                 <button
@@ -157,10 +158,30 @@ const Home = () => {
                 </button>
               </div>
             </motion.div>
+            {/* Speaker Tagline + Switch */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="text-white p-3 ps-4"
+            >
+              <h5 className="mb-2">
+                <span className="fw-bold">Become a Speaker</span>
+              </h5>
+              <Form className="mb-3">
+                <Form.Check
+                  type="switch"
+                  id="speaker-switch"
+                  label="Toggle to register as a speaker"
+                  checked={isSpeaker}
+                  onChange={() => setIsSpeaker((prev) => !prev)}
+                />
+              </Form>
+            </motion.div>
           </div>
         </div>
 
-        {/* REGISTER MODAL */}
+        {/* Register Modal */}
         <Modal
           show={showRegistered}
           onHide={() => setShowRegistered(false)}
@@ -168,8 +189,8 @@ const Home = () => {
           backdrop="static"
         >
           <Modal.Header closeButton style={{ backgroundColor: "#212529" }}>
-            <Modal.Title className="text-warning w-100 text-center">
-              Let's Connect 🚀
+            <Modal.Title className="text-white w-100 text-center">
+              Let's Connect
             </Modal.Title>
           </Modal.Header>
           <Modal.Body style={{ backgroundColor: "#f8f9fa" }}>
@@ -179,6 +200,52 @@ const Home = () => {
                 setShowLoginPopup(true);
               }}
               onEmailExists={switchToLogin}
+            />
+          </Modal.Body>
+        </Modal>
+
+        {/* Login Modal */}
+        <Modal
+          show={showLoginPopup}
+          onHide={() => setShowLoginPopup(false)}
+          centered
+          backdrop="static"
+        >
+          <Modal.Header closeButton style={{ backgroundColor: "#212529" }}>
+            <Modal.Title className="text-white w-100 text-center">
+              To Join The Event, Login Below
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body style={{ backgroundColor: "#f8f9fa" }}>
+            <Login
+              onLoginSuccess={() => {
+                setShowLoginPopup(false);
+                navigate("/EventDetails");
+              }}
+            />
+          </Modal.Body>
+        </Modal>
+
+        {/* Register as Speaker Modal */}
+        <Modal
+          show={showSpeakerModal}
+          onHide={() => setShowSpeakerModal(false)}
+          centered
+          size="lg"
+          backdrop="static"
+        >
+          <Modal.Header closeButton style={{ backgroundColor: "#212529" }}>
+            <Modal.Title className="text-white w-100 text-center">
+              Become a Speaker
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body style={{ backgroundColor: "#ffffff" }}>
+            <RegisterAsSpeakerForm
+              onSuccess={() => {
+                setShowSpeakerModal(false);
+                setShowLoginPopup(true);
+              }}
+              onClose={() => setShowSpeakerModal(false)}
             />
           </Modal.Body>
           <style>
@@ -201,45 +268,16 @@ const Home = () => {
             `}
           </style>
         </Modal>
-
-        {/* LOGIN MODAL */}
-        <Modal
-          show={showLoginPopup}
-          onHide={closeLoginPopup}
-          centered
-          backdrop="static"
-        >
-          <Modal.Header closeButton style={{ backgroundColor: "#212529" }}>
-            <Modal.Title className="text-warning w-100 text-center">
-              To Join The Event, Login Below 👇
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body style={{ backgroundColor: "#f8f9fa" }}>
-            <Login
-              onLoginSuccess={() => {
-                setShowLoginPopup(false);
-                navigate("/EventDetails");
-              }}
-            />
-          </Modal.Body>
-        </Modal>
       </div>
 
+      {/* Other Sections */}
       <div className="bg-red-200">
         <CurrentEvent />
       </div>
-      <div>
-        <FeaturedSpeakers />
-      </div>
-      <div>
-        <ConferenceInfo />
-      </div>
-      <div>
-        <FeaturedFounders />
-      </div>
-      <div>
-        <Founder />
-      </div>
+      <FeaturedSpeakers />
+      <ConferenceInfo />
+      <FeaturedFounders />
+      <Founder />
       <div
         style={{
           backgroundImage: "url('/images/bg6.avif')",

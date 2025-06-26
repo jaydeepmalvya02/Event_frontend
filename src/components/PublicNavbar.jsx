@@ -159,8 +159,8 @@ const PublicNavbar = () => {
         dialogClassName="modal-lg"
       >
         <Modal.Header closeButton style={{ backgroundColor: "#212529" }}>
-          <Modal.Title className="text-warning w-100 text-center">
-            To Join The Event, Login Below 👇
+          <Modal.Title className="text-white w-100 text-center">
+            To Join The Event, Login Below 
           </Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ backgroundColor: "#f8f9fa" }}>
@@ -180,7 +180,7 @@ const PublicNavbar = () => {
         dialogClassName="modal-lg"
       >
         <Modal.Header closeButton style={{ backgroundColor: "#212529" }}>
-          <Modal.Title className="text-warning w-100 text-center">
+          <Modal.Title className="text-white w-100 text-center">
             Register for ExpertOnBoard
           </Modal.Title>
         </Modal.Header>
