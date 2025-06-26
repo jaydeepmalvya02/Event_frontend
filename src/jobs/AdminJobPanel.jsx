@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Button, Modal, Form, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { toast } from "react-toastify";
+import CandidateTable from "./CandidateTable";
 
 const initialForm = {
   title: "",
@@ -18,7 +19,9 @@ const AdminJobPanel = () => {
   const [form, setForm] = useState(initialForm);
   const [editId, setEditId] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showCandidates, setShowCandidates] = useState(false);
   const baseUrl = "https://event-nine-xi.vercel.app";
+
   const fetchJobs = async () => {
     setLoading(true);
     try {
@@ -41,13 +44,12 @@ const AdminJobPanel = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       if (editId) {
         await axios.put(`${baseUrl}/api/jobs/${editId}`, form);
         toast.success("Job updated!");
       } else {
-        await axios.post(`${baseUrl}/api/jobs/${editId}`, form);
+        await axios.post(`${baseUrl}/api/jobs`, form);
         toast.success("Job created!");
       }
       setShowModal(false);
@@ -56,7 +58,6 @@ const AdminJobPanel = () => {
       fetchJobs();
     } catch (err) {
       console.error(err);
-      
       toast.error("Failed to submit job");
     }
   };
@@ -70,11 +71,9 @@ const AdminJobPanel = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this job?")) {
       try {
-        await axios.delete(`${baseUrl}/api/jobs/${id}`,);
+        await axios.delete(`${baseUrl}/api/jobs/${id}`);
         toast.success("Job deleted!");
-        setTimeout(()=>{
-          fetchJobs();
-        },1000)
+        fetchJobs();
       } catch (err) {
         console.error(err);
         toast.error("Failed to delete job");
@@ -86,8 +85,14 @@ const AdminJobPanel = () => {
     <div className="container py-5">
       <h2 className="mb-4 text-center text-white">Admin Job Panel</h2>
 
-      <div className="text-end mb-3">
+      <div className="d-flex justify-content-between mb-3">
         <Button onClick={() => setShowModal(true)}>+ Add Job</Button>
+        <Button
+          variant="outline-light"
+          onClick={() => setShowCandidates(!showCandidates)}
+        >
+          {showCandidates ? "Hide Candidates" : "View Candidates"}
+        </Button>
       </div>
 
       {loading ? (
@@ -149,7 +154,10 @@ const AdminJobPanel = () => {
         </Table>
       )}
 
-      {/* Create/Edit Modal */}
+      {/* Candidate Component */}
+      {showCandidates && <CandidateTable />}
+
+      {/* Job Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Form onSubmit={handleSubmit}>
           <Modal.Header closeButton>
