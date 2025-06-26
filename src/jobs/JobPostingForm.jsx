@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 const initialState = {
   title: "",
   company: "",
+  email:"",
   location: "",
   type: "Full-Time",
   experience: "",
@@ -90,6 +91,19 @@ const JobPostingForm = ({ onSuccess }) => {
                 name="company"
                 required
                 value={formData.company}
+                onChange={handleChange}
+
+              />
+            </Form.Group>
+          </Col>
+
+          <Col md={6}>
+            <Form.Group className="mb-3">
+              <Form.Label>Company Email*</Form.Label>
+              <Form.Control
+                name="email"
+                required
+                value={formData.email}
                 onChange={handleChange}
 
               />

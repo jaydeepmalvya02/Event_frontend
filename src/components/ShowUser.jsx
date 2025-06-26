@@ -237,6 +237,7 @@ const ShowUser = () => {
                     onChange={handleSelectAll}
                   />
                 </th>
+                <th>#</th>
                 <th>Name</th>
                 <th>Company Name</th>
                 <th>Division</th>
@@ -255,7 +256,7 @@ const ShowUser = () => {
             </thead>
             <tbody>
               {filteredUsers.length > 0 ? (
-                filteredUsers.map((user) => (
+                filteredUsers.map((user,index) => (
                   <tr key={user._id}>
                     <td>
                       <input
@@ -264,6 +265,7 @@ const ShowUser = () => {
                         onChange={() => handleUserSelect(user.email)}
                       />
                     </td>
+                    <td>{index+1}</td>
                     <td>{user.name}</td>
                     <td>{user.companyName}</td>
                     <td>{user.division}</td>

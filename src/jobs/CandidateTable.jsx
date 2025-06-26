@@ -65,6 +65,7 @@ const CandidateTable = () => {
       <Table bordered responsive hover>
         <thead className="table-dark">
           <tr>
+            <th>#</th>
             <th>Name</th>
             <th>Email</th>
             <th>Phone</th>
@@ -76,8 +77,9 @@ const CandidateTable = () => {
         </thead>
         <tbody>
           {candidates.length > 0 ? (
-            candidates.map((candidate) => (
+            candidates.map((candidate,index) => (
               <tr key={candidate._id}>
+                <td>{index+1}</td>
                 <td>{candidate.name}</td>
                 <td>{candidate.email}</td>
                 <td>{candidate.phone}</td>

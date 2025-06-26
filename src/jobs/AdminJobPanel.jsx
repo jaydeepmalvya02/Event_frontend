@@ -103,8 +103,10 @@ const AdminJobPanel = () => {
         <Table bordered responsive hover>
           <thead className="table-dark">
             <tr>
+              <th>#</th>
               <th>Title</th>
               <th>Company</th>
+              <th>Email</th>
               <th>Location</th>
               <th>Type</th>
               <th>Experience</th>
@@ -114,10 +116,12 @@ const AdminJobPanel = () => {
           </thead>
           <tbody>
             {jobs.length > 0 ? (
-              jobs.map((job) => (
+              jobs.map((job,index) => (
                 <tr key={job._id}>
+                  <td>{index+1}</td>
                   <td>{job.title}</td>
                   <td>{job.company}</td>
+                  <td>{job.email}</td>
                   <td>{job.location}</td>
                   <td>{job.type}</td>
                   <td>{job.experience} yrs</td>
