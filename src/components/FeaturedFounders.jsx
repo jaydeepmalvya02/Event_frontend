@@ -11,7 +11,7 @@ const speakers = [
   },
   {
     name: "Prashant Menon",
-    title: "Strategy Consultant | Leadership Coach | Founder Director",
+    title: " Leadership Coach | Founder Director",
     bio: "Workplace Dynamics.",
     image: "/images/m12.jpeg",
     description: `Prashant Menon is a pharma industry veteran with 25+ years of leadership experience. Former MD at top Indian and global firms, he now drives change as Co-founder of The Bento Coach. A certified executive coach and NMIMS faculty, he’s known for blending strategy with human-centric, people-first leadership`,
@@ -25,7 +25,7 @@ const speakers = [
   },
   {
     name: "Dr Ashok Kumar Bhattacharya",
-    title: "(F.) Executive Director | Country Manager",
+    title: "Executive Director, Country Manager",
     bio: "Takeda Pharma",
     image: "/images/Ashok1.jpeg",
     description: `Dr. Ashok Kumar Bhattacharya, PhD (HC), MLE (Harvard), is a veteran pharma leader with over 40 years experience at GSK, Merck, and Takeda. As former Executive Director of Takeda India, he led major brand launches, M&A, and strategic growth. A Harvard Square Leadership Fellow and INSEAD-trained executive, he’s received the Lifetime Achievement, ICON of Healthcare, and Glory of India awards.`,
@@ -33,7 +33,7 @@ const speakers = [
   {
     name: "Hariram Krishnan",
     title: "Executive coach & Mentor (ICF certified)",
-    bio: "Former MD - Galderma India Certified NLP practitioner",
+    bio: " Galderma India",
     image: "/images/Hariram.jpeg",
     description: `As the Former Managing Director of Galderma India, Mr. Krishnan brings not only exceptional leadership but also a profound commitment to empowering individuals and organizations As an Executive Coach and Mentor, he has guided CEOs and MDs across diverse sectors, including healthcare and medical devices, helping them unlock their true potential.`,
   },
@@ -106,6 +106,7 @@ const FeaturedFounders = () => {
             scrollbar-width: none; /* Firefox */
             -ms-overflow-style: none; /* IE 10+ */
           }
+            
         `}</style>
       </div>
     </section>
