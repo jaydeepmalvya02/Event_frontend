@@ -72,6 +72,8 @@ const CurrentEvent = () => {
       setLoading(false);
     }
   };
+  console.log(events);
+  
 
   const isUserLoggedIn = () => localStorage.getItem("user") !== null;
 

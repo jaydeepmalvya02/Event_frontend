@@ -5,8 +5,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import Login from "./Login";
 import axios from "axios";
-import { MdUpcoming } from "react-icons/md";
-import { FaRegCalendarCheck } from "react-icons/fa";
 
 const API_URL = "https://event-nine-xi.vercel.app/api/admin/event";
 
@@ -17,6 +15,15 @@ const EventDetails = () => {
   const [pendingEventId, setPendingEventId] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // ✅ Reuse same helper as in CurrentEvent!
+  const buildISTTargetDate = (dateISO, time = "00:00") => {
+    if (!dateISO) return null;
+    const datePart = new Date(dateISO).toISOString().split("T")[0];
+    const combined = `${datePart}T${time}:00+05:30`;
+    const utcDate = new Date(combined).toISOString();
+    return utcDate;
+  };
+
   useEffect(() => {
     fetchEvents();
   }, []);
@@ -25,26 +32,35 @@ const EventDetails = () => {
     try {
       const response = await axios.get(API_URL);
       setEvents(response.data);
-      setLoading(false);
     } catch (error) {
       console.error("Failed to fetch events:", error);
+    } finally {
       setLoading(false);
     }
   };
 
-  const now = new Date();
   const passedEvents = [];
   const upcomingEvents = [];
 
+  const now = new Date();
+
   events.forEach((event) => {
-    const eventDate = new Date(event.dateTime || event.date);
-    if (eventDate < now) passedEvents.push(event);
+    const targetDate = new Date(buildISTTargetDate(event.date, event.time));
+    if (targetDate < now) passedEvents.push(event);
     else upcomingEvents.push(event);
   });
 
   upcomingEvents.sort(
-    (a, b) => new Date(a.dateTime || a.date) - new Date(b.dateTime || b.date)
+    (a, b) =>
+      new Date(buildISTTargetDate(a.date, a.time)) -
+      new Date(buildISTTargetDate(b.date, b.time))
   );
+  passedEvents.sort(
+    (a, b) =>
+      new Date(buildISTTargetDate(b.date, b.time)) -
+      new Date(buildISTTargetDate(a.date, a.time))
+  );
+
   const currentEvent = upcomingEvents.length > 0 ? upcomingEvents[0] : null;
 
   const isUserLoggedIn = () => localStorage.getItem("user") !== null;
@@ -72,20 +88,23 @@ const EventDetails = () => {
     }
   };
 
-  if (loading)
+  if (loading) {
     return (
       <div className="text-white text-center my-5">⏳ Loading events...</div>
     );
+  }
 
   return (
     <div className="container py-5">
-      <h2 className="text-center fw-bold mb-4 text-white fs-3 font-serif">Our Events</h2>
+      <h2 className="text-center fw-bold mb-4 text-white fs-3 font-serif">
+        Our Events
+      </h2>
 
-      {/* Current/Upcoming Event */}
+      {/* ✅ Current or Upcoming Event */}
       {currentEvent && (
         <div className="mb-5">
           <h4 className="fw-bold text-light font-serif mb-4 fs-2 d-flex align-items-center gap-2">
-           Current & Upcoming Event
+            Current & Upcoming Event
           </h4>
 
           <div className="card shadow border-0 rounded-4 p-3 p-md-4 bg-light">
@@ -108,8 +127,12 @@ const EventDetails = () => {
                 </h4>
                 <p className="text-muted">{currentEvent.description}</p>
 
+                {/* ✅ Pass IST-corrected date */}
                 <CountdownTimer
-                  targetDate={currentEvent.dateTime || currentEvent.date}
+                  targetDate={buildISTTargetDate(
+                    currentEvent.date,
+                    currentEvent.time
+                  )}
                 />
 
                 <p className="mb-1">
@@ -135,11 +158,11 @@ const EventDetails = () => {
         </div>
       )}
 
-      {/* Past Events */}
+      {/* ✅ Past Events */}
       {passedEvents.length > 0 && (
         <div className="mt-5">
           <h4 className="fw-bold text-white font-serif mb-4 fs-2 d-flex align-items-center gap-2">
-             Past Events
+            Past Events
           </h4>
           {passedEvents.map((event, index) => (
             <div
@@ -162,6 +185,9 @@ const EventDetails = () => {
                 <div className="col-lg-6">
                   <h4 className="fw-bold text-primary mb-2">{event.title}</h4>
                   <p className="text-muted">{event.description}</p>
+                  <CountdownTimer
+                    targetDate={buildISTTargetDate(event.date, event.time)}
+                  />
                   <p className="mb-1">
                     <strong>Date:</strong> {new Date(event.date).toDateString()}
                   </p>
@@ -184,7 +210,7 @@ const EventDetails = () => {
         </div>
       )}
 
-      {/* Login Modal */}
+      {/* ✅ Login Modal */}
       {showLoginPopup && (
         <div
           className="modal show d-block"
@@ -203,7 +229,7 @@ const EventDetails = () => {
             <div className="modal-content rounded-4 overflow-hidden shadow">
               <div className="modal-header bg-dark border-0">
                 <h5 className="modal-title w-100 text-center text-white fw-semibold">
-                  To Join The Event, Login Below 
+                  To Join The Event, Login Below
                 </h5>
                 <button
                   type="button"
@@ -222,7 +248,6 @@ const EventDetails = () => {
         </div>
       )}
 
-      {/* Optional close icon fix */}
       <style>{`
         .btn-close {
           filter: invert(1);
