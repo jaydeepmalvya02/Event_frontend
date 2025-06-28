@@ -1,8 +1,21 @@
-import React from "react";
-
+import React, {  useState } from "react";
+import { useAuth} from "../context/AuthContext"
+import Login from "../components/Login";
+import { Modal } from "react-bootstrap";
 
 const CreateDoctorGreet = () => {
- 
+ const {isLoggedIn,login} = useAuth()
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const openLoginModal = () => setShowLoginModal(true);
+  const closeLoginModal = () => setShowLoginModal(false);
+  const handleLoginSuccess = (user) => {
+    login(user);
+    closeLoginModal();
+    window.open(
+      "https://instamd.in/v6/common/eposter/create.php?poster_id=1199&user_id=26825&auth_key=173d7c9f88edd8f3d06624cd3&customer_id=&customer_type=",
+      "_blank"
+    );
+  };
   return (
     <div className="relative w-full h-[80vh] flex flex-col items-center justify-center text-center px-4">
       {/* Background Image */}
@@ -26,10 +39,12 @@ const CreateDoctorGreet = () => {
       {/* Button BELOW slogan */}
       <button
         onClick={() => {
-          window.open(
-            "https://instamd.in/v6/common/eposter/create.php?poster_id=1199&user_id=26825&auth_key=173d7c9f88edd8f3d06624cd3&customer_id=&customer_type=",
-            "_blank"
-          );
+          isLoggedIn
+            ? window.open(
+                "https://instamd.in/v6/common/eposter/create.php?poster_id=1199&user_id=26825&auth_key=173d7c9f88edd8f3d06624cd3&customer_id=&customer_type=",
+                "_blank"
+              )
+            : (openLoginModal());
         }}
         className="btn fw-bold text-white position-relative px-4 px-lg-5 py-2 py-lg-3"
         style={{
@@ -52,6 +67,25 @@ const CreateDoctorGreet = () => {
       >
         Create Poster
       </button>
+      <Modal
+        show={showLoginModal}
+        onHide={closeLoginModal}
+        centered
+        backdrop="static"
+        dialogClassName="modal-lg"
+      >
+        <Modal.Header closeButton style={{ backgroundColor: "#212529" }}>
+          <Modal.Title className="text-white w-100 text-center">
+            To Join The Event, Login Below
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ backgroundColor: "#f8f9fa" }}>
+          <Login
+            onClose={closeLoginModal}
+            onLoginSuccess={handleLoginSuccess}
+          />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
