@@ -57,7 +57,7 @@ const CountdownTimer = ({ targetDate }) => {
         <span className="badge bg-danger fs-6">🔴 Live</span>
       )}
       {status === "completed" && (
-        <span className="badge bg-secondary fs-6">✅ Completed</span>
+        <span className="badge bg-secondary fs-6"> Completed</span>
       )}
     </div>
   );

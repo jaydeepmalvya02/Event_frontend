@@ -24,6 +24,7 @@ import AdminJobPanel from "./jobs/AdminJobPanel";
 import FindJobs from "./jobs/FindJobs";
 import JobPostingForm from "./jobs/JobPostingForm";
 import { ToastContainer } from "react-toastify";
+import ChatComponent from "./ai/ChatComponent";
 
 const App = () => {
   return (
@@ -43,6 +44,7 @@ const App = () => {
         <Route path="/createJobs" element={<JobPostingForm />} />
         <Route path="/liveEvents/:eventId" element={<EventWebinarPage />} />
         <Route path="about" element={<AboutPage />} />
+        {/* <Route path="/chat" element={<ChatComponent />} /> */}
         <Route
           path="/admin"
           element={
