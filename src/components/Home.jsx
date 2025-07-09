@@ -50,7 +50,7 @@ const Home = () => {
 
   return (
     <>
-      <CreateDoctorGreet />
+{/*       <CreateDoctorGreet /> */}
       <div
         style={{
           backgroundImage: 'url("/images/bg4.jpg")',
